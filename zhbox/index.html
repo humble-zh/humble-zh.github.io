@@ -7,7 +7,7 @@
 
     
 
-    <title>Archives: 2021/2 | Zhihong&#39;s Blog</title>
+    <title>ZHBox | Zhihong&#39;s Blog</title>
     <meta name="author" content="Zhihong Li" />
     <meta name="keywords" content="zhbox" />
     <meta name="description" content="" />
@@ -56,7 +56,7 @@
                 <span class="nav-text">首页</span>
             </a>
         
-            <a class="nav-item" href="/zhbox">
+            <a class="nav-item active" href="/zhbox">
                 <span class="nav-text">中盒</span>
             </a>
         
@@ -64,7 +64,7 @@
                 <span class="nav-text">标签</span>
             </a>
         
-            <a class="nav-item active" href="/archives">
+            <a class="nav-item" href="/archives">
                 <span class="nav-text">归档</span>
             </a>
         
@@ -122,64 +122,41 @@
 
         <div id="content" class="content">
             <div id="wrapper" class="wrapper" style="max-width: 800px">
-                
-
-
+                <article class="article" itemscope itemprop="blogPost">
     
-    
-    
-    
-    
-    <section class="archives-wrap">
-    <div class="archive-year-wrap">
-    <a href="/archives/2021/02" class="page-hd">
-        2021/02
-    </a>
-    </div>
-    <ol class="archives">
-    
-
-    <li class="archive-section-item">
+    <header class="article-header">
         
-<article class="archive-article archive-type-post">
-    <div class="archive-article-inner">
-        <header class="archive-article-header">
-            <a class="archive-article-link" href="/2021/02/10/zhbox%E8%BF%9E%E6%8E%A5%E8%87%AA%E5%AE%9A%E4%B9%89%E6%9C%8D%E5%8A%A1%E5%99%A8/">zhbox连接自定义服务器</a>
-            <span class="archive-article-date">
-                (<a class="article-date" href="/archives/2021/02">
-    
-    <time class="vm" datetime="2021-02-10T11:46:08.000Z" itemprop="datePublished">2/10</time>
-</a>
-)
-            </span>
-        </header>
-    </div>
-</article>
-    </li>
-
-    
-    
-
-    <li class="archive-section-item">
+        <h1 itemprop="name">
+            ZHBox
+        </h1>
         
-<article class="archive-article archive-type-zhbox">
-    <div class="archive-article-inner">
-        <header class="archive-article-header">
-            <a class="archive-article-link" href="/2021/02/10/ZHBox%E5%AE%89%E8%A3%85/">ZHBox安装</a>
-            <span class="archive-article-date">
-                (<a class="article-date" href="/archives/2021/02">
+        <div class="article-meta clearfix">
+            <a class="article-date" href="https://humble-zh.github.io/zhbox/index.html">
     
-    <time class="vm" datetime="2021-02-09T16:53:43.000Z" itemprop="datePublished">2/10</time>
+    <i class="icon-calendar vm"></i>
+    
+    <time class="vm" datetime="2021-02-09T16:04:15.000Z" itemprop="datePublished">2021-02-10</time>
 </a>
-)
-            </span>
-        </header>
-    </div>
+
+            
+
+        </div>
+    </header>
+    
+    <section class="article-body markdown-body">
+        
+        <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>zhbox (中盒) 是一套 IOT-EDGE 程序。运行于Linux环境(Ubuntu, Arch, OpenWrt等)设备。作用是把设备通过MQTT协议接入云端。</p>
+<h2 id="特性"><a href="#特性" class="headerlink" title="特性"></a>特性</h2><ol>
+<li>同时创建多个MQTT连接，可同时接入不同的云平台</li>
+<li>可配置的MQTT消息体格式，直接适应不同云端对消息体格式需求，省去适配新云端的开发周期</li>
+<li>MQTT的topic（主题）和payload（消息体）支持使用变量或方法进行展开</li>
+<li>配置文件支持<code>@include</code>（包含）功能，免得配置文件内重复信息过多</li>
+</ol>
+<h2 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h2><p><a target="_blank" rel="noopener" href="https://github.com/humble-zh/zhbox/blob/master/README.md#%E5%AE%89%E8%A3%85">1.Linux本地编译zhbox并安装</a><br>[2.zhbox使用]<br>[3.Linux交叉编译zhbox安装到OpenWRT]</p>
+
+        
+    </section>
 </article>
-    </li>
-
-
-</ol></section>
 
 
 
