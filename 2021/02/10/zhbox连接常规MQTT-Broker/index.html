@@ -10,7 +10,7 @@
     <title>zhbox连接常规MQTT_Broker | Zhihong&#39;s Blog</title>
     <meta name="author" content="Zhihong Li" />
     <meta name="keywords" content="zhbox" />
-    <meta name="description" content="拓扑结构12345678910111213141516171819202122graph TDsubgraph 个人PCCmqttfx[MQTT.fx]subgraph BrokerCgeneral[常规MQTT_Broker&amp;lt;br&amp;#x2F;&amp;gt;127.0.0.1]endCmqttfx --MQTT--- Cgeneralsubgraph ZHBOX    subgraph NorthList    subgraph Mosquitto        MC0[mqtt客户端0]   " />
+    <meta name="description" content="拓扑结构需求已知服务器（IP:127.0.0.1,Port:1883）运行的是常规的MQTT_Broker（cloud:0），并且接受任何clientid、用户、密码的连接zhbox使用以下用户连上MQTT_Broker，并创建2个任务每间隔30秒，给主题(topic):hello发布（publish）一条消息(payload):&amp;#123;”hello&amp;quot;:30&amp;#125;每间隔60秒，给主题(topic):world发布（publish）一条消息(payload):&amp;#123;”wr" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no" />
 
@@ -104,7 +104,7 @@
         </h1>
         
         <div class="article-meta clearfix">
-            <a class="article-date" href="https://humble-zh.github.io/2021/02/10/zhbox%E8%BF%9E%E6%8E%A5%E5%B8%B8%E8%A7%84MQTT_Broker/index.html">
+            <a class="article-date" href="https://humble-zh.github.io/2021/02/10/zhbox%E8%BF%9E%E6%8E%A5%E5%B8%B8%E8%A7%84MQTT-Broker/index.html">
     
     <i class="icon-calendar vm"></i>
     
@@ -118,7 +118,7 @@
     
     <section class="article-body markdown-body">
         
-        <h2 id="拓扑结构"><a href="#拓扑结构" class="headerlink" title="拓扑结构"></a>拓扑结构</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">graph TD</span><br><span class="line">subgraph 个人PC</span><br><span class="line">Cmqttfx[MQTT.fx]</span><br><span class="line"></span><br><span class="line">subgraph Broker</span><br><span class="line">Cgeneral[常规MQTT_Broker&lt;br&#x2F;&gt;127.0.0.1]</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line">Cmqttfx --MQTT--- Cgeneral</span><br><span class="line"></span><br><span class="line">subgraph ZHBOX</span><br><span class="line">    subgraph NorthList</span><br><span class="line">    subgraph Mosquitto</span><br><span class="line">        MC0[mqtt客户端0]</span><br><span class="line">    end</span><br><span class="line">        Nali&#123;General&#125;</span><br><span class="line">    end</span><br><span class="line"></span><br><span class="line">    Cgeneral --MQTT--- MC0</span><br><span class="line">    MC0 --- Nali</span><br><span class="line">end</span><br><span class="line">end</span><br></pre></td></tr></table></figure>
+        <h2 id="拓扑结构"><a href="#拓扑结构" class="headerlink" title="拓扑结构"></a>拓扑结构</h2><p><img src="/2021/02/10/zhbox%E8%BF%9E%E6%8E%A5%E5%B8%B8%E8%A7%84MQTT-Broker/zhbox%E8%BF%9E%E6%8E%A5%E5%B8%B8%E8%A7%84MQTT_Broker.jpeg"></p>
 <h2 id="需求"><a href="#需求" class="headerlink" title="需求"></a>需求</h2><ol>
 <li><p>已知服务器（IP:127.0.0.1,Port:1883）运行的是常规的MQTT_Broker（cloud:0），并且接受任何clientid、用户、密码的连接</p>
 </li>
