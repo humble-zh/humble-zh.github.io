@@ -128,7 +128,38 @@
     <header class="article-header">
         
         <h1 itemprop="name">
-            <a href="/2021/02/10/zhbox%E8%BF%9E%E6%8E%A5%E5%B8%B8%E8%A7%84MQTT-Broker/">zhbox连接常规MQTT_Broker</a>
+            <a href="/2021/02/28/Open62541%E7%BC%96%E8%AF%91%E4%B8%8E%E5%AE%89%E8%A3%85/">Open62541编译与安装</a>
+        </h1>
+        
+        <div class="article-meta clearfix">
+            <a class="article-date" href="https://humble-zh.github.io/index.html">
+    
+    <i class="icon-calendar vm"></i>
+    
+    <time class="vm" datetime="2021-02-28T14:09:48.000Z" itemprop="datePublished">2021-02-28</time>
+</a>
+
+            
+
+        </div>
+    </header>
+    
+    <section class="article-body markdown-body">
+        
+        <h2 id="克隆open62541源码"><a href="#克隆open62541源码" class="headerlink" title="克隆open62541源码"></a>克隆open62541源码</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> -b v1.0.6 https://github.com/open62541/open62541.git</span><br></pre></td></tr></table></figure>
+<h2 id="编译"><a href="#编译" class="headerlink" title="编译"></a>编译</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> open62541/</span><br><span class="line"></span><br><span class="line"><span class="comment"># 拉取子模块，当编译使能某些特殊功能时就需要，如自定义namespace等</span></span><br><span class="line">git submodule update --init --recursive --progress</span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建编译目录并且进入</span></span><br><span class="line">mkdir build/ &amp;&amp; <span class="built_in">cd</span> build</span><br><span class="line"></span><br><span class="line"><span class="comment"># 配置编译选项，-DBUILD_SHARED_LIBS=ON 表示生成动态库，-DCMAKE_INSTALL_PREFIX=/usr表示安装路径为/usr</span></span><br><span class="line">cmake .. -DBUILD_SHARED_LIBS=ON -DCMAKE_INSTALL_PREFIX=/usr</span><br><span class="line"></span><br><span class="line"><span class="comment"># 开始编译</span></span><br><span class="line">make VERBOSE=1</span><br></pre></td></tr></table></figure>
+<h2 id="安装与卸载"><a href="#安装与卸载" class="headerlink" title="安装与卸载"></a>安装与卸载</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 安装</span></span><br><span class="line">sudo make install</span><br><span class="line"></span><br><span class="line"><span class="comment"># 卸载</span></span><br><span class="line">sudo xargs rm &lt; install_manifest.txt</span><br></pre></td></tr></table></figure>
+        
+    </section>
+</article>
+
+
+    <article class="article" itemscope itemprop="blogPost">
+    
+    <header class="article-header">
+        
+        <h1 itemprop="name">
+            <a href="/2021/02/10/zhbox%E8%BF%9E%E6%8E%A5%E5%B8%B8%E8%A7%84MQTT-Broker/">zhbox连接常规MQTT-Broker</a>
         </h1>
         
         <div class="article-meta clearfix">
@@ -166,35 +197,6 @@
 <h2 id="运行mqtt-fx"><a href="#运行mqtt-fx" class="headerlink" title="运行mqtt.fx"></a>运行mqtt.fx</h2><p>订阅主题(topic):<code>hello</code></p>
 <p>接收消息<code>&#123;&quot;hello&quot;:30&#125;</code></p>
 
-        
-    </section>
-</article>
-
-
-    <article class="article" itemscope itemprop="blogPost">
-    
-    <header class="article-header">
-        
-        <h1 itemprop="name">
-            <a href="/2021/02/10/ZHBox%E5%AE%89%E8%A3%85/">ZHBox安装</a>
-        </h1>
-        
-        <div class="article-meta clearfix">
-            <a class="article-date" href="https://humble-zh.github.io/index.html">
-    
-    <i class="icon-calendar vm"></i>
-    
-    <time class="vm" datetime="2021-02-09T16:53:43.000Z" itemprop="datePublished">2021-02-10</time>
-</a>
-
-            
-
-        </div>
-    </header>
-    
-    <section class="article-body markdown-body">
-        
-        
         
     </section>
 </article>
