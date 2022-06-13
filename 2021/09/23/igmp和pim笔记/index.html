@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+
+    
+
+    
+
+    <title>igmp和pim笔记 | Zhihong&#39;s Blog</title>
+    <meta name="author" content="Zhihong Li" />
+    <meta name="keywords" content="zhbox" />
+    <meta name="description" content="igmp和pim介绍igmpigmp是终端与路由之间的一套协议igmp v1查询器每间隔60s发一次普遍组查询(General Query)报文，报文:224.0.0.1，最大响应时长10s组成员开启定时器准备回复Report报文(目标组ip)，若收到组内其它成员的Report报文，自己就不发(抑制机制)组成员主动加入组播组时，不需等待普遍组查询(General Query)报文，直接发Report报文。组成员是默默离开的，等查询器发起2次普遍组查询(General Query)报文均无收到响应" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no" />
+
+    
+    <link rel="alternate" href="/atom.xml" title="Zhihong&#39;s Blog" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/images/favicon.ico">
+    
+
+    <style type="text/css">
+    @font-face {
+        font-family: 'icomoon';
+        src: url("/fonts/icomoon.eot?q628ml");
+        src: url("/fonts/icomoon.eot?q628ml#iefix") format('embedded-opentype'),
+             url("/fonts/icomoon.ttf?q628ml") format('truetype'),
+             url("/fonts/icomoon.woff?q628ml") format('woff'),
+             url("/fonts/icomoon.svg?q628ml#icomoon") format('svg');
+        font-weight: normal;
+        font-style: normal;
+    }
+    </style>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!--[if lt IE 9]><style type="text/css">.nav-inner {top:0;}.author-meta {position:static;top:0;}.search-form {height:36px;}</style><script type="text/javascript" src="https://unpkg.com/html5shiv@3.7.3/dist/html5shiv.min.js"></script><![endif]-->
+<meta name="generator" content="Hexo 5.3.0"></head>
+<body>
+
+    <main class="app">
+        <header id="header" class="header clearfix">
+    <div id="nav" class="nav">
+    <div class="nav-mobile">
+        <button id="open-panel" class="open-panel nav-mobile-item"><i class="icon-documents"></i></button>
+        <h1 class="nav-mobile-title nav-mobile-item">Zhihong&#39;s Blog</h1>
+        <button id="open-menus" class="open-panel nav-mobile-item"><i class="icon-library"></i></button>
+    </div>
+
+    <nav id="nav-inner" class="nav-inner">
+        
+            <a class="nav-item" href="/">
+                <span class="nav-text">首页</span>
+            </a>
+        
+            <a class="nav-item" href="/zhbox">
+                <span class="nav-text">中盒</span>
+            </a>
+        
+            <a class="nav-item" href="/tags">
+                <span class="nav-text">标签</span>
+            </a>
+        
+            <a class="nav-item" href="/archives">
+                <span class="nav-text">归档</span>
+            </a>
+        
+            <a class="nav-item" href="/about">
+                <span class="nav-text">关于</span>
+            </a>
+        
+    </nav>
+</div>
+
+    <aside id="aside" class="aside">
+    <div id="aside-mask" class="aside-mask"></div>
+    <div id="aside-inner" class="aside-inner">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit"><i class="icon-search-stroke"></i></button><input type="hidden" name="sitesearch" value="https://humble-zh.github.io"></form>
+
+        
+        
+        
+        
+
+        
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#igmp"><span class="toc-number">1.</span> <span class="toc-text">igmp</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#igmp-v1"><span class="toc-number">1.1.</span> <span class="toc-text">igmp v1</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#igmp-v2"><span class="toc-number">1.2.</span> <span class="toc-text">igmp v2</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#igmp-v3"><span class="toc-number">1.3.</span> <span class="toc-text">igmp v3</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#igmp-%E6%A8%A1%E5%9E%8B"><span class="toc-number">1.4.</span> <span class="toc-text">igmp 模型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#igmp-snooping"><span class="toc-number">1.5.</span> <span class="toc-text">igmp snooping</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#pim"><span class="toc-number">2.</span> <span class="toc-text">pim</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#pim-dm"><span class="toc-number">2.1.</span> <span class="toc-text">pim dm</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#PIM-DM%E7%9A%84%E5%85%B3%E9%94%AE%E4%BB%BB%E5%8A%A1"><span class="toc-number">2.1.1.</span> <span class="toc-text">PIM-DM的关键任务</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%B7%A5%E4%BD%9C%E6%9C%BA%E5%88%B6"><span class="toc-number">2.1.2.</span> <span class="toc-text">工作机制</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE"><span class="toc-number">2.1.3.</span> <span class="toc-text">配置</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%80%82%E7%94%A8-%E5%B1%80%E9%99%90"><span class="toc-number">2.1.4.</span> <span class="toc-text">适用&#x2F;局限</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#pim-sm"><span class="toc-number">2.2.</span> <span class="toc-text">pim sm</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#PIM-SM%E7%9A%84%E5%85%B3%E9%94%AE%E4%BB%BB%E5%8A%A1"><span class="toc-number">2.2.1.</span> <span class="toc-text">PIM-SM的关键任务</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%80%82%E7%94%A8"><span class="toc-number">2.2.2.</span> <span class="toc-text">适用</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B1%87%E8%81%9A%E7%82%B9RP-Rendezvous-Point"><span class="toc-number">2.2.3.</span> <span class="toc-text">汇聚点RP(Rendezvous Point)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#SPT%E7%9A%84%E5%BB%BA%E7%AB%8B%E8%BF%87%E7%A8%8B"><span class="toc-number">2.2.4.</span> <span class="toc-text">SPT的建立过程</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#pim-sm-Switchover"><span class="toc-number">2.2.5.</span> <span class="toc-text">pim sm Switchover</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BB%84%E6%92%AD%E7%BB%BC%E5%90%88%E5%AE%9E%E9%AA%8C"><span class="toc-number">2.2.6.</span> <span class="toc-text">组播综合实验</span></a></li></ol></li></ol></li></ol>
+        
+    </div>
+</aside>
+
+</header>
+
+        <div id="content" class="content">
+            <div id="wrapper" class="wrapper" style="max-width: 800px">
+                <article class="article" itemscope itemprop="blogPost">
+    
+    <header class="article-header">
+        
+        <h1 itemprop="name">
+            igmp和pim笔记
+        </h1>
+        
+        <div class="article-meta clearfix">
+            <a class="article-date" href="https://humble-zh.github.io/2021/09/23/igmp%E5%92%8Cpim%E7%AC%94%E8%AE%B0/index.html">
+    
+    <i class="icon-calendar vm"></i>
+    
+    <time class="vm" datetime="2021-09-23T07:32:41.000Z" itemprop="datePublished">2021-09-23</time>
+</a>
+
+            
+<div class="article-tag-list">
+    <i class="icon-tag vm"></i>
+    <a class="article-tag-link" href="/tags/igmp/" rel="tag">igmp</a>, <a class="article-tag-link" href="/tags/pim/" rel="tag">pim</a>
+</div>
+
+
+        </div>
+    </header>
+    
+    <section class="article-body markdown-body">
+        
+        <p>igmp和pim介绍</p>
+<a id="more"></a>
+
+<h2 id="igmp"><a href="#igmp" class="headerlink" title="igmp"></a>igmp</h2><p>igmp是终端与路由之间的一套协议</p>
+<h3 id="igmp-v1"><a href="#igmp-v1" class="headerlink" title="igmp v1"></a>igmp v1</h3><p>查询器每间隔60s发一次普遍组查询(General Query)报文，报文:224.0.0.1，最大响应时长10s</p>
+<p>组成员开启定时器准备回复Report报文(目标组ip)，若收到组内其它成员的Report报文，自己就不发(抑制机制)</p>
+<p>组成员主动加入组播组时，不需等待普遍组查询(General Query)报文，直接发Report报文。</p>
+<p>组成员是默默离开的，等查询器发起2次普遍组查询(General Query)报文均无收到响应，130秒(60+60+10s报文最大响应时长)，就停掉该组</p>
+<h3 id="igmp-v2"><a href="#igmp-v2" class="headerlink" title="igmp v2"></a>igmp v2</h3><p>v1无查询器选举，依靠上行的组播路由协议来确定查询器</p>
+<p>v2有查询器选举，基于普遍组查询(General Query)报文选举，接口IP小的路由被选为查询器。非查询器会监听普遍组查询(General Query)报文，时刻准备取代掉线的查询器。</p>
+<p>v2加了组成员离开(Leave)报文。Leave from Group2。查询器收到后会发2次特定组查询(Group Specific Query for Group2)报文:Group2 IP,最大响应时长1秒。所以2秒就能确定无成员并停掉该组播组。</p>
+<h3 id="igmp-v3"><a href="#igmp-v3" class="headerlink" title="igmp v3"></a>igmp v3</h3><p>增加源过滤，Report报文有In(只想要该源)和Ex(不想要该源)。</p>
+<p>组内不同成员对源的需求不一样，所以取消掉了Report报文抑制机制。</p>
+<p>一个Report报文可指定加入到多个组播组内。</p>
+<p><img src="/2021/09/23/igmp%E5%92%8Cpim%E7%AC%94%E8%AE%B0/IGMP%E5%90%84%E7%89%88%E6%9C%AC%E9%97%B4%E7%9A%84%E5%B7%AE%E5%BC%82.png"></p>
+<h3 id="igmp-模型"><a href="#igmp-模型" class="headerlink" title="igmp 模型"></a>igmp 模型</h3><ul>
+<li>ASM 模型：Any-Source Multicast，任意信源组播</li>
+<li>SFM 模型：Source-Filtered Multicast，信源过滤组播</li>
+<li>SSM 模型：Source-Specific Multicast，指定信源组播</li>
+</ul>
+<h3 id="igmp-snooping"><a href="#igmp-snooping" class="headerlink" title="igmp snooping"></a>igmp snooping</h3><p>用于交换机，让交换机的cpu去维护一个二层组播转发表，减少对组播报文的广播。</p>
+<h2 id="pim"><a href="#pim" class="headerlink" title="pim"></a>pim</h2><p>组播路由协议是网络中路由器与路由器之间维护的组播路由转发表的协议。组播路由协议有很多，pim(Protocol Independent Multicast)是其一，它可以直接利用单播路由表的路由信息进行组播报文RPF检查和转发组播报文。</p>
+<h3 id="pim-dm"><a href="#pim-dm" class="headerlink" title="pim dm"></a>pim dm</h3><p>Dense Mode 采用“推(Push)模式”转发组播报文</p>
+<h4 id="PIM-DM的关键任务"><a href="#PIM-DM的关键任务" class="headerlink" title="PIM-DM的关键任务"></a>PIM-DM的关键任务</h4><p>建立SPT(Shortest Path Tree,最短路径树,源与成员之间路径是最优的) [RPT,共享路径树,源与成员之间路径不一定是最优的]</p>
+<p>组播路由器将数据发送到需要该组路由数据的网络分支上，那么，组播流量转发路径该如何确定？如何确保流量被转发到正确的路径上？如何防止环路？这些问题都是组播路由器需要解决的问题，因此，组播路由协议需要判断报文出接口的合法性，及通过RPF(Reverse Path Forwarding,反向路径转发)来进行判断，然后在网络中建立一棵组播分发树，从而转发组播流量，在每台路由器上建立组播转发表项（（*，G），（S，G）），记录该组播分发树。当受到组播数据包，取包内的源地址匹配单播路由表，匹配到表条目记录的出接口就是数据包进来的端口就表示通过RPF检查。通过RPF检查后，数据包会被复制从所有端口扩散出去。</p>
+<h4 id="工作机制"><a href="#工作机制" class="headerlink" title="工作机制"></a>工作机制</h4><ul>
+<li>邻居发现:相互发hello报文(30秒/次),105秒收不到就代表邻居断开。选举查询器DR(igmpv1不能选举)</li>
+<li>扩散与剪枝:路由A收到源发来的包扩散Flooding发给所有接口，若接口下游路由B底下没有接收者就发送剪枝Prune报文给上游路由A，路由A后面就不再发该组播包给路由B。</li>
+<li>状态刷新:定时器，周期性地把组播包(State Refresh小协议包)发给已剪枝的路由，重新剪枝。</li>
+<li>嫁接:路由B下有新组成员通过IGMP加入组播组，路由B会向上发送Graft(带有目标组播ip)给路由A(依此上发)，路由A回复GraftAck给路由B</li>
+<li>断言:同一网段内有3台路由器A,B,C，都从上游接收到组播包转发到本网段，A,B,C受到对方转发的组播包，就发出断言Assert报文，通过断言报文比较(通往源的单播路由协议优先级小者胜,去往组播源开销小者胜,本网段内接口ip大者胜)选出代表来转发发组播数据。最终只有1台路由能转发组播包到本网段。</li>
+</ul>
+<h4 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h4><p><img src="/2021/09/23/igmp%E5%92%8Cpim%E7%AC%94%E8%AE%B0/PIM-DM%E9%85%8D%E7%BD%AE%E5%AE%9E%E7%8E%B0.png"></p>
+<h4 id="适用-局限"><a href="#适用-局限" class="headerlink" title="适用/局限"></a>适用/局限</h4><p>适用于组播成员分布较为密集的园区网络。在组成员分布较为稀疏的网络中，组播流量的周期性扩散会给网络带来较大负担。</p>
+<h3 id="pim-sm"><a href="#pim-sm" class="headerlink" title="pim sm"></a>pim sm</h3><p>Sparse Mode 采用“拉(Pull)模式”转发组播报文</p>
+<h4 id="PIM-SM的关键任务"><a href="#PIM-SM的关键任务" class="headerlink" title="PIM-SM的关键任务"></a>PIM-SM的关键任务</h4><ul>
+<li>建立RPT(Rendezvous Point Tree,汇聚点树也称共享树,接收者到汇聚点RP的树)</li>
+<li>建立SPT(Shortest Path Tree,最短路径树,组播源与汇聚点RP的树)</li>
+</ul>
+<h4 id="适用"><a href="#适用" class="headerlink" title="适用"></a>适用</h4><p>组播成员分布较为稀疏的网络环境</p>
+<h4 id="汇聚点RP-Rendezvous-Point"><a href="#汇聚点RP-Rendezvous-Point" class="headerlink" title="汇聚点RP(Rendezvous Point)"></a>汇聚点RP(Rendezvous Point)</h4><ul>
+<li>充当RPT树的根节点</li>
+<li>共享树中的所有组播流量都经过RP转发给接收者</li>
+<li>所有PIM路由器都要知道RP的位置</li>
+</ul>
+<p>可以在各路由上逐台手动配置汇聚点RP，也可动态配置</p>
+<p><img src="/2021/09/23/igmp%E5%92%8Cpim%E7%AC%94%E8%AE%B0/RPT%E5%8F%8A%E5%85%B6%E5%BB%BA%E7%AB%8B%E8%BF%87%E7%A8%8B.png"></p>
+<p>思考答案：IGMP会选举查询器，由查询器来向上游发送Join消息。</p>
+<p><img src="/2021/09/23/igmp%E5%92%8Cpim%E7%AC%94%E8%AE%B0/%E7%BB%84%E6%92%AD%E6%8E%A5%E6%94%B6%E8%80%85%E4%BE%A7DR%E4%B8%8E%E7%BB%84%E6%92%AD%E6%BA%90%E4%BE%A7DR.png"></p>
+<p>接收者侧DR详见IGMP的查询器选举。组播源侧DR选举跟PIM-DM的断言一样。</p>
+<h4 id="SPT的建立过程"><a href="#SPT的建立过程" class="headerlink" title="SPT的建立过程"></a>SPT的建立过程</h4><p><img src="/2021/09/23/igmp%E5%92%8Cpim%E7%AC%94%E8%AE%B0/SPT%E7%9A%84%E5%BB%BA%E7%AB%8B%E8%BF%87%E7%A8%8B.png"></p>
+<ol>
+<li>组播源发送组播包给源端DR</li>
+<li>源端DR会把组播包封装成单播Register报文(目的RP的IP，源地址本机)</li>
+<li>RP收到Register报文后解封装，转发组播报文，向源端DR发送Join(S,G)途经路由可建立组播路由表</li>
+<li>源端DR有2条路径发组播包给RP，a.封装单播Register(消耗带宽,RP的解包延时),b.直接发组播包</li>
+<li>RP收到组播源发来的数据后，向源端DR发送RegisterStop报文</li>
+</ol>
+<p>缺点：从源到成员不是最短的路径；所有数据都经过RP会使得RP压力过大(用Switchover机制解决)</p>
+<p><img src="/2021/09/23/igmp%E5%92%8Cpim%E7%AC%94%E8%AE%B0/PIM%E4%B8%ADDM%E5%92%8CSM%E6%9D%A1%E7%9B%AE%E7%9A%84%E5%85%B3%E7%B3%BB.png"></p>
+<h4 id="pim-sm-Switchover"><a href="#pim-sm-Switchover" class="headerlink" title="pim sm Switchover"></a>pim sm Switchover</h4><p><img src="/2021/09/23/igmp%E5%92%8Cpim%E7%AC%94%E8%AE%B0/Switchover%E6%9C%BA%E5%88%B6.png"></p>
+<ol>
+<li>成员端DR收到组播报文，向上游发起Join(S,G)消息</li>
+<li>RP下游路由发起剪枝报文给RP，RP也发剪枝报文给上游路由</li>
+<li>新的SPT建立成功</li>
+</ol>
+<p><img src="/2021/09/23/igmp%E5%92%8Cpim%E7%AC%94%E8%AE%B0/PIM-SM%E9%85%8D%E7%BD%AE%E5%AE%9E%E7%8E%B0.png"></p>
+<h4 id="组播综合实验"><a href="#组播综合实验" class="headerlink" title="组播综合实验"></a>组播综合实验</h4><p><img src="/2021/09/23/igmp%E5%92%8Cpim%E7%AC%94%E8%AE%B0/%E7%BB%84%E6%92%AD%E7%BB%BC%E5%90%88%E5%AE%9E%E9%AA%8C.png"></p>
+<p><img src="/2021/09/23/igmp%E5%92%8Cpim%E7%AC%94%E8%AE%B0/PIM-SM%E9%85%8D%E7%BD%AE%E5%AE%9E%E7%8E%B01.png"></p>
+<p><img src="/2021/09/23/igmp%E5%92%8Cpim%E7%AC%94%E8%AE%B0/PIM-SM%E9%85%8D%E7%BD%AE%E5%AE%9E%E7%8E%B02.png"></p>
+<p>参考：</p>
+<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1BU4y1b7gk?spm_id_from=333.999.0.0">1.8.1 IP组播基础</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1Z54y1L7TW?spm_id_from=333.999.0.0">1.8.2 IP组播基础</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1aV411J79U?spm_id_from=333.999.0.0">1.9.1 IGMP协议原理与配置</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1Bv41177hL?spm_id_from=333.999.0.0">1.9.3 IGMP协议原理与配置</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1Tf4y1p7CM?spm_id_from=333.999.0.0">1.9.2 IGMP协议原理与配置</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1eK4y1P7YJ?spm_id_from=333.999.0.0">1.10.1 PIM协议原理与配置</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1qo4y1f7Fg?spm_id_from=333.999.0.0">1.10.2 PIM协议原理与配置</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1zo4y1f7KM?spm_id_from=333.999.0.0">1.10.3 PIM协议原理与配置</a></p>
+
+        
+    </section>
+</article>
+
+
+
+<a id="pagenext" href="/2021/09/22/vlc%E7%BB%84%E6%92%AD%E6%B5%8B%E8%AF%95Server%E5%8F%8AClient%E4%BD%BF%E7%94%A8/" class="article-next" title="VLC组播测试Server及Client使用"><i class="icon-arrow-right"></i></a>
+
+
+<a id="pageprev" href="/2021/09/27/linux%E7%BD%91%E7%BB%9C1_ospf/" class="article-prev" title="linux网络1_ospf"><i class="icon-arrow-left"></i></a>
+
+
+
+
+            </div>
+        </div>
+        <footer class="footer">
+    Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>, Theme by <a href="https://github.com/sanonz/hexo-theme-concise" target="_blank">Concise</a>
+
+    
+    <script>
+        var _hmt = _hmt || [];
+        (function () {
+            var hm = document.createElement("script");
+            hm.src = "https://hm.baidu.com/hm.js?e4027971a230b210f4671f485b33846a";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+    
+</footer>
+
+    </main>
+
+    <script type="text/javascript" src="https://unpkg.com/jquery@1.9.1/jquery.min.js"></script>
+    <script type="text/javascript">
+    $(function() {
+        var nodes = {
+            nav: $('#nav'),
+            aside: $('#aside'),
+            asideInner: $('#aside-inner'),
+            navInner: $('#nav-inner')
+        };
+
+        var doing = false;
+        nodes.asideInner.on('webkitAnimationEnd mozAnimationEnd oAnimationEnd oanimationend animationend', function() {
+            if (nodes.aside.hasClass('mobile-open')) {
+                nodes.aside.removeClass('mobile-open');
+            } else {
+                nodes.aside.removeClass('mobile-close panel-show');
+            }
+            doing = false;
+        });
+        $('#open-panel, #aside-mask').on('click', function() {
+            if (doing) {
+                return;
+            }
+
+            if (nodes.aside.hasClass('panel-show')) {
+                nodes.aside.addClass('mobile-close');
+            } else {
+                nodes.aside.addClass('mobile-open panel-show');
+            }
+        });
+        $('#open-menus').on('click', function() {
+            nodes.navInner.slideToggle('normal', slideDone);
+        });
+
+        if (window.innerWidth <= 960) {
+            setTimeout(function() {
+                nodes.navInner.slideUp('normal', slideDone);
+            }, 3000);
+        }
+
+        function slideDone() {
+            if (nodes.navInner.css('display') !== 'none') {
+                nodes.navInner.css('display', '');
+            }
+        }
+
+        $(window).on('resize', function() {
+            if ($(this).width() > 960) {
+                nodes.navInner.css('display', '');
+            }
+        });
+    });
+    </script>
+    
+        
+<script src="/js/scrollspy.min.js"></script>
+
+        <script type="text/javascript">
+        $(document.body).scrollspy({target: '#aside-inner'});
+
+        $(window).on('resize', function() {
+            var hw = $('#header').width();
+            var ww = $('#wrapper').width();
+            var space = ($(this).width() - hw - ww) / 2 / 2;
+
+            var pageprev = $('#pageprev');
+            var pagenext = $('#pagenext');
+            var avg = (pageprev.width() + pagenext.width()) / 2
+
+            if(space > avg) {
+                var len = space - avg / 2;
+                var styles = {position: 'fixed', top: '50%', marginTop: - (pageprev.width() + pagenext.width()) / 4}
+                pageprev.css($.extend({left: hw + len}, styles));
+                pagenext.css($.extend({right: len}, styles));
+            } else {
+                pageprev.removeAttr('style');
+                pagenext.removeAttr('style');
+            }
+        }).trigger('resize');
+        </script>
+    
+
+</body>
+</html>

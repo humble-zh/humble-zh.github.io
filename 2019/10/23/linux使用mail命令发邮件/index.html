@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+
+    
+
+    
+
+    <title>linux使用mail命令发邮件 | Zhihong&#39;s Blog</title>
+    <meta name="author" content="Zhihong Li" />
+    <meta name="keywords" content="zhbox" />
+    <meta name="description" content="linux使用mail命令发邮件安装ubuntu1sudo apt-get install s-nailmanjaro1sudo pacman -S s-nail配置修改/etc/mail.rc或/etc/nail.rc或/etc/s-nail.rc(Ubuntu)、/etc/mail.rc(centOS)123set from=humble.li@evpowergroup.com smtp=&amp;quot;smtp.mxhichina.com&amp;quot;set smtp-auth-user=&amp;qu" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no" />
+
+    
+    <link rel="alternate" href="/atom.xml" title="Zhihong&#39;s Blog" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/images/favicon.ico">
+    
+
+    <style type="text/css">
+    @font-face {
+        font-family: 'icomoon';
+        src: url("/fonts/icomoon.eot?q628ml");
+        src: url("/fonts/icomoon.eot?q628ml#iefix") format('embedded-opentype'),
+             url("/fonts/icomoon.ttf?q628ml") format('truetype'),
+             url("/fonts/icomoon.woff?q628ml") format('woff'),
+             url("/fonts/icomoon.svg?q628ml#icomoon") format('svg');
+        font-weight: normal;
+        font-style: normal;
+    }
+    </style>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!--[if lt IE 9]><style type="text/css">.nav-inner {top:0;}.author-meta {position:static;top:0;}.search-form {height:36px;}</style><script type="text/javascript" src="https://unpkg.com/html5shiv@3.7.3/dist/html5shiv.min.js"></script><![endif]-->
+<meta name="generator" content="Hexo 5.3.0"></head>
+<body>
+
+    <main class="app">
+        <header id="header" class="header clearfix">
+    <div id="nav" class="nav">
+    <div class="nav-mobile">
+        <button id="open-panel" class="open-panel nav-mobile-item"><i class="icon-documents"></i></button>
+        <h1 class="nav-mobile-title nav-mobile-item">Zhihong&#39;s Blog</h1>
+        <button id="open-menus" class="open-panel nav-mobile-item"><i class="icon-library"></i></button>
+    </div>
+
+    <nav id="nav-inner" class="nav-inner">
+        
+            <a class="nav-item" href="/">
+                <span class="nav-text">首页</span>
+            </a>
+        
+            <a class="nav-item" href="/zhbox">
+                <span class="nav-text">中盒</span>
+            </a>
+        
+            <a class="nav-item" href="/tags">
+                <span class="nav-text">标签</span>
+            </a>
+        
+            <a class="nav-item" href="/archives">
+                <span class="nav-text">归档</span>
+            </a>
+        
+            <a class="nav-item" href="/about">
+                <span class="nav-text">关于</span>
+            </a>
+        
+    </nav>
+</div>
+
+    <aside id="aside" class="aside">
+    <div id="aside-mask" class="aside-mask"></div>
+    <div id="aside-inner" class="aside-inner">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit"><i class="icon-search-stroke"></i></button><input type="hidden" name="sitesearch" value="https://humble-zh.github.io"></form>
+
+        
+        
+        
+        
+
+        
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#linux%E4%BD%BF%E7%94%A8mail%E5%91%BD%E4%BB%A4%E5%8F%91%E9%82%AE%E4%BB%B6"><span class="toc-number">1.</span> <span class="toc-text">linux使用mail命令发邮件</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%89%E8%A3%85"><span class="toc-number">1.1.</span> <span class="toc-text">安装</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ubuntu"><span class="toc-number">1.2.</span> <span class="toc-text">ubuntu</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#manjaro"><span class="toc-number">1.3.</span> <span class="toc-text">manjaro</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE"><span class="toc-number">1.4.</span> <span class="toc-text">配置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8"><span class="toc-number">1.5.</span> <span class="toc-text">使用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E6%97%A0%E9%82%AE%E4%BB%B6%E6%AD%A3%E6%96%87-%E5%A6%82%E6%9E%9C%E9%9C%80%E8%A6%81%E7%BB%93%E6%9D%9F%E4%BA%A4%E4%BA%92%E5%8F%AF%E6%8C%89ctrl-d"><span class="toc-number">1.5.1.</span> <span class="toc-text">1.无邮件正文(如果需要结束交互可按ctrl+d)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E6%9C%89%E9%82%AE%E4%BB%B6%E6%AD%A3%E6%96%87"><span class="toc-number">1.5.2.</span> <span class="toc-text">2.有邮件正文</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E5%B8%A6%E9%99%84%E4%BB%B6-doesn%E2%80%99t-work"><span class="toc-number">1.5.3.</span> <span class="toc-text">3.带附件(doesn’t work)</span></a></li></ol></li></ol></li></ol>
+        
+    </div>
+</aside>
+
+</header>
+
+        <div id="content" class="content">
+            <div id="wrapper" class="wrapper" style="max-width: 800px">
+                <article class="article" itemscope itemprop="blogPost">
+    
+    <header class="article-header">
+        
+        <h1 itemprop="name">
+            linux使用mail命令发邮件
+        </h1>
+        
+        <div class="article-meta clearfix">
+            <a class="article-date" href="https://humble-zh.github.io/2019/10/23/linux%E4%BD%BF%E7%94%A8mail%E5%91%BD%E4%BB%A4%E5%8F%91%E9%82%AE%E4%BB%B6/index.html">
+    
+    <i class="icon-calendar vm"></i>
+    
+    <time class="vm" datetime="2019-10-23T07:32:41.000Z" itemprop="datePublished">2019-10-23</time>
+</a>
+
+            
+<div class="article-tag-list">
+    <i class="icon-tag vm"></i>
+    <a class="article-tag-link" href="/tags/mail/" rel="tag">mail</a>
+</div>
+
+
+        </div>
+    </header>
+    
+    <section class="article-body markdown-body">
+        
+        <h1 id="linux使用mail命令发邮件"><a href="#linux使用mail命令发邮件" class="headerlink" title="linux使用mail命令发邮件"></a>linux使用mail命令发邮件</h1><h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><h2 id="ubuntu"><a href="#ubuntu" class="headerlink" title="ubuntu"></a>ubuntu</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install s-nail</span><br></pre></td></tr></table></figure>
+<h2 id="manjaro"><a href="#manjaro" class="headerlink" title="manjaro"></a>manjaro</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo pacman -S s-nail</span><br></pre></td></tr></table></figure>
+<h2 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h2><p>修改/etc/mail.rc或/etc/nail.rc或/etc/s-nail.rc(Ubuntu)、/etc/mail.rc(centOS)</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">set</span> from=humble.li@evpowergroup.com smtp=<span class="string">&quot;smtp.mxhichina.com&quot;</span></span><br><span class="line"><span class="built_in">set</span> smtp-auth-user=<span class="string">&quot;humble.li@evpowergroup.com&quot;</span> smtp-auth-password=<span class="string">&quot;123456&quot;</span></span><br><span class="line"><span class="built_in">set</span> smtp-auth=login</span><br></pre></td></tr></table></figure>
+<h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><h3 id="1-无邮件正文-如果需要结束交互可按ctrl-d"><a href="#1-无邮件正文-如果需要结束交互可按ctrl-d" class="headerlink" title="1.无邮件正文(如果需要结束交互可按ctrl+d)"></a>1.无邮件正文(如果需要结束交互可按ctrl+d)</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mail -s <span class="string">&quot;测试主题&quot;</span> humble.li@evpowergroup.com</span><br></pre></td></tr></table></figure>
+<h3 id="2-有邮件正文"><a href="#2-有邮件正文" class="headerlink" title="2.有邮件正文"></a>2.有邮件正文</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mail -s <span class="string">&quot;测试主题&quot;</span> humble.li@evpowergroup.com &lt; 正文文件.txt</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;正文内容&quot;</span> | mail -s <span class="string">&quot;测试主题&quot;</span> humble.li@evpowergroup.com</span><br><span class="line">cat 正文文件.txt | mail -s <span class="string">&quot;测试主题&quot;</span> humble.li@evpowergroup.com</span><br></pre></td></tr></table></figure>
+<h3 id="3-带附件-doesn’t-work"><a href="#3-带附件-doesn’t-work" class="headerlink" title="3.带附件(doesn’t work)"></a>3.带附件(doesn’t work)</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">uuencode a.txt a.txt | mail -s <span class="string">&quot;测试主题&quot;</span> humble.li@evpowergroup.com &lt; 正文文件.txt</span><br></pre></td></tr></table></figure>
+        
+    </section>
+</article>
+
+
+
+<a id="pagenext" href="/2019/08/27/Docker%E5%85%A5%E9%97%A8%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" class="article-next" title="Docker入门学习笔记"><i class="icon-arrow-right"></i></a>
+
+
+<a id="pageprev" href="/2019/10/26/vim/" class="article-prev" title="vim"><i class="icon-arrow-left"></i></a>
+
+
+
+<div class="comments">
+    <div id="comments"></div>
+    <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+    <script>
+    new Gitalk({
+        clientID: "7fbe80427f54741e289f",
+        clientSecret: "f34ed5fd92e54c9000bd37ba951948cb939deff5",
+        repo: "sanonz.github.io",
+        owner: "sanonz",
+        admin: ["sanonz"],
+        id: "c0285add654802e2bb56c50532f81510",
+        distractionFreeMode: true,
+        title: "linux使用mail命令发邮件",
+        body: "https://humble-zh.github.io/2019/10/23/linux%E4%BD%BF%E7%94%A8mail%E5%91%BD%E4%BB%A4%E5%8F%91%E9%82%AE%E4%BB%B6/",
+        labels: ["mail"]
+    }).render('comments');
+    </script>
+</div>
+
+
+
+            </div>
+        </div>
+        <footer class="footer">
+    Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>, Theme by <a href="https://github.com/sanonz/hexo-theme-concise" target="_blank">Concise</a>
+
+    
+    <script>
+        var _hmt = _hmt || [];
+        (function () {
+            var hm = document.createElement("script");
+            hm.src = "https://hm.baidu.com/hm.js?e4027971a230b210f4671f485b33846a";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+    
+</footer>
+
+    </main>
+
+    <script type="text/javascript" src="https://unpkg.com/jquery@1.9.1/jquery.min.js"></script>
+    <script type="text/javascript">
+    $(function() {
+        var nodes = {
+            nav: $('#nav'),
+            aside: $('#aside'),
+            asideInner: $('#aside-inner'),
+            navInner: $('#nav-inner')
+        };
+
+        var doing = false;
+        nodes.asideInner.on('webkitAnimationEnd mozAnimationEnd oAnimationEnd oanimationend animationend', function() {
+            if (nodes.aside.hasClass('mobile-open')) {
+                nodes.aside.removeClass('mobile-open');
+            } else {
+                nodes.aside.removeClass('mobile-close panel-show');
+            }
+            doing = false;
+        });
+        $('#open-panel, #aside-mask').on('click', function() {
+            if (doing) {
+                return;
+            }
+
+            if (nodes.aside.hasClass('panel-show')) {
+                nodes.aside.addClass('mobile-close');
+            } else {
+                nodes.aside.addClass('mobile-open panel-show');
+            }
+        });
+        $('#open-menus').on('click', function() {
+            nodes.navInner.slideToggle('normal', slideDone);
+        });
+
+        if (window.innerWidth <= 960) {
+            setTimeout(function() {
+                nodes.navInner.slideUp('normal', slideDone);
+            }, 3000);
+        }
+
+        function slideDone() {
+            if (nodes.navInner.css('display') !== 'none') {
+                nodes.navInner.css('display', '');
+            }
+        }
+
+        $(window).on('resize', function() {
+            if ($(this).width() > 960) {
+                nodes.navInner.css('display', '');
+            }
+        });
+    });
+    </script>
+    
+        
+<script src="/js/scrollspy.min.js"></script>
+
+        <script type="text/javascript">
+        $(document.body).scrollspy({target: '#aside-inner'});
+
+        $(window).on('resize', function() {
+            var hw = $('#header').width();
+            var ww = $('#wrapper').width();
+            var space = ($(this).width() - hw - ww) / 2 / 2;
+
+            var pageprev = $('#pageprev');
+            var pagenext = $('#pagenext');
+            var avg = (pageprev.width() + pagenext.width()) / 2
+
+            if(space > avg) {
+                var len = space - avg / 2;
+                var styles = {position: 'fixed', top: '50%', marginTop: - (pageprev.width() + pagenext.width()) / 4}
+                pageprev.css($.extend({left: hw + len}, styles));
+                pagenext.css($.extend({right: len}, styles));
+            } else {
+                pageprev.removeAttr('style');
+                pagenext.removeAttr('style');
+            }
+        }).trigger('resize');
+        </script>
+    
+
+</body>
+</html>

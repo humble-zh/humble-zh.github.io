@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+
+    
+
+    
+
+    <title>C语言语法笔记 | Zhihong&#39;s Blog</title>
+    <meta name="author" content="Zhihong Li" />
+    <meta name="keywords" content="zhbox" />
+    <meta name="description" content="打印限定长度字符串123char *s = &amp;quot;This my world.&amp;quot;;printf(&amp;quot;Hello, %.5s!\n&amp;quot;, s+8); printf(&amp;quot;Hello, %.*s!\n&amp;quot;, 5, s+8);int minlen=5,maxlen=5; printf(&amp;quot;Hello, %*.*s\n&amp;quot;, minlen, maxlen, s+8);打印后回填长度至参数’%n’1char *str = &amp;quot;world" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no" />
+
+    
+    <link rel="alternate" href="/atom.xml" title="Zhihong&#39;s Blog" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/images/favicon.ico">
+    
+
+    <style type="text/css">
+    @font-face {
+        font-family: 'icomoon';
+        src: url("/fonts/icomoon.eot?q628ml");
+        src: url("/fonts/icomoon.eot?q628ml#iefix") format('embedded-opentype'),
+             url("/fonts/icomoon.ttf?q628ml") format('truetype'),
+             url("/fonts/icomoon.woff?q628ml") format('woff'),
+             url("/fonts/icomoon.svg?q628ml#icomoon") format('svg');
+        font-weight: normal;
+        font-style: normal;
+    }
+    </style>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!--[if lt IE 9]><style type="text/css">.nav-inner {top:0;}.author-meta {position:static;top:0;}.search-form {height:36px;}</style><script type="text/javascript" src="https://unpkg.com/html5shiv@3.7.3/dist/html5shiv.min.js"></script><![endif]-->
+<meta name="generator" content="Hexo 5.3.0"></head>
+<body>
+
+    <main class="app">
+        <header id="header" class="header clearfix">
+    <div id="nav" class="nav">
+    <div class="nav-mobile">
+        <button id="open-panel" class="open-panel nav-mobile-item"><i class="icon-documents"></i></button>
+        <h1 class="nav-mobile-title nav-mobile-item">Zhihong&#39;s Blog</h1>
+        <button id="open-menus" class="open-panel nav-mobile-item"><i class="icon-library"></i></button>
+    </div>
+
+    <nav id="nav-inner" class="nav-inner">
+        
+            <a class="nav-item" href="/">
+                <span class="nav-text">首页</span>
+            </a>
+        
+            <a class="nav-item" href="/zhbox">
+                <span class="nav-text">中盒</span>
+            </a>
+        
+            <a class="nav-item" href="/tags">
+                <span class="nav-text">标签</span>
+            </a>
+        
+            <a class="nav-item" href="/archives">
+                <span class="nav-text">归档</span>
+            </a>
+        
+            <a class="nav-item" href="/about">
+                <span class="nav-text">关于</span>
+            </a>
+        
+    </nav>
+</div>
+
+    <aside id="aside" class="aside">
+    <div id="aside-mask" class="aside-mask"></div>
+    <div id="aside-inner" class="aside-inner">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit"><i class="icon-search-stroke"></i></button><input type="hidden" name="sitesearch" value="https://humble-zh.github.io"></form>
+
+        
+        
+        
+        
+
+        
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%89%93%E5%8D%B0%E9%99%90%E5%AE%9A%E9%95%BF%E5%BA%A6%E5%AD%97%E7%AC%A6%E4%B8%B2"><span class="toc-number">1.</span> <span class="toc-text">打印限定长度字符串</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%89%93%E5%8D%B0%E5%90%8E%E5%9B%9E%E5%A1%AB%E9%95%BF%E5%BA%A6%E8%87%B3%E5%8F%82%E6%95%B0%E2%80%99-n%E2%80%99"><span class="toc-number">2.</span> <span class="toc-text">打印后回填长度至参数’%n’</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%89%93%E5%8D%B0double%E6%A0%BC%E5%BC%8F%E2%80%99-f%E2%80%99"><span class="toc-number">3.</span> <span class="toc-text">打印double格式’%f’</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#implicit-declaration-of-function-%E2%80%98strdup%E2%80%99"><span class="toc-number">4.</span> <span class="toc-text">implicit declaration of function ‘strdup’</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BC%96%E8%AF%91%E9%93%BE%E6%8E%A5%E5%8A%A8%E6%80%81%E5%BA%93%E6%89%BE%E4%B8%8D%E5%88%B0libtcmalloc-minimal"><span class="toc-number">5.</span> <span class="toc-text">编译链接动态库找不到libtcmalloc_minimal</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ctime%E4%BD%BF%E7%94%A8"><span class="toc-number">6.</span> <span class="toc-text">ctime使用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%89%93%E5%8D%B0%E5%B8%A6%E9%A2%9C%E8%89%B2%E5%92%8C%E5%B1%9E%E6%80%A7%E7%9A%84%E5%AD%97%E4%BD%93"><span class="toc-number">7.</span> <span class="toc-text">打印带颜色和属性的字体</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9F%A5%E7%9C%8B%E5%86%85%E5%AD%98%E6%B3%84%E9%9C%B2"><span class="toc-number">8.</span> <span class="toc-text">查看内存泄露</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#make%E4%BC%A0%E5%8F%82"><span class="toc-number">9.</span> <span class="toc-text">make传参</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#64%E4%BD%8D%E7%B3%BB%E7%BB%9F%E7%BC%96%E8%AF%9132%E4%BD%8Dlibpcap"><span class="toc-number">10.</span> <span class="toc-text">64位系统编译32位libpcap</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%A4%E5%8F%89%E7%BC%96%E8%AF%91%E6%9C%AF%E8%AF%AD"><span class="toc-number">11.</span> <span class="toc-text">交叉编译术语</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3%E7%A7%8D%E6%9C%BA%E5%99%A8"><span class="toc-number">11.1.</span> <span class="toc-text">3种机器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4%E7%A7%8D%E6%9E%84%E5%BB%BA%E6%96%B9%E5%BC%8F"><span class="toc-number">11.2.</span> <span class="toc-text">4种构建方式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#configure%E5%8F%82%E6%95%B0"><span class="toc-number">11.3.</span> <span class="toc-text">configure参数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#openssl"><span class="toc-number">11.4.</span> <span class="toc-text">openssl</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9C%A864%E4%BD%8D%E6%9C%BA%E5%99%A8%E7%BC%96%E8%AF%9132%E4%BD%8D%E7%9A%84openssl"><span class="toc-number">11.5.</span> <span class="toc-text">在64位机器编译32位的openssl</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%96%E8%AF%91%E5%8F%82%E6%95%B0"><span class="toc-number">11.6.</span> <span class="toc-text">编译参数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ldd%E6%9F%A5%E7%9C%8B%E7%A8%8B%E5%BA%8F%E8%BF%90%E8%A1%8C%E7%BC%BA%E7%9A%84%E4%BE%9D%E8%B5%96%E5%BA%93"><span class="toc-number">11.7.</span> <span class="toc-text">ldd查看程序运行缺的依赖库</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#readelf%E6%9F%A5%E7%9C%8B%E5%BA%93%E7%9A%84soname"><span class="toc-number">11.8.</span> <span class="toc-text">readelf查看库的soname</span></a></li></ol></li></ol>
+        
+    </div>
+</aside>
+
+</header>
+
+        <div id="content" class="content">
+            <div id="wrapper" class="wrapper" style="max-width: 800px">
+                <article class="article" itemscope itemprop="blogPost">
+    
+    <header class="article-header">
+        
+        <h1 itemprop="name">
+            C语言语法笔记
+        </h1>
+        
+        <div class="article-meta clearfix">
+            <a class="article-date" href="https://humble-zh.github.io/2020/12/09/C%E8%AF%AD%E8%A8%80%E7%AC%94%E8%AE%B0/index.html">
+    
+    <i class="icon-calendar vm"></i>
+    
+    <time class="vm" datetime="2020-12-09T03:40:37.000Z" itemprop="datePublished">2020-12-09</time>
+</a>
+
+            
+<div class="article-tag-list">
+    <i class="icon-tag vm"></i>
+    <a class="article-tag-link" href="/tags/C-C/" rel="tag">C/C++</a>
+</div>
+
+
+        </div>
+    </header>
+    
+    <section class="article-body markdown-body">
+        
+        <h2 id="打印限定长度字符串"><a href="#打印限定长度字符串" class="headerlink" title="打印限定长度字符串"></a><a target="_blank" rel="noopener" href="https://rayed.com/posts/2016/02/limit-string-length-in-printf-in-c/">打印限定长度字符串</a></h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">char</span> *s = <span class="string">&quot;This my world.&quot;</span>;</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">&quot;Hello, %.5s!\n&quot;</span>, s+<span class="number">8</span>); <span class="built_in">printf</span>(<span class="string">&quot;Hello, %.*s!\n&quot;</span>, <span class="number">5</span>, s+<span class="number">8</span>);</span><br><span class="line"><span class="keyword">int</span> minlen=<span class="number">5</span>,maxlen=<span class="number">5</span>; <span class="built_in">printf</span>(<span class="string">&quot;Hello, %*.*s\n&quot;</span>, minlen, maxlen, s+<span class="number">8</span>);</span><br></pre></td></tr></table></figure>
+<h2 id="打印后回填长度至参数’-n’"><a href="#打印后回填长度至参数’-n’" class="headerlink" title="打印后回填长度至参数’%n’"></a><a target="_blank" rel="noopener" href="https://www.geeksforgeeks.org/c-program-to-print-the-length-of-a-string-using-n-format-specifier/">打印后回填长度至参数’%n’</a></h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">char</span> *str = <span class="string">&quot;world!&quot;</span>; <span class="keyword">int</span> len = <span class="number">0</span>; <span class="built_in">printf</span>(<span class="string">&quot;Hello %s\n%n&quot;</span>, str, &amp;len); <span class="built_in">printf</span>(<span class="string">&quot; = %d\n&quot;</span>, len); <span class="comment">// = 13</span></span><br></pre></td></tr></table></figure>
+<h2 id="打印double格式’-f’"><a href="#打印double格式’-f’" class="headerlink" title="打印double格式’%f’"></a><a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/4264127/correct-format-specifier-for-double-in-printf">打印double格式’%f’</a></h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">float</span> f = <span class="number">1.4</span>; <span class="built_in">printf</span>(<span class="string">&quot;%f&quot;</span>, f);  <span class="comment">//正确,f会被提升到double再用%f打印</span></span><br><span class="line"><span class="keyword">double</span> d = <span class="number">1.4</span>; <span class="built_in">printf</span>(<span class="string">&quot;%f&quot;</span>, d); <span class="comment">//正确,若指定&quot;%lf&quot;,则l无意义</span></span><br></pre></td></tr></table></figure>
+<h2 id="implicit-declaration-of-function-‘strdup’"><a href="#implicit-declaration-of-function-‘strdup’" class="headerlink" title="implicit declaration of function ‘strdup’"></a><a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/26284110/strdup-confused-about-warnings-implicit-declaration-makes-pointer-with">implicit declaration of function ‘strdup’</a></h2><p>在<code>#include &lt;string.h&gt;</code>前面添加下面的其中任一宏定义</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">_SVID_SOURCE || _BSD_SOURCE || _XOPEN_SOURCE &gt;= <span class="number">500</span></span><br><span class="line">    || _XOPEN_SOURCE &amp;&amp; _XOPEN_SOURCE_EXTENDED</span><br><span class="line">    || <span class="comment">/* Since glibc 2.12: */</span> _POSIX_C_SOURCE &gt;= <span class="number">200809L</span></span><br></pre></td></tr></table></figure>
+<p>或者在gcc编译选项内加上</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-D_SVID_SOURCE</span><br></pre></td></tr></table></figure>
+<p>或者</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-D_POSIX_C_SOURCE=<span class="number">200809L</span></span><br></pre></td></tr></table></figure>
+<h2 id="编译链接动态库找不到libtcmalloc-minimal"><a href="#编译链接动态库找不到libtcmalloc-minimal" class="headerlink" title="编译链接动态库找不到libtcmalloc_minimal"></a><a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/8048165/linking-with-libtcmalloc-ubuntu">编译链接动态库找不到libtcmalloc_minimal</a></h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">dpkg -L libtcmalloc-minimal0</span><br><span class="line">/.</span><br><span class="line">/usr</span><br><span class="line">/usr/lib</span><br><span class="line">/usr/lib/libtcmalloc_minimal.so.0.0.0</span><br><span class="line">/usr/lib/libtcmalloc_minimal_debug.so.0.0.0</span><br><span class="line">/usr/share</span><br><span class="line">/usr/share/doc</span><br><span class="line">/usr/share/doc/libtcmalloc-minimal0</span><br><span class="line">/usr/share/doc/libtcmalloc-minimal0/TODO</span><br><span class="line">/usr/share/doc/libtcmalloc-minimal0/AUTHORS</span><br><span class="line">/usr/share/doc/libtcmalloc-minimal0/copyright</span><br><span class="line">/usr/share/doc/libtcmalloc-minimal0/changelog.gz</span><br><span class="line">/usr/share/doc/libtcmalloc-minimal0/README.gz</span><br><span class="line">/usr/share/doc/libtcmalloc-minimal0/changelog.Debian.gz</span><br><span class="line">/usr/lib/libtcmalloc_minimal.so.0</span><br><span class="line">/usr/lib/libtcmalloc_minimal_debug.so.0</span><br></pre></td></tr></table></figure>
+<p>编译使用<code>-lxxx</code>默认会去环境变量对应库目录找<code>xxx.so</code>后缀的库文件，找不到<code>libtcmalloc_minimal.so</code>所以编译失败。下面有4个解决方法:</p>
+<ol>
+<li>安装<code>libtcmalloc_minimal0-dev</code>之后就会有<code>libtcmalloc_minimal.so</code>文件</li>
+<li>进入库目录，手动生成符号链接文件<code>ln -s libtcmalloc_minimal.so.0.0.0 libtcmalloc_minimal.so</code></li>
+<li>编译时指定真实文件绝对路径<code>gcc test /usr/lib/libtcmalloc_minimal.so.0.0.0</code></li>
+<li>编译时用<code>-l</code>指定文件全名<code>-l:libtcmalloc_minimal.so.0.0.0</code></li>
+</ol>
+<h2 id="ctime使用"><a href="#ctime使用" class="headerlink" title="ctime使用"></a><a target="_blank" rel="noopener" href="https://blog.csdn.net/singleyellow/article/details/67638310">ctime使用</a></h2><p><code>printf(&quot;%s&quot;, ctime(&amp;time(NULL)));</code> 本来以为可以省掉一个中间变量timer，而且显得高大上。编译时给出错误： 单目‘&amp;’的操作数必须是左值，这段代码想直接对<code>time()</code>的返回值取地址，这是绝对不正确的，因为函数返回值是匿名变量，只能当右值，不可以做左值</p>
+<h2 id="打印带颜色和属性的字体"><a href="#打印带颜色和属性的字体" class="headerlink" title="打印带颜色和属性的字体"></a>打印带颜色和属性的字体</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// foreground colours</span></span><br><span class="line"><span class="built_in">printf</span>(<span class="string">&quot;\033[30m black \033[m\n&quot;</span>);</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">&quot;\033[31m red \033[m\n&quot;</span>);</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">&quot;\033[32m green \033[m\n&quot;</span>);</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">&quot;\033[33m yellow \033[m\n&quot;</span>);</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">&quot;\033[34m blue \033[m\n&quot;</span>);</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">&quot;\033[35m magenta \033[m\n&quot;</span>);</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">&quot;\033[36m cyan \033[m\n&quot;</span>);</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">&quot;\033[37m white \033[m\n&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// background colours</span></span><br><span class="line"><span class="built_in">printf</span>(<span class="string">&quot;\033[40m black \033[m\n&quot;</span>);</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">&quot;\033[41m red \033[m\n&quot;</span>);</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">&quot;\033[42m green \033[m\n&quot;</span>);</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">&quot;\033[43m yellow \033[m\n&quot;</span>);</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">&quot;\033[44m blue \033[m\n&quot;</span>);</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">&quot;\033[45m magenta \033[m\n&quot;</span>);</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">&quot;\033[46m cyan \033[m\n&quot;</span>);</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">&quot;\033[47m white \033[m\n&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// other</span></span><br><span class="line"><span class="built_in">printf</span>(<span class="string">&quot;\033[0m default \033[m\n&quot;</span>);</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">&quot;\033[1m bold \033[m\n&quot;</span>);</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">&quot;\033[2m faint \033[m\n&quot;</span>);</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">&quot;\033[3m italic \033[m\n&quot;</span>);</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">&quot;\033[4m underlined \033[m\n&quot;</span>);</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">&quot;\033[5m slowblink \033[m\n&quot;</span>);</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">&quot;\033[6m rapidblink \033[m\n&quot;</span>);</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">&quot;\033[7m negative \033[m\n&quot;</span>);</span><br></pre></td></tr></table></figure>
+<h2 id="查看内存泄露"><a href="#查看内存泄露" class="headerlink" title="查看内存泄露"></a>查看内存泄露</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat /proc/`pidof hello`/status |grep <span class="string">&#x27;VmData:&#x27;</span></span><br></pre></td></tr></table></figure>
+<h2 id="make传参"><a href="#make传参" class="headerlink" title="make传参"></a>make传参</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">make CFLAGS=-m32 LDFLAGS=-m32  <span class="comment"># 编译链接32位</span></span><br></pre></td></tr></table></figure>
+<h2 id="64位系统编译32位libpcap"><a href="#64位系统编译32位libpcap" class="headerlink" title="64位系统编译32位libpcap"></a>64位系统编译32位libpcap</h2><ul>
+<li>报错<code>/usr/bin/ld: 当搜索用于 /usr/lib/libnl-3.so 时跳过不兼容的 -lnl-3</code>就安装<code>lib32-libnl</code></li>
+<li>报错<code>/usr/bin/ld: 找不到 -ldbus-1: 没有那个文件或目录</code>就安装<code>lib32-dbus</code></li>
+</ul>
+<h2 id="交叉编译术语"><a href="#交叉编译术语" class="headerlink" title="交叉编译术语"></a>交叉编译术语</h2><h3 id="3种机器"><a href="#3种机器" class="headerlink" title="3种机器"></a>3种机器</h3><ul>
+<li>Build machine: where the toolchain is built(用来构建gcc工具链的机器)</li>
+<li>Host machine: where the toolchain will be executed(运行gcc工具链的机器)</li>
+<li>Target machine: where the binaries created by the toolchain are executed(gcc工具链创建的二进制文件运行时所在的机器)</li>
+</ul>
+<h3 id="4种构建方式"><a href="#4种构建方式" class="headerlink" title="4种构建方式"></a>4种构建方式</h3><ul>
+<li>Native build:BUILD==HOST==TARGET(三个都是x86)本机构建</li>
+<li>Cross-build:BUILD==HOST!=TARGET(交叉构建BUILD==HOST==x86 TARGET==arm)在x86上编译出gcc工具链，在x86上使用该gcc编译出arm的程序</li>
+<li>Cross-native build:BUILD!=HOST==TARGET(跨本机构建BUILD==x86 HOST==TARGET==arm)在x86编译出gcc工具链，把gcc工具链拷贝到arm，在arm用gcc编译出arm的程序</li>
+<li>Canadian toolchain:BUILD!=HOST!=TARGET(加拿大工具链BUILD==x86 HOST==mac TARGET==arm)在x86上编译出gcc工具链，拷贝到mac，在mac上使用该gcc编译出arm的程序</li>
+</ul>
+<h3 id="configure参数"><a href="#configure参数" class="headerlink" title="configure参数"></a>configure参数</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">--build=BUILD           configure <span class="keyword">for</span> building on BUILD [BUILD=HOST]</span><br><span class="line">--host=HOST             configure <span class="keyword">for</span> HOST [guessed]</span><br><span class="line">--target=TARGET         configure <span class="keyword">for</span> TARGET [TARGET=HOST]</span><br></pre></td></tr></table></figure>
+<p>如你在使用<code>arm-none-linux-gnueabi-gcc</code>，可设置<code>--host=arm-none-linux-gnueabi --target=arm-none-linux-gnueabi</code>，而<code>--build</code>会自动被设置</p>
+<p>指定编译器</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./configure CC=/tmp/arm/arm-linux-gcc CXX=/tmp/arm/arm-linux-g++</span><br></pre></td></tr></table></figure>
+<p>修改环境变量</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> C_INCLUDE_PATH=<span class="variable">$&#123;HOME&#125;</span>/path/to/include:<span class="variable">$C_INCLUDE_PATH</span></span><br><span class="line"><span class="built_in">export</span> CPLUS_INCLUDE_PATH=<span class="variable">$&#123;HOME&#125;</span>/path/to/include:<span class="variable">$CPLUS_INCLUDE_PATH</span></span><br><span class="line"><span class="built_in">export</span> LIBRARY_PATH=<span class="variable">$&#123;HOME&#125;</span>/path/to/lib:<span class="variable">$LIBRARY_PATH</span> <span class="comment">#编译时在这些路径下进行查找库</span></span><br><span class="line"><span class="built_in">export</span> LD_LIBRARY_PATH=<span class="variable">$&#123;HOME&#125;</span>/path/to/lib:<span class="variable">$LD_LIBRARY_PATH</span> <span class="comment">#运行时在这些路径下查找库</span></span><br></pre></td></tr></table></figure>
+<h3 id="openssl"><a href="#openssl" class="headerlink" title="openssl"></a>openssl</h3><p>在第一个参数位置指定目标架构，<code>-–cross-compile-prefix</code>指定了命令前缀</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">./Configure linux-aarch64 --cross-compile-prefix=aarch64-himix100-linux- --prefix=/tmp/result &amp;&amp; make &amp;&amp; make install</span><br><span class="line"><span class="comment">#./Configure linux-armv4 --cross-compile-prefix=arm-himix200-linux- --prefix=/tmp/result &amp;&amp; make &amp;&amp; make install</span></span><br></pre></td></tr></table></figure>
+<p>若报错</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">crypto/aes/aes-x86_64.s: Assembler messages:</span><br><span class="line">crypto/aes/aes-x86_64.s:2: Error: unrecognized symbol <span class="built_in">type</span> <span class="string">&quot;&quot;</span></span><br><span class="line">crypto/aes/aes-x86_64.s:3: Error: alignment too large: 15 assumed</span><br><span class="line">crypto/aes/aes-x86_64.s:5: Error: bad instruction `xorl 0(%r15),%eax<span class="string">&#x27;</span></span><br></pre></td></tr></table></figure>
+<p>从错误打印看到，错误出现在编译 .s 文件(汇编文件)时，且后面还打印了汇编代码。原来 <code>openssl</code> 在编译时会默认使用汇编代码来加速编译过程，但只针对 <code>x86</code>平台，而 <code>x86</code>平台 的汇编代码和 <code>arm</code>平台 的汇编代码是不同的，所以会报错。加<code>no-asm</code>解决，表示不使用汇编代码加速编译</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./Configure linux-aarch64 no-asm --cross-compile-prefix=aarch64-himix100-linux- --prefix=/tmp/result &amp;&amp; make &amp;&amp; make install</span><br></pre></td></tr></table></figure>
+<p>若报错</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cc1: error: unrecognized <span class="built_in">command</span> line option <span class="string">&quot;-m64&quot;</span></span><br></pre></td></tr></table></figure>
+<p>删除<code>Makefile</code>的<code>-m64</code></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sed -i <span class="string">&quot;s/ -m64//g&quot;</span> Makefile</span><br></pre></td></tr></table></figure>
+<h3 id="在64位机器编译32位的openssl"><a href="#在64位机器编译32位的openssl" class="headerlink" title="在64位机器编译32位的openssl"></a>在64位机器编译32位的openssl</h3><p><code>setarch i386 ./config -m32</code>或<code>./Configure -m32 linux-generic32</code>或<code>./Configure linux-generic32 --shared</code></p>
+<h3 id="编译参数"><a href="#编译参数" class="headerlink" title="编译参数"></a>编译参数</h3><p>-<code>CFLAGS</code>:C 编译器的选项，如指定头文件（.h文件）的路径，<code>CFLAGS=-I/usr/include -I/path/include</code><br>-<code>CXXFLAGS</code>:C++ 编译器的选项。<br>-<code>LDFLAGS</code>:编译器会用到的一些优化参数，也可以在里面指定库文件的位置。<code>LDFLAGS=-L/usr/lib -L/path/to/your/lib</code>。<br>-<code>LIBS</code>：告诉链接器要链接哪些库文件，如<code>LIBS = -lpthread -liconv</code>，<code>LDFLAGS</code>告诉链接器库文件在哪个目录，<code>LIBS</code>是告诉链接器要链接哪些库文件</p>
+<p>运行时找不到库，就需要在编译时给<code>LDFLAGS</code>增加<code>-Wl,R</code>，<code>LDFLAGS = -L/var/xxx/lib -L/opt/mysql/lib -Wl,R/var/xxx/lib -Wl,R/opt/mysql/lib</code></p>
+<p>如果在<code>./configure</code>前就设置了环境变量<code>export LDFLAGS=&quot;-L/var/xxx/lib -L/opt/mysql/lib -Wl,R/var/xxx/lib -Wl,R/opt/mysql/lib&quot;</code> ，那么在<code>./configure</code>后，<code>Makefile</code>将会设置<code>LDFLAGS</code>这个选项，链 接时会有这个参数，编译出来的可执行程序的库文件搜索路径就得到扩展了。</p>
+<h3 id="ldd查看程序运行缺的依赖库"><a href="#ldd查看程序运行缺的依赖库" class="headerlink" title="ldd查看程序运行缺的依赖库"></a>ldd查看程序运行缺的依赖库</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ ldd hello</span><br><span class="line">    ...</span><br><span class="line">    libzlog.so.1 =&gt; not found</span><br><span class="line">    ...</span><br></pre></td></tr></table></figure>
+<h3 id="readelf查看库的soname"><a href="#readelf查看库的soname" class="headerlink" title="readelf查看库的soname"></a>readelf查看库的soname</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">$ readelf -d /usr/lib/libzlog.so.1.2</span><br><span class="line"></span><br><span class="line">Dynamic section at offset 0x18db8 contains 25 entries:</span><br><span class="line">  标记        类型                         名称/值</span><br><span class="line"> 0x0000000000000001 (NEEDED)             共享库：[libc.so.6]</span><br><span class="line"> 0x000000000000000e (SONAME)             Library soname: [libzlog.so.1]</span><br><span class="line"> 0x000000000000000c (INIT)               0x4000</span><br><span class="line"> 0x000000000000000d (FINI)               0x12884</span><br><span class="line"> 0x0000000000000019 (INIT_ARRAY)         0x19da8</span><br><span class="line"> 0x000000000000001b (INIT_ARRAYSZ)       8 (bytes)</span><br><span class="line"> 0x000000000000001a (FINI_ARRAY)         0x19db0</span><br><span class="line"> 0x000000000000001c (FINI_ARRAYSZ)       8 (bytes)</span><br><span class="line"> 0x000000006ffffef5 (GNU_HASH)           0x300</span><br><span class="line"> 0x0000000000000005 (STRTAB)             0x18f0</span><br><span class="line"> 0x0000000000000006 (SYMTAB)             0x6f0</span><br><span class="line"> 0x000000000000000a (STRSZ)              2977 (bytes)</span><br><span class="line"> 0x000000000000000b (SYMENT)             24 (bytes)</span><br><span class="line"> 0x0000000000000003 (PLTGOT)             0x1a000</span><br><span class="line"> 0x0000000000000002 (PLTRELSZ)           3672 (bytes)</span><br><span class="line"> 0x0000000000000014 (PLTREL)             RELA</span><br><span class="line"> 0x0000000000000017 (JMPREL)             0x2858</span><br><span class="line"> 0x0000000000000007 (RELA)               0x26a8</span><br><span class="line"> 0x0000000000000008 (RELASZ)             432 (bytes)</span><br><span class="line"> 0x0000000000000009 (RELAENT)            24 (bytes)</span><br><span class="line"> 0x000000006ffffffe (VERNEED)            0x2618</span><br><span class="line"> 0x000000006fffffff (VERNEEDNUM)         1</span><br><span class="line"> 0x000000006ffffff0 (VERSYM)             0x2492</span><br><span class="line"> 0x000000006ffffff9 (RELACOUNT)          3</span><br><span class="line"> 0x0000000000000000 (NULL)               0x0</span><br></pre></td></tr></table></figure>
+        
+    </section>
+</article>
+
+
+
+<a id="pagenext" href="/2020/09/03/apue%E9%AB%98%E7%BA%A7IO/" class="article-next" title="apue高级IO"><i class="icon-arrow-right"></i></a>
+
+
+<a id="pageprev" href="/2021/01/12/java%E5%AD%A6%E4%B9%A01_Java%E9%9B%B6%E5%9F%BA%E7%A1%80%E5%AD%A6%E4%B9%A0%E8%A7%86%E9%A2%91%E9%80%9A%E4%BF%97%E6%98%93%E6%87%82/" class="article-prev" title="java学习1 Java零基础学习视频通俗易懂"><i class="icon-arrow-left"></i></a>
+
+
+
+<div class="comments">
+    <div id="comments"></div>
+    <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+    <script>
+    new Gitalk({
+        clientID: "7fbe80427f54741e289f",
+        clientSecret: "f34ed5fd92e54c9000bd37ba951948cb939deff5",
+        repo: "sanonz.github.io",
+        owner: "sanonz",
+        admin: ["sanonz"],
+        id: "c3fc822a1f740f146a9bee119f9cbb78",
+        distractionFreeMode: true,
+        title: "C语言语法笔记",
+        body: "https://humble-zh.github.io/2020/12/09/C%E8%AF%AD%E8%A8%80%E7%AC%94%E8%AE%B0/",
+        labels: ["C/C++"]
+    }).render('comments');
+    </script>
+</div>
+
+
+
+            </div>
+        </div>
+        <footer class="footer">
+    Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>, Theme by <a href="https://github.com/sanonz/hexo-theme-concise" target="_blank">Concise</a>
+
+    
+    <script>
+        var _hmt = _hmt || [];
+        (function () {
+            var hm = document.createElement("script");
+            hm.src = "https://hm.baidu.com/hm.js?e4027971a230b210f4671f485b33846a";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+    
+</footer>
+
+    </main>
+
+    <script type="text/javascript" src="https://unpkg.com/jquery@1.9.1/jquery.min.js"></script>
+    <script type="text/javascript">
+    $(function() {
+        var nodes = {
+            nav: $('#nav'),
+            aside: $('#aside'),
+            asideInner: $('#aside-inner'),
+            navInner: $('#nav-inner')
+        };
+
+        var doing = false;
+        nodes.asideInner.on('webkitAnimationEnd mozAnimationEnd oAnimationEnd oanimationend animationend', function() {
+            if (nodes.aside.hasClass('mobile-open')) {
+                nodes.aside.removeClass('mobile-open');
+            } else {
+                nodes.aside.removeClass('mobile-close panel-show');
+            }
+            doing = false;
+        });
+        $('#open-panel, #aside-mask').on('click', function() {
+            if (doing) {
+                return;
+            }
+
+            if (nodes.aside.hasClass('panel-show')) {
+                nodes.aside.addClass('mobile-close');
+            } else {
+                nodes.aside.addClass('mobile-open panel-show');
+            }
+        });
+        $('#open-menus').on('click', function() {
+            nodes.navInner.slideToggle('normal', slideDone);
+        });
+
+        if (window.innerWidth <= 960) {
+            setTimeout(function() {
+                nodes.navInner.slideUp('normal', slideDone);
+            }, 3000);
+        }
+
+        function slideDone() {
+            if (nodes.navInner.css('display') !== 'none') {
+                nodes.navInner.css('display', '');
+            }
+        }
+
+        $(window).on('resize', function() {
+            if ($(this).width() > 960) {
+                nodes.navInner.css('display', '');
+            }
+        });
+    });
+    </script>
+    
+        
+<script src="/js/scrollspy.min.js"></script>
+
+        <script type="text/javascript">
+        $(document.body).scrollspy({target: '#aside-inner'});
+
+        $(window).on('resize', function() {
+            var hw = $('#header').width();
+            var ww = $('#wrapper').width();
+            var space = ($(this).width() - hw - ww) / 2 / 2;
+
+            var pageprev = $('#pageprev');
+            var pagenext = $('#pagenext');
+            var avg = (pageprev.width() + pagenext.width()) / 2
+
+            if(space > avg) {
+                var len = space - avg / 2;
+                var styles = {position: 'fixed', top: '50%', marginTop: - (pageprev.width() + pagenext.width()) / 4}
+                pageprev.css($.extend({left: hw + len}, styles));
+                pagenext.css($.extend({right: len}, styles));
+            } else {
+                pageprev.removeAttr('style');
+                pagenext.removeAttr('style');
+            }
+        }).trigger('resize');
+        </script>
+    
+
+</body>
+</html>

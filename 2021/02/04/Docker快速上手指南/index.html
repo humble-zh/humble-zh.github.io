@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+
+    
+
+    
+
+    <title>Docker快速上手指南 | Zhihong&#39;s Blog</title>
+    <meta name="author" content="Zhihong Li" />
+    <meta name="keywords" content="zhbox" />
+    <meta name="description" content="Source【docker入门】10分钟，快速学会docker【docker入门】10分钟，快速学会docker1 获取镜像12docker pull nginxdocker pull nginx:latest2 查看本地镜像1docker images3 运行镜像1docker run -d -p 80:80 nginx-d 后台运行-p 内外端口映射4 查看正在运行的容器1docker ps5 修改容器1docker exec -it xxxx bash-it 接容器id6 删除容器1doc" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no" />
+
+    
+    <link rel="alternate" href="/atom.xml" title="Zhihong&#39;s Blog" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/images/favicon.ico">
+    
+
+    <style type="text/css">
+    @font-face {
+        font-family: 'icomoon';
+        src: url("/fonts/icomoon.eot?q628ml");
+        src: url("/fonts/icomoon.eot?q628ml#iefix") format('embedded-opentype'),
+             url("/fonts/icomoon.ttf?q628ml") format('truetype'),
+             url("/fonts/icomoon.woff?q628ml") format('woff'),
+             url("/fonts/icomoon.svg?q628ml#icomoon") format('svg');
+        font-weight: normal;
+        font-style: normal;
+    }
+    </style>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!--[if lt IE 9]><style type="text/css">.nav-inner {top:0;}.author-meta {position:static;top:0;}.search-form {height:36px;}</style><script type="text/javascript" src="https://unpkg.com/html5shiv@3.7.3/dist/html5shiv.min.js"></script><![endif]-->
+<meta name="generator" content="Hexo 5.3.0"></head>
+<body>
+
+    <main class="app">
+        <header id="header" class="header clearfix">
+    <div id="nav" class="nav">
+    <div class="nav-mobile">
+        <button id="open-panel" class="open-panel nav-mobile-item"><i class="icon-documents"></i></button>
+        <h1 class="nav-mobile-title nav-mobile-item">Zhihong&#39;s Blog</h1>
+        <button id="open-menus" class="open-panel nav-mobile-item"><i class="icon-library"></i></button>
+    </div>
+
+    <nav id="nav-inner" class="nav-inner">
+        
+            <a class="nav-item" href="/">
+                <span class="nav-text">首页</span>
+            </a>
+        
+            <a class="nav-item" href="/zhbox">
+                <span class="nav-text">中盒</span>
+            </a>
+        
+            <a class="nav-item" href="/tags">
+                <span class="nav-text">标签</span>
+            </a>
+        
+            <a class="nav-item" href="/archives">
+                <span class="nav-text">归档</span>
+            </a>
+        
+            <a class="nav-item" href="/about">
+                <span class="nav-text">关于</span>
+            </a>
+        
+    </nav>
+</div>
+
+    <aside id="aside" class="aside">
+    <div id="aside-mask" class="aside-mask"></div>
+    <div id="aside-inner" class="aside-inner">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit"><i class="icon-search-stroke"></i></button><input type="hidden" name="sitesearch" value="https://humble-zh.github.io"></form>
+
+        
+        
+        
+        
+
+        
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E3%80%90docker%E5%85%A5%E9%97%A8%E3%80%9110%E5%88%86%E9%92%9F%EF%BC%8C%E5%BF%AB%E9%80%9F%E5%AD%A6%E4%BC%9Adocker"><span class="toc-number">1.</span> <span class="toc-text">【docker入门】10分钟，快速学会docker</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E8%8E%B7%E5%8F%96%E9%95%9C%E5%83%8F"><span class="toc-number">1.1.</span> <span class="toc-text">1 获取镜像</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E6%9F%A5%E7%9C%8B%E6%9C%AC%E5%9C%B0%E9%95%9C%E5%83%8F"><span class="toc-number">1.2.</span> <span class="toc-text">2 查看本地镜像</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E8%BF%90%E8%A1%8C%E9%95%9C%E5%83%8F"><span class="toc-number">1.3.</span> <span class="toc-text">3 运行镜像</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-%E6%9F%A5%E7%9C%8B%E6%AD%A3%E5%9C%A8%E8%BF%90%E8%A1%8C%E7%9A%84%E5%AE%B9%E5%99%A8"><span class="toc-number">1.4.</span> <span class="toc-text">4 查看正在运行的容器</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-%E4%BF%AE%E6%94%B9%E5%AE%B9%E5%99%A8"><span class="toc-number">1.5.</span> <span class="toc-text">5 修改容器</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-%E5%88%A0%E9%99%A4%E5%AE%B9%E5%99%A8"><span class="toc-number">1.6.</span> <span class="toc-text">6 删除容器</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-%E6%8F%90%E4%BA%A4%E5%AE%B9%E5%99%A8"><span class="toc-number">1.7.</span> <span class="toc-text">7 提交容器</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#8-%E9%80%9A%E8%BF%87dockerfile%E6%9E%84%E5%BB%BA%E9%95%9C%E5%83%8F%E8%B7%91%E6%88%90%E5%AE%B9%E5%99%A8"><span class="toc-number">1.8.</span> <span class="toc-text">8 通过dockerfile构建镜像跑成容器</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#9-%E4%BF%9D%E5%AD%98%E6%96%87%E4%BB%B6%E5%92%8C%E9%87%8D%E6%96%B0%E5%8A%A0%E8%BD%BD"><span class="toc-number">1.9.</span> <span class="toc-text">9 保存文件和重新加载</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E3%80%90docker%E5%85%A5%E9%97%A82%E3%80%91%E5%AE%9E%E6%88%98-%E5%A6%82%E4%BD%95%E7%BB%84%E7%BB%87%E4%B8%80%E4%B8%AA%E5%A4%9A%E5%AE%B9%E5%99%A8%E9%A1%B9%E7%9B%AEdocker-compose"><span class="toc-number">2.</span> <span class="toc-text">【docker入门2】实战~如何组织一个多容器项目docker-compose</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A4%9A%E5%AE%B9%E5%99%A8%E9%A1%B9%E7%9B%AE%E7%9A%84%E7%BB%84%E7%BB%87"><span class="toc-number">2.1.</span> <span class="toc-text">多容器项目的组织</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#docker-compose-%E7%94%A8%E6%B3%95"><span class="toc-number">2.2.</span> <span class="toc-text">docker-compose 用法</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E3%80%90Docker%E3%80%91Dockerfile%E7%94%A8%E6%B3%95%E5%85%A8%E8%A7%A3%E6%9E%90"><span class="toc-number">3.</span> <span class="toc-text">【Docker】Dockerfile用法全解析</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E3%80%90kubernetes%E5%85%A5%E9%97%A8%E3%80%91%E5%BF%AB%E9%80%9F%E4%BA%86%E8%A7%A3%E5%92%8C%E4%B8%8A%E6%89%8B%E5%AE%B9%E5%99%A8%E7%BC%96%E6%8E%92%E5%B7%A5%E5%85%B7k8s"><span class="toc-number">4.</span> <span class="toc-text">【kubernetes入门】快速了解和上手容器编排工具k8s</span></a></li></ol>
+        
+    </div>
+</aside>
+
+</header>
+
+        <div id="content" class="content">
+            <div id="wrapper" class="wrapper" style="max-width: 800px">
+                <article class="article" itemscope itemprop="blogPost">
+    
+    <header class="article-header">
+        
+        <h1 itemprop="name">
+            Docker快速上手指南
+        </h1>
+        
+        <div class="article-meta clearfix">
+            <a class="article-date" href="https://humble-zh.github.io/2021/02/04/Docker%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B%E6%8C%87%E5%8D%97/index.html">
+    
+    <i class="icon-calendar vm"></i>
+    
+    <time class="vm" datetime="2021-02-04T14:04:15.000Z" itemprop="datePublished">2021-02-04</time>
+</a>
+
+            
+<div class="article-tag-list">
+    <i class="icon-tag vm"></i>
+    <a class="article-tag-link" href="/tags/docker/" rel="tag">docker</a>
+</div>
+
+
+        </div>
+    </header>
+    
+    <section class="article-body markdown-body">
+        
+        <p><a target="_blank" rel="noopener" href="https://skysys.blog.csdn.net/article/details/111148908" title="Permalink to Docker快速上手指南_skysys的研究小屋 -CSDN博客">Source</a></p>
+<h1 id="【docker入门】10分钟，快速学会docker"><a href="#【docker入门】10分钟，快速学会docker" class="headerlink" title="【docker入门】10分钟，快速学会docker"></a><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1R4411F7t9">【docker入门】10分钟，快速学会docker</a></h1><iframe src="//player.bilibili.com/player.html?aid=58402749&bvid=BV1R4411F7t9&cid=101870925&page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true">【docker入门】10分钟，快速学会docker</iframe>
+
+<p><img src="/2021/02/04/Docker%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B%E6%8C%87%E5%8D%97/1.png"></p>
+<h2 id="1-获取镜像"><a href="#1-获取镜像" class="headerlink" title="1 获取镜像"></a>1 获取镜像</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">docker pull nginx</span><br><span class="line">docker pull nginx:latest</span><br></pre></td></tr></table></figure>
+<h2 id="2-查看本地镜像"><a href="#2-查看本地镜像" class="headerlink" title="2 查看本地镜像"></a>2 查看本地镜像</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker images</span><br></pre></td></tr></table></figure>
+<h2 id="3-运行镜像"><a href="#3-运行镜像" class="headerlink" title="3 运行镜像"></a>3 运行镜像</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run -d -p 80:80 nginx</span><br></pre></td></tr></table></figure>
+<p>-d 后台运行</p>
+<p>-p 内外端口映射</p>
+<h2 id="4-查看正在运行的容器"><a href="#4-查看正在运行的容器" class="headerlink" title="4 查看正在运行的容器"></a>4 查看正在运行的容器</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker ps</span><br></pre></td></tr></table></figure>
+<h2 id="5-修改容器"><a href="#5-修改容器" class="headerlink" title="5 修改容器"></a>5 修改容器</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker <span class="built_in">exec</span> -it xxxx bash</span><br></pre></td></tr></table></figure>
+<p>-it 接容器id</p>
+<h2 id="6-删除容器"><a href="#6-删除容器" class="headerlink" title="6 删除容器"></a>6 删除容器</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker rm -f xxx</span><br></pre></td></tr></table></figure>
+<h2 id="7-提交容器"><a href="#7-提交容器" class="headerlink" title="7 提交容器"></a>7 提交容器</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker commit xxx name(自己定一个名字）</span><br></pre></td></tr></table></figure>
+<h2 id="8-通过dockerfile构建镜像跑成容器"><a href="#8-通过dockerfile构建镜像跑成容器" class="headerlink" title="8 通过dockerfile构建镜像跑成容器"></a>8 通过dockerfile构建镜像跑成容器</h2><p>新建dockerfile文件（写法自行查阅官方文档）</p>
+<p><img src="/2021/02/04/Docker%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B%E6%8C%87%E5%8D%97/2.png"></p>
+<p>然后在当前目录新建index.html</p>
+<p><img src="/2021/02/04/Docker%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B%E6%8C%87%E5%8D%97/3.png"></p>
+<p><img src="/2021/02/04/Docker%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B%E6%8C%87%E5%8D%97/4.png"></p>
+<h2 id="9-保存文件和重新加载"><a href="#9-保存文件和重新加载" class="headerlink" title="9 保存文件和重新加载"></a>9 保存文件和重新加载</h2><p><img src="/2021/02/04/Docker%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B%E6%8C%87%E5%8D%97/5.png"></p>
+<p><img src="/2021/02/04/Docker%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B%E6%8C%87%E5%8D%97/6.png"></p>
+<p>摘一个网友（湿漉漉的小狐狸）的笔记</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">安装和常用CLI：</span><br><span class="line">添加阿里云镜像：sudo yum-config-manager --add-repo https://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo</span><br><span class="line">安装命令：sudo yum install -y  docker-ce docker-ce-cli containerd.io</span><br><span class="line">启动命令：sudo systemctl start docker</span><br><span class="line">添加当前用户到docker用户组：sudo usermod -aG docker <span class="variable">$USER</span> （需注销），newgrp docker （立即生效）</span><br><span class="line">Helloworld：docker run hello-world  （本地没有镜像的话会自动从远端仓库pull）</span><br><span class="line">pull nginx 镜像：docker pull nginx（等效于nginx:latest）</span><br><span class="line">运行：docker run -【d】（后台运行不阻塞shell） 【-p 80:80】（指定容器端口映射，内部：外部） nginx</span><br><span class="line">查看正在运行：docker ps</span><br><span class="line">删除容器：docker rm -f &lt;container id(不用打全，前缀区分)&gt;</span><br><span class="line">进入bash：docker <span class="built_in">exec</span> -it &lt;container id(不用打全，前缀区分)&gt; bash</span><br><span class="line">commit镜像：docker commit &lt;container id(不用打全，前缀区分)&gt;  &lt;name&gt;</span><br><span class="line">查看镜像列表：docker images （刚才commit的镜像）</span><br><span class="line">使用运行刚才commit的镜像：docker run -d &lt;name&gt;</span><br><span class="line">使用Dockerfile构建镜像：docker build -t &lt;name&gt; &lt;存放Dockerfile的文件夹&gt;</span><br><span class="line">删除镜像：docker rmi &lt;name&gt;</span><br><span class="line">保存为tar：docker save &lt;name&gt; &gt; &lt;tar name&gt;</span><br><span class="line">从tar加载：docker load &lt; &lt;tar name&gt;</span><br><span class="line"></span><br><span class="line">一些启动参数：</span><br><span class="line">后台运行容器：-d</span><br><span class="line">容器内外端口映射：-p 内部端口号:外部端口号</span><br><span class="line">目录映射：-v <span class="string">&#x27;dir name&#x27;</span> : &lt;dir&gt;</span><br><span class="line">指定映像版本：&lt;name&gt;:&lt;ver&gt;</span><br></pre></td></tr></table></figure>
+<h1 id="【docker入门2】实战-如何组织一个多容器项目docker-compose"><a href="#【docker入门2】实战-如何组织一个多容器项目docker-compose" class="headerlink" title="【docker入门2】实战~如何组织一个多容器项目docker-compose"></a><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1Wt411w72h">【docker入门2】实战~如何组织一个多容器项目docker-compose</a></h1><iframe src="//player.bilibili.com/player.html?aid=61131351&bvid=BV1Wt411w72h&cid=266191566&page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true">【docker入门2】实战~如何组织一个多容器项目docker-compose</iframe>
+
+<p><a target="_blank" rel="noopener" href="https://github.com/sunwu51/notebook/tree/master/19.07">https://github.com/sunwu51/notebook/tree/master/19.07</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/bobo132/docker-compose-demo-1">https://github.com/bobo132/docker-compose-demo-1</a></p>
+<h2 id="多容器项目的组织"><a href="#多容器项目的组织" class="headerlink" title="多容器项目的组织"></a>多容器项目的组织</h2><p><img src="/2021/02/04/Docker%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B%E6%8C%87%E5%8D%97/7.png"></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">docker run -d -p 80:80 --name mynginx nginx</span><br><span class="line">docker ps</span><br><span class="line">docker <span class="built_in">exec</span> -it mynginx bash</span><br><span class="line">cat /etc/hosts</span><br></pre></td></tr></table></figure>
+<p><img src="/2021/02/04/Docker%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B%E6%8C%87%E5%8D%97/8.png"></p>
+<p>172.17.0.2是容器的ip，然后我们退出（exit）然后又启动一个新的容器</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">docker run -dit alpine</span><br><span class="line">docker <span class="built_in">exec</span> -it xxxx(容器id)</span><br><span class="line"></span><br><span class="line">apk add curl</span><br><span class="line">curl 172.17.0.2</span><br></pre></td></tr></table></figure>
+<p><img src="/2021/02/04/Docker%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B%E6%8C%87%E5%8D%97/9.png"></p>
+<p><img src="/2021/02/04/Docker%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B%E6%8C%87%E5%8D%97/10.png"></p>
+<p><img src="/2021/02/04/Docker%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B%E6%8C%87%E5%8D%97/11.png"></p>
+<p>–link 参数 把另一个容器映射到本容器里面（通过修改/etc/hosts文件）</p>
+<p>三个容器的组织</p>
+<p><img src="/2021/02/04/Docker%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B%E6%8C%87%E5%8D%97/12.png"></p>
+<p>注意：创建顺序需要先mysql，然后启动php的时候link参数映射到mysql，同理类推~<br>这样对运维来说太麻烦了，有什么好方法吗？<code>docker-compose</code></p>
+<h2 id="docker-compose-用法"><a href="#docker-compose-用法" class="headerlink" title="docker-compose 用法"></a>docker-compose 用法</h2><p>（本小节实验涉及的文件参考：<a target="_blank" rel="noopener" href="https://github.com/bobo132/docker-compose-demo-1%EF%BC%89">https://github.com/bobo132/docker-compose-demo-1）</a></p>
+<p>新建俩文件夹</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">--</span><br><span class="line">  |- conf</span><br><span class="line">  |- html</span><br></pre></td></tr></table></figure>
+<p><img src="/2021/02/04/Docker%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B%E6%8C%87%E5%8D%97/13.png"></p>
+<p>然后在<code>conf/</code>下面建立nginx.conf</p>
+<p><img src="/2021/02/04/Docker%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B%E6%8C%87%E5%8D%97/14.png"></p>
+<p>(略）</p>
+<p>然后写docker-compose.yml</p>
+<p><img src="/2021/02/04/Docker%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B%E6%8C%87%E5%8D%97/15.png"></p>
+<p>(不能指定官方的php，因为缺少扩展，搜索php-fpm然后选一个~</p>
+<p><img src="/2021/02/04/Docker%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B%E6%8C%87%E5%8D%97/16.png"></p>
+<p>然后退出vim~ 在该目录下运行<code>docker-compose up -d</code> (-d 后台启动）</p>
+<p><img src="/2021/02/04/Docker%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B%E6%8C%87%E5%8D%97/17.png"></p>
+<p><img src="/2021/02/04/Docker%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B%E6%8C%87%E5%8D%97/18.png"></p>
+<h1 id="【Docker】Dockerfile用法全解析"><a href="#【Docker】Dockerfile用法全解析" class="headerlink" title="【Docker】Dockerfile用法全解析"></a><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1k7411B7QL">【Docker】Dockerfile用法全解析</a></h1><iframe src="//player.bilibili.com/player.html?aid=85895204&bvid=BV1k7411B7QL&cid=146821251&page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true">【Docker】Dockerfile用法全解析</iframe>
+
+<p>漏掉了USER，用于指定RUN CMD等指令运行时的用户身份，不指定是root。 用法（下面组相关的可以不指定）： </p>
+<p>USER  用户名:用户组 或 USER  用户id:组id</p>
+<h1 id="【kubernetes入门】快速了解和上手容器编排工具k8s"><a href="#【kubernetes入门】快速了解和上手容器编排工具k8s" class="headerlink" title="【kubernetes入门】快速了解和上手容器编排工具k8s"></a><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV18t411u7kX">【kubernetes入门】快速了解和上手容器编排工具k8s</a></h1><iframe src="//player.bilibili.com/player.html?aid=61990770&bvid=BV18t411u7kX&cid=107776838&page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true">【kubernetes入门】快速了解和上手容器编排工具k8s</iframe>
+
+<p><a target="_blank" rel="noopener" href="https://github.com/sunwu51/notebook/tree/master/19.07">https://github.com/sunwu51/notebook/tree/master/19.07</a></p>
+
+        
+    </section>
+</article>
+
+
+
+<a id="pagenext" href="/2021/02/04/docker%E7%AC%94%E8%AE%B0/" class="article-next" title="docker笔记"><i class="icon-arrow-right"></i></a>
+
+
+<a id="pageprev" href="/2021/02/07/tmux%E7%AC%94%E8%AE%B0/" class="article-prev" title="tmux笔记"><i class="icon-arrow-left"></i></a>
+
+
+
+<div class="comments">
+    <div id="comments"></div>
+    <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+    <script>
+    new Gitalk({
+        clientID: "7fbe80427f54741e289f",
+        clientSecret: "f34ed5fd92e54c9000bd37ba951948cb939deff5",
+        repo: "sanonz.github.io",
+        owner: "sanonz",
+        admin: ["sanonz"],
+        id: "8e967e3dcdb37aef9a9b3d9ad419913b",
+        distractionFreeMode: true,
+        title: "Docker快速上手指南",
+        body: "https://humble-zh.github.io/2021/02/04/Docker%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B%E6%8C%87%E5%8D%97/",
+        labels: ["docker"]
+    }).render('comments');
+    </script>
+</div>
+
+
+
+            </div>
+        </div>
+        <footer class="footer">
+    Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>, Theme by <a href="https://github.com/sanonz/hexo-theme-concise" target="_blank">Concise</a>
+
+    
+    <script>
+        var _hmt = _hmt || [];
+        (function () {
+            var hm = document.createElement("script");
+            hm.src = "https://hm.baidu.com/hm.js?e4027971a230b210f4671f485b33846a";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+    
+</footer>
+
+    </main>
+
+    <script type="text/javascript" src="https://unpkg.com/jquery@1.9.1/jquery.min.js"></script>
+    <script type="text/javascript">
+    $(function() {
+        var nodes = {
+            nav: $('#nav'),
+            aside: $('#aside'),
+            asideInner: $('#aside-inner'),
+            navInner: $('#nav-inner')
+        };
+
+        var doing = false;
+        nodes.asideInner.on('webkitAnimationEnd mozAnimationEnd oAnimationEnd oanimationend animationend', function() {
+            if (nodes.aside.hasClass('mobile-open')) {
+                nodes.aside.removeClass('mobile-open');
+            } else {
+                nodes.aside.removeClass('mobile-close panel-show');
+            }
+            doing = false;
+        });
+        $('#open-panel, #aside-mask').on('click', function() {
+            if (doing) {
+                return;
+            }
+
+            if (nodes.aside.hasClass('panel-show')) {
+                nodes.aside.addClass('mobile-close');
+            } else {
+                nodes.aside.addClass('mobile-open panel-show');
+            }
+        });
+        $('#open-menus').on('click', function() {
+            nodes.navInner.slideToggle('normal', slideDone);
+        });
+
+        if (window.innerWidth <= 960) {
+            setTimeout(function() {
+                nodes.navInner.slideUp('normal', slideDone);
+            }, 3000);
+        }
+
+        function slideDone() {
+            if (nodes.navInner.css('display') !== 'none') {
+                nodes.navInner.css('display', '');
+            }
+        }
+
+        $(window).on('resize', function() {
+            if ($(this).width() > 960) {
+                nodes.navInner.css('display', '');
+            }
+        });
+    });
+    </script>
+    
+        
+<script src="/js/scrollspy.min.js"></script>
+
+        <script type="text/javascript">
+        $(document.body).scrollspy({target: '#aside-inner'});
+
+        $(window).on('resize', function() {
+            var hw = $('#header').width();
+            var ww = $('#wrapper').width();
+            var space = ($(this).width() - hw - ww) / 2 / 2;
+
+            var pageprev = $('#pageprev');
+            var pagenext = $('#pagenext');
+            var avg = (pageprev.width() + pagenext.width()) / 2
+
+            if(space > avg) {
+                var len = space - avg / 2;
+                var styles = {position: 'fixed', top: '50%', marginTop: - (pageprev.width() + pagenext.width()) / 4}
+                pageprev.css($.extend({left: hw + len}, styles));
+                pagenext.css($.extend({right: len}, styles));
+            } else {
+                pageprev.removeAttr('style');
+                pagenext.removeAttr('style');
+            }
+        }).trigger('resize');
+        </script>
+    
+
+</body>
+</html>

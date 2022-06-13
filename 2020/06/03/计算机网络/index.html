@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+
+    
+
+    
+
+    <title>计算机网络 | Zhihong&#39;s Blog</title>
+    <meta name="author" content="Zhihong Li" />
+    <meta name="keywords" content="zhbox" />
+    <meta name="description" content="计算机网络半小时看懂&amp;lt;计算机网络&amp;gt;【网络】半小时看懂 计算机网络TCP和UDP区别特性TCPUDP包头20+字节8+字节连接是否可靠是否超时重传是否流量控制是否滑动窗口是否报文顺序是否传输格式字节流(会粘包)整个报文传输效率低高适用文件下载,浏览网站实时通话wireshark与charles【抓包工具】wireshark与charles简介TCP三次握手的连接过程,为什么是三次花三分钟了解一下死锁 | 这波不亏，不亏TCP的四次挥手三分钟了解TCP的四次挥手 | 平均0.75秒了解一" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no" />
+
+    
+    <link rel="alternate" href="/atom.xml" title="Zhihong&#39;s Blog" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/images/favicon.ico">
+    
+
+    <style type="text/css">
+    @font-face {
+        font-family: 'icomoon';
+        src: url("/fonts/icomoon.eot?q628ml");
+        src: url("/fonts/icomoon.eot?q628ml#iefix") format('embedded-opentype'),
+             url("/fonts/icomoon.ttf?q628ml") format('truetype'),
+             url("/fonts/icomoon.woff?q628ml") format('woff'),
+             url("/fonts/icomoon.svg?q628ml#icomoon") format('svg');
+        font-weight: normal;
+        font-style: normal;
+    }
+    </style>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!--[if lt IE 9]><style type="text/css">.nav-inner {top:0;}.author-meta {position:static;top:0;}.search-form {height:36px;}</style><script type="text/javascript" src="https://unpkg.com/html5shiv@3.7.3/dist/html5shiv.min.js"></script><![endif]-->
+<meta name="generator" content="Hexo 5.3.0"></head>
+<body>
+
+    <main class="app">
+        <header id="header" class="header clearfix">
+    <div id="nav" class="nav">
+    <div class="nav-mobile">
+        <button id="open-panel" class="open-panel nav-mobile-item"><i class="icon-documents"></i></button>
+        <h1 class="nav-mobile-title nav-mobile-item">Zhihong&#39;s Blog</h1>
+        <button id="open-menus" class="open-panel nav-mobile-item"><i class="icon-library"></i></button>
+    </div>
+
+    <nav id="nav-inner" class="nav-inner">
+        
+            <a class="nav-item" href="/">
+                <span class="nav-text">首页</span>
+            </a>
+        
+            <a class="nav-item" href="/zhbox">
+                <span class="nav-text">中盒</span>
+            </a>
+        
+            <a class="nav-item" href="/tags">
+                <span class="nav-text">标签</span>
+            </a>
+        
+            <a class="nav-item" href="/archives">
+                <span class="nav-text">归档</span>
+            </a>
+        
+            <a class="nav-item" href="/about">
+                <span class="nav-text">关于</span>
+            </a>
+        
+    </nav>
+</div>
+
+    <aside id="aside" class="aside">
+    <div id="aside-mask" class="aside-mask"></div>
+    <div id="aside-inner" class="aside-inner">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit"><i class="icon-search-stroke"></i></button><input type="hidden" name="sitesearch" value="https://humble-zh.github.io"></form>
+
+        
+        
+        
+        
+
+        
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C"><span class="toc-number">1.</span> <span class="toc-text">计算机网络</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%8A%E5%B0%8F%E6%97%B6%E7%9C%8B%E6%87%82-lt-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C-gt"><span class="toc-number">1.1.</span> <span class="toc-text">半小时看懂&lt;计算机网络&gt;</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#TCP%E5%92%8CUDP%E5%8C%BA%E5%88%AB"><span class="toc-number">1.2.</span> <span class="toc-text">TCP和UDP区别</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#wireshark%E4%B8%8Echarles"><span class="toc-number">1.3.</span> <span class="toc-text">wireshark与charles</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#TCP%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B%E7%9A%84%E8%BF%9E%E6%8E%A5%E8%BF%87%E7%A8%8B-%E4%B8%BA%E4%BB%80%E4%B9%88%E6%98%AF%E4%B8%89%E6%AC%A1"><span class="toc-number">1.4.</span> <span class="toc-text">TCP三次握手的连接过程,为什么是三次</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#TCP%E7%9A%84%E5%9B%9B%E6%AC%A1%E6%8C%A5%E6%89%8B"><span class="toc-number">1.5.</span> <span class="toc-text">TCP的四次挥手</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#curl"><span class="toc-number">1.6.</span> <span class="toc-text">curl</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#route%E6%8C%87%E4%BB%A4"><span class="toc-number">1.7.</span> <span class="toc-text">route指令</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#iptables"><span class="toc-number">1.8.</span> <span class="toc-text">iptables</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ssh"><span class="toc-number">1.9.</span> <span class="toc-text">ssh</span></a></li></ol></li></ol>
+        
+    </div>
+</aside>
+
+</header>
+
+        <div id="content" class="content">
+            <div id="wrapper" class="wrapper" style="max-width: 800px">
+                <article class="article" itemscope itemprop="blogPost">
+    
+    <header class="article-header">
+        
+        <h1 itemprop="name">
+            计算机网络
+        </h1>
+        
+        <div class="article-meta clearfix">
+            <a class="article-date" href="https://humble-zh.github.io/2020/06/03/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/index.html">
+    
+    <i class="icon-calendar vm"></i>
+    
+    <time class="vm" datetime="2020-06-03T06:05:29.000Z" itemprop="datePublished">2020-06-03</time>
+</a>
+
+            
+<div class="article-tag-list">
+    <i class="icon-tag vm"></i>
+    <a class="article-tag-link" href="/tags/%E7%BD%91%E7%BB%9C/" rel="tag">网络</a>
+</div>
+
+
+        </div>
+    </header>
+    
+    <section class="article-body markdown-body">
+        
+        <h1 id="计算机网络"><a href="#计算机网络" class="headerlink" title="计算机网络"></a>计算机网络</h1><h2 id="半小时看懂-lt-计算机网络-gt"><a href="#半小时看懂-lt-计算机网络-gt" class="headerlink" title="半小时看懂&lt;计算机网络&gt;"></a>半小时看懂&lt;计算机网络&gt;</h2><iframe src="//player.bilibili.com/player.html?aid=66929320&bvid=BV124411k7uV&cid=116062245&page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true">【网络】半小时看懂 计算机网络</iframe>
+
+<h2 id="TCP和UDP区别"><a href="#TCP和UDP区别" class="headerlink" title="TCP和UDP区别"></a>TCP和UDP区别</h2><table>
+<thead>
+<tr>
+<th align="center">特性</th>
+<th align="center">TCP</th>
+<th align="center">UDP</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">包头</td>
+<td align="center">20+字节</td>
+<td align="center">8+字节</td>
+</tr>
+<tr>
+<td align="center">连接</td>
+<td align="center">是</td>
+<td align="center">否</td>
+</tr>
+<tr>
+<td align="center">可靠</td>
+<td align="center">是</td>
+<td align="center">否</td>
+</tr>
+<tr>
+<td align="center">超时重传</td>
+<td align="center">是</td>
+<td align="center">否</td>
+</tr>
+<tr>
+<td align="center">流量控制</td>
+<td align="center">是</td>
+<td align="center">否</td>
+</tr>
+<tr>
+<td align="center">滑动窗口</td>
+<td align="center">是</td>
+<td align="center">否</td>
+</tr>
+<tr>
+<td align="center">报文顺序</td>
+<td align="center">是</td>
+<td align="center">否</td>
+</tr>
+<tr>
+<td align="center">传输格式</td>
+<td align="center">字节流(会粘包)</td>
+<td align="center">整个报文</td>
+</tr>
+<tr>
+<td align="center">传输效率</td>
+<td align="center">低</td>
+<td align="center">高</td>
+</tr>
+<tr>
+<td align="center">适用</td>
+<td align="center">文件下载,浏览网站</td>
+<td align="center">实时通话</td>
+</tr>
+</tbody></table>
+<h2 id="wireshark与charles"><a href="#wireshark与charles" class="headerlink" title="wireshark与charles"></a><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1GE411Y7ZM">wireshark与charles</a></h2><iframe src="//player.bilibili.com/player.html?aid=73629523&bvid=BV1GE411Y7ZM&cid=125939592&page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true">【抓包工具】wireshark与charles简介</iframe>
+
+<h2 id="TCP三次握手的连接过程-为什么是三次"><a href="#TCP三次握手的连接过程-为什么是三次" class="headerlink" title="TCP三次握手的连接过程,为什么是三次"></a><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1vA411i7rs">TCP三次握手的连接过程,为什么是三次</a></h2><iframe src="//player.bilibili.com/player.html?aid=328685379&bvid=BV1vA411i7rs&cid=208331181&page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true">花三分钟了解一下死锁 | 这波不亏，不亏</iframe>
+
+<h2 id="TCP的四次挥手"><a href="#TCP的四次挥手" class="headerlink" title="TCP的四次挥手"></a><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1C5411Y7dG">TCP的四次挥手</a></h2><iframe src="//player.bilibili.com/player.html?aid=456279499&bvid=BV1C5411Y7dG&cid=211590381&page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true">三分钟了解TCP的四次挥手 | 平均0.75秒了解一次挥手</iframe>
+
+<h2 id="curl"><a href="#curl" class="headerlink" title="curl"></a><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV15x411f7Sm">curl</a></h2><iframe src="//player.bilibili.com/player.html?aid=58603941&bvid=BV15x411f7Sm&cid=102201417&page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true">【curl教程】5分钟，快速了解curl用法</iframe>
+
+<h2 id="route指令"><a href="#route指令" class="headerlink" title="route指令"></a><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV114411y7bS">route指令</a></h2><iframe src="//player.bilibili.com/player.html?aid=66762443&bvid=BV114411y7bS&cid=115780064&page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true">【网络】你不知道的linux的route指令</iframe>
+
+<h2 id="iptables"><a href="#iptables" class="headerlink" title="iptables"></a><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1rE411r7Ao">iptables</a></h2><iframe src="//player.bilibili.com/player.html?aid=71574590&bvid=BV1rE411r7Ao&cid=124026806&page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true">【小知识】第9期 20分钟掌握iptables指令</iframe>
+
+<h2 id="ssh"><a href="#ssh" class="headerlink" title="ssh"></a><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1y4411q7PW">ssh</a></h2><iframe src="//player.bilibili.com/player.html?aid=65952912&bvid=BV1y4411q7PW&cid=114414833&page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true">【小知识】第6期 SSH免密登录的原理</iframe>
+        
+    </section>
+</article>
+
+
+
+<a id="pagenext" href="/2020/06/03/shell%E7%AC%94%E8%AE%B0/" class="article-next" title="shell笔记"><i class="icon-arrow-right"></i></a>
+
+
+<a id="pageprev" href="/2020/06/04/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" class="article-prev" title="操作系统"><i class="icon-arrow-left"></i></a>
+
+
+
+
+            </div>
+        </div>
+        <footer class="footer">
+    Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>, Theme by <a href="https://github.com/sanonz/hexo-theme-concise" target="_blank">Concise</a>
+
+    
+    <script>
+        var _hmt = _hmt || [];
+        (function () {
+            var hm = document.createElement("script");
+            hm.src = "https://hm.baidu.com/hm.js?e4027971a230b210f4671f485b33846a";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+    
+</footer>
+
+    </main>
+
+    <script type="text/javascript" src="https://unpkg.com/jquery@1.9.1/jquery.min.js"></script>
+    <script type="text/javascript">
+    $(function() {
+        var nodes = {
+            nav: $('#nav'),
+            aside: $('#aside'),
+            asideInner: $('#aside-inner'),
+            navInner: $('#nav-inner')
+        };
+
+        var doing = false;
+        nodes.asideInner.on('webkitAnimationEnd mozAnimationEnd oAnimationEnd oanimationend animationend', function() {
+            if (nodes.aside.hasClass('mobile-open')) {
+                nodes.aside.removeClass('mobile-open');
+            } else {
+                nodes.aside.removeClass('mobile-close panel-show');
+            }
+            doing = false;
+        });
+        $('#open-panel, #aside-mask').on('click', function() {
+            if (doing) {
+                return;
+            }
+
+            if (nodes.aside.hasClass('panel-show')) {
+                nodes.aside.addClass('mobile-close');
+            } else {
+                nodes.aside.addClass('mobile-open panel-show');
+            }
+        });
+        $('#open-menus').on('click', function() {
+            nodes.navInner.slideToggle('normal', slideDone);
+        });
+
+        if (window.innerWidth <= 960) {
+            setTimeout(function() {
+                nodes.navInner.slideUp('normal', slideDone);
+            }, 3000);
+        }
+
+        function slideDone() {
+            if (nodes.navInner.css('display') !== 'none') {
+                nodes.navInner.css('display', '');
+            }
+        }
+
+        $(window).on('resize', function() {
+            if ($(this).width() > 960) {
+                nodes.navInner.css('display', '');
+            }
+        });
+    });
+    </script>
+    
+        
+<script src="/js/scrollspy.min.js"></script>
+
+        <script type="text/javascript">
+        $(document.body).scrollspy({target: '#aside-inner'});
+
+        $(window).on('resize', function() {
+            var hw = $('#header').width();
+            var ww = $('#wrapper').width();
+            var space = ($(this).width() - hw - ww) / 2 / 2;
+
+            var pageprev = $('#pageprev');
+            var pagenext = $('#pagenext');
+            var avg = (pageprev.width() + pagenext.width()) / 2
+
+            if(space > avg) {
+                var len = space - avg / 2;
+                var styles = {position: 'fixed', top: '50%', marginTop: - (pageprev.width() + pagenext.width()) / 4}
+                pageprev.css($.extend({left: hw + len}, styles));
+                pagenext.css($.extend({right: len}, styles));
+            } else {
+                pageprev.removeAttr('style');
+                pagenext.removeAttr('style');
+            }
+        }).trigger('resize');
+        </script>
+    
+
+</body>
+</html>

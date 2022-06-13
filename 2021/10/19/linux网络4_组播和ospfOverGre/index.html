@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+
+    
+
+    
+
+    <title>linux网络4_组播和ospfOverGre | Zhihong&#39;s Blog</title>
+    <meta name="author" content="Zhihong Li" />
+    <meta name="keywords" content="zhbox" />
+    <meta name="description" content="拓扑组播源PC1定时发送i am the xxth message to 239.255.255.249 到组播组239.255.255.249配置RouterB123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960# root @ routerB in / [15:15:39]$ iptables -t nat -D POSTR" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no" />
+
+    
+    <link rel="alternate" href="/atom.xml" title="Zhihong&#39;s Blog" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/images/favicon.ico">
+    
+
+    <style type="text/css">
+    @font-face {
+        font-family: 'icomoon';
+        src: url("/fonts/icomoon.eot?q628ml");
+        src: url("/fonts/icomoon.eot?q628ml#iefix") format('embedded-opentype'),
+             url("/fonts/icomoon.ttf?q628ml") format('truetype'),
+             url("/fonts/icomoon.woff?q628ml") format('woff'),
+             url("/fonts/icomoon.svg?q628ml#icomoon") format('svg');
+        font-weight: normal;
+        font-style: normal;
+    }
+    </style>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!--[if lt IE 9]><style type="text/css">.nav-inner {top:0;}.author-meta {position:static;top:0;}.search-form {height:36px;}</style><script type="text/javascript" src="https://unpkg.com/html5shiv@3.7.3/dist/html5shiv.min.js"></script><![endif]-->
+<meta name="generator" content="Hexo 5.3.0"></head>
+<body>
+
+    <main class="app">
+        <header id="header" class="header clearfix">
+    <div id="nav" class="nav">
+    <div class="nav-mobile">
+        <button id="open-panel" class="open-panel nav-mobile-item"><i class="icon-documents"></i></button>
+        <h1 class="nav-mobile-title nav-mobile-item">Zhihong&#39;s Blog</h1>
+        <button id="open-menus" class="open-panel nav-mobile-item"><i class="icon-library"></i></button>
+    </div>
+
+    <nav id="nav-inner" class="nav-inner">
+        
+            <a class="nav-item" href="/">
+                <span class="nav-text">首页</span>
+            </a>
+        
+            <a class="nav-item" href="/zhbox">
+                <span class="nav-text">中盒</span>
+            </a>
+        
+            <a class="nav-item" href="/tags">
+                <span class="nav-text">标签</span>
+            </a>
+        
+            <a class="nav-item" href="/archives">
+                <span class="nav-text">归档</span>
+            </a>
+        
+            <a class="nav-item" href="/about">
+                <span class="nav-text">关于</span>
+            </a>
+        
+    </nav>
+</div>
+
+    <aside id="aside" class="aside">
+    <div id="aside-mask" class="aside-mask"></div>
+    <div id="aside-inner" class="aside-inner">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit"><i class="icon-search-stroke"></i></button><input type="hidden" name="sitesearch" value="https://humble-zh.github.io"></form>
+
+        
+        
+        
+        
+
+        
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8B%93%E6%89%91"><span class="toc-number">1.</span> <span class="toc-text">拓扑</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BB%84%E6%92%AD%E6%BA%90PC1"><span class="toc-number">2.</span> <span class="toc-text">组播源PC1</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%85%8D%E7%BD%AERouterB"><span class="toc-number">3.</span> <span class="toc-text">配置RouterB</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%85%8D%E7%BD%AEgre"><span class="toc-number">4.</span> <span class="toc-text">配置gre</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9F%A5%E7%9C%8Bgre%E9%9A%A7%E9%81%93%E6%8E%A5%E5%8F%A3"><span class="toc-number">5.</span> <span class="toc-text">查看gre隧道接口</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95%E9%9A%A7%E9%81%93%E8%BF%9E%E6%8E%A5"><span class="toc-number">6.</span> <span class="toc-text">测试隧道连接</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%85%8D%E7%BD%AErouter-A%E5%92%8CC%E7%9A%84ospf"><span class="toc-number">7.</span> <span class="toc-text">配置router A和C的ospf</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9F%A5%E7%9C%8Bospf%E7%94%9F%E6%88%90%E7%9A%84%E8%B7%AF%E7%94%B1"><span class="toc-number">8.</span> <span class="toc-text">查看ospf生成的路由</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95ospf%E8%B7%AF%E7%94%B1%E9%80%9A%E8%B7%AF"><span class="toc-number">9.</span> <span class="toc-text">测试ospf路由通路</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%85%8D%E7%BD%AEpimd"><span class="toc-number">10.</span> <span class="toc-text">配置pimd</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9F%A5%E7%9C%8B%E7%BB%84%E6%92%AD%E8%B7%AF%E7%94%B1"><span class="toc-number">11.</span> <span class="toc-text">查看组播路由</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8E%A5%E6%94%B6%E7%AB%AFPC2"><span class="toc-number">12.</span> <span class="toc-text">接收端PC2</span></a></li></ol>
+        
+    </div>
+</aside>
+
+</header>
+
+        <div id="content" class="content">
+            <div id="wrapper" class="wrapper" style="max-width: 800px">
+                <article class="article" itemscope itemprop="blogPost">
+    
+    <header class="article-header">
+        
+        <h1 itemprop="name">
+            linux网络4_组播和ospfOverGre
+        </h1>
+        
+        <div class="article-meta clearfix">
+            <a class="article-date" href="https://humble-zh.github.io/2021/10/19/linux%E7%BD%91%E7%BB%9C4_%E7%BB%84%E6%92%AD%E5%92%8CospfOverGre/index.html">
+    
+    <i class="icon-calendar vm"></i>
+    
+    <time class="vm" datetime="2021-10-19T07:32:41.000Z" itemprop="datePublished">2021-10-19</time>
+</a>
+
+            
+<div class="article-tag-list">
+    <i class="icon-tag vm"></i>
+    <a class="article-tag-link" href="/tags/gre/" rel="tag">gre</a>, <a class="article-tag-link" href="/tags/linux/" rel="tag">linux</a>, <a class="article-tag-link" href="/tags/multicast/" rel="tag">multicast</a>, <a class="article-tag-link" href="/tags/ospf/" rel="tag">ospf</a>, <a class="article-tag-link" href="/tags/pim/" rel="tag">pim</a>, <a class="article-tag-link" href="/tags/%E7%BB%84%E6%92%AD/" rel="tag">组播</a>
+</div>
+
+
+        </div>
+    </header>
+    
+    <section class="article-body markdown-body">
+        
+        <h2 id="拓扑"><a href="#拓扑" class="headerlink" title="拓扑"></a>拓扑</h2><p><img src="/2021/10/19/linux%E7%BD%91%E7%BB%9C4_%E7%BB%84%E6%92%AD%E5%92%8CospfOverGre/%E7%BB%84%E6%92%AD%E5%92%8CospfOverGre%E6%8B%93%E6%89%91.jpg" alt="TOPO"></p>
+<h2 id="组播源PC1"><a href="#组播源PC1" class="headerlink" title="组播源PC1"></a>组播源PC1</h2><p>定时发送<code>i am the xxth message to 239.255.255.249</code> 到组播组<code>239.255.255.249</code></p>
+<h2 id="配置RouterB"><a href="#配置RouterB" class="headerlink" title="配置RouterB"></a>配置RouterB</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># root @ routerB in / [15:15:39]</span></span><br><span class="line">$ iptables -t nat -D POSTROUTING 1 <span class="comment">#关闭NAT，清空nat表</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># root @ routerB in / [15:15:42]</span></span><br><span class="line">$ iptables -t nat -nvL  <span class="comment"># 查看nat表已清空</span></span><br><span class="line">Chain PREROUTING (policy ACCEPT 8 packets, 569 bytes)</span><br><span class="line"> pkts bytes target     prot opt <span class="keyword">in</span>     out     <span class="built_in">source</span>               destination</span><br><span class="line"></span><br><span class="line">Chain INPUT (policy ACCEPT 0 packets, 0 bytes)</span><br><span class="line"> pkts bytes target     prot opt <span class="keyword">in</span>     out     <span class="built_in">source</span>               destination</span><br><span class="line"></span><br><span class="line">Chain OUTPUT (policy ACCEPT 0 packets, 0 bytes)</span><br><span class="line"> pkts bytes target     prot opt <span class="keyword">in</span>     out     <span class="built_in">source</span>               destination</span><br><span class="line"></span><br><span class="line">Chain POSTROUTING (policy ACCEPT 0 packets, 0 bytes)</span><br><span class="line"> pkts bytes target     prot opt <span class="keyword">in</span>     out     <span class="built_in">source</span>               destination</span><br><span class="line"></span><br><span class="line"><span class="comment"># root @ routerB in / [15:51:02]</span></span><br><span class="line">$ ip link <span class="built_in">set</span> eth0 multicast off  <span class="comment"># 关闭eth0的组播功能，确保组播走的是gre隧道</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># root @ routerB in / [15:51:17]</span></span><br><span class="line">$ ip link <span class="built_in">set</span> eth1 multicast off  <span class="comment"># 关闭eth1的组播功能，确保组播走的是gre隧道</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># root @ routerB in / [15:51:23]</span></span><br><span class="line">$ ip addr show eth0  <span class="comment"># 看到 &lt;&gt; 内已经没了MULTICAST</span></span><br><span class="line">2: eth0: &lt;BROADCAST,UP,LOWER_UP&gt; mtu 1500 qdisc pfifo_fast state UP group default qlen 1000</span><br><span class="line">    link/ether 00:e2:69:24:0b:30 brd ff:ff:ff:ff:ff:ff</span><br><span class="line">    inet 20.1.1.2/24 brd 20.1.1.255 scope global eth0</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">    inet6 fe80::2e2:69ff:fe24:b30/64 scope link</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line"></span><br><span class="line"><span class="comment"># root @ routerB in / [16:18:55]</span></span><br><span class="line">$ ip addr show eth1  <span class="comment"># 看到 &lt;&gt; 内已经没了MULTICAST</span></span><br><span class="line">3: eth1: &lt;BROADCAST,UP,LOWER_UP&gt; mtu 1500 qdisc pfifo_fast state UP group default qlen 1000</span><br><span class="line">    link/ether 00:e2:69:24:0b:31 brd ff:ff:ff:ff:ff:ff</span><br><span class="line">    inet 30.1.1.1/24 brd 30.1.1.255 scope global eth1</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">    inet6 fe80::2e2:69ff:fe24:b31/64 scope link</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line"></span><br><span class="line"><span class="comment"># root @ routerB in / [16:50:09]</span></span><br><span class="line">$ cat /etc/quagga/ospfd.conf  <span class="comment"># 配置ospf</span></span><br><span class="line">hostname Router_B</span><br><span class="line">password testpassword</span><br><span class="line"><span class="built_in">enable</span> password testpassword</span><br><span class="line">router ospf</span><br><span class="line">	ospf router-id 20.1.1.2</span><br><span class="line">	network 30.1.1.0/24 area 0</span><br><span class="line">	network 20.1.1.0/24 area 0</span><br><span class="line">debug ospf event</span><br><span class="line"><span class="built_in">log</span> file /usr/<span class="built_in">local</span>/etc/ospfd.log</span><br><span class="line"></span><br><span class="line"><span class="comment"># root @ routerB in / [16:50:14]</span></span><br><span class="line">$ systemctl restart quagga.service  <span class="comment"># 重启quagg(ospf)</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># root @ routerB in / [17:00:36]</span></span><br><span class="line">$ ip r  <span class="comment"># 查看路由表</span></span><br><span class="line">20.1.1.0/24 dev eth0  proto kernel  scope link  src 20.1.1.2</span><br><span class="line">30.1.1.0/24 dev eth1  proto kernel  scope link  src 30.1.1.1</span><br></pre></td></tr></table></figure>
+<h2 id="配置gre"><a href="#配置gre" class="headerlink" title="配置gre"></a>配置gre</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#routerA</span></span><br><span class="line">remoteip=30.1.1.2</span><br><span class="line">localip=20.1.1.1</span><br><span class="line">greip=10.10.10.1</span><br><span class="line">grepeerip=10.10.10.2</span><br><span class="line">grename=gre1</span><br></pre></td></tr></table></figure>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#routerC</span></span><br><span class="line">remoteip=20.1.1.1</span><br><span class="line">localip=30.1.1.2</span><br><span class="line">greip=10.10.10.2</span><br><span class="line">grepeerip=10.10.10.1</span><br><span class="line">grename=gre1</span><br></pre></td></tr></table></figure>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#routerA and routerC</span></span><br><span class="line">lsmod|grep ip_gre || modprobe ip_gre</span><br><span class="line"><span class="comment">#ping -c1 $&#123;remoteip&#125; || &#123; echo &quot;make sure the network is ok plz&quot;; exit 1; &#125;</span></span><br><span class="line">ip addr show <span class="variable">$&#123;grename&#125;</span> &amp;&amp; &#123; <span class="built_in">echo</span> <span class="string">&quot;<span class="variable">$&#123;grename&#125;</span> is already exist&quot;</span>; <span class="built_in">exit</span> 1; &#125;</span><br><span class="line"></span><br><span class="line">ip tunnel add <span class="variable">$&#123;grename&#125;</span> mode gre remote <span class="variable">$&#123;remoteip&#125;</span> <span class="built_in">local</span> <span class="variable">$&#123;localip&#125;</span> ikey 1 okey 1 ttl 255;</span><br><span class="line">ip addr add <span class="variable">$&#123;greip&#125;</span> dev <span class="variable">$&#123;grename&#125;</span> peer <span class="variable">$&#123;grepeerip&#125;</span>;</span><br><span class="line">ip link <span class="built_in">set</span> <span class="variable">$&#123;grename&#125;</span> multicast on up; <span class="comment">#mtu 1400; # 注意一定要multicast on</span></span><br><span class="line">ip addr show <span class="variable">$&#123;grename&#125;</span>;</span><br></pre></td></tr></table></figure>
+<h2 id="查看gre隧道接口"><a href="#查看gre隧道接口" class="headerlink" title="查看gre隧道接口"></a>查看gre隧道接口</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># root @ routerA in / [16:53:20]</span></span><br><span class="line">$ ip addr show gre1</span><br><span class="line">7: gre1@NONE: &lt;POINTOPOINT,MULTICAST,NOARP,UP,LOWER_UP&gt; mtu 1472 qdisc noqueue state UNKNOWN group default qlen 1</span><br><span class="line">    link/gre 20.1.1.1 peer 30.1.1.2</span><br><span class="line">    inet 10.10.10.1 peer 10.10.10.2/32 scope global gre1</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">    inet6 fe80::200:5efe:1401:101/64 scope link</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br></pre></td></tr></table></figure>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># root @ routerC in / [16:54:38]</span></span><br><span class="line">$ ip addr show gre1</span><br><span class="line">16: gre1@NONE: &lt;POINTOPOINT,MULTICAST,NOARP,UP,LOWER_UP&gt; mtu 1472 qdisc noqueue state UNKNOWN group default qlen 1</span><br><span class="line">    link/gre 30.1.1.2 peer 20.1.1.1</span><br><span class="line">    inet 10.10.10.2 peer 10.10.10.1/32 scope global gre1</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">    inet6 fe80::200:5efe:1e01:102/64 scope link</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br></pre></td></tr></table></figure>
+<h2 id="测试隧道连接"><a href="#测试隧道连接" class="headerlink" title="测试隧道连接"></a>测试隧道连接</h2><p>routerA <code>ping -I 10.10.10.1 10.10.10.2 -c2</code> 通路<br>routerC <code>ping -I 10.10.10.2 10.10.10.1 -c2</code> 通路</p>
+<h2 id="配置router-A和C的ospf"><a href="#配置router-A和C的ospf" class="headerlink" title="配置router A和C的ospf"></a>配置router A和C的ospf</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># root @ routerA in / [16:56:48]</span></span><br><span class="line">$ cat /etc/quagga/ospfd.conf</span><br><span class="line">hostname Router_A</span><br><span class="line">password testpassword</span><br><span class="line"><span class="built_in">enable</span> password testpassword</span><br><span class="line">router ospf</span><br><span class="line">	ospf router-id 10.10.10.1  <span class="comment"># 这里用gre隧道的ip</span></span><br><span class="line">	network 10.1.1.0/24 area 0</span><br><span class="line">	network 10.10.10.0/24 area 0  <span class="comment"># 使用隧道的网段</span></span><br><span class="line">debug ospf event</span><br><span class="line"><span class="built_in">log</span> file /usr/<span class="built_in">local</span>/etc/ospfd.log</span><br><span class="line"></span><br><span class="line"><span class="comment"># root @ routerA in / [17:05:03]</span></span><br><span class="line">$ systemctl restart quagga.service</span><br></pre></td></tr></table></figure>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># root @ routerC in / [17:06:07]</span></span><br><span class="line">$ cat /etc/quagga/ospfd.conf</span><br><span class="line">hostname Router_C</span><br><span class="line">password testpassword</span><br><span class="line"><span class="built_in">enable</span> password testpassword</span><br><span class="line">router ospf</span><br><span class="line">    ospf router-id 10.10.10.2  <span class="comment"># 这里用gre隧道的ip</span></span><br><span class="line">    network 10.2.1.0/24 area 0</span><br><span class="line">    network 10.10.10.0/24 area 0  <span class="comment"># 使用隧道的网段</span></span><br><span class="line">debug ospf event</span><br><span class="line"><span class="built_in">log</span> file /usr/<span class="built_in">local</span>/etc/ospfd.log</span><br><span class="line"></span><br><span class="line"><span class="comment"># root @ routerC in / [17:06:19]</span></span><br><span class="line">$ systemctl restart quagga.service</span><br></pre></td></tr></table></figure>
+<h2 id="查看ospf生成的路由"><a href="#查看ospf生成的路由" class="headerlink" title="查看ospf生成的路由"></a>查看ospf生成的路由</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># root @ routerA in / [17:05:10]</span></span><br><span class="line">$ ip r</span><br><span class="line">default via 20.1.1.2 dev eth1</span><br><span class="line">10.1.1.0/24 dev eth0  proto kernel  scope link  src 10.1.1.1</span><br><span class="line">10.2.1.0/24 via 10.10.10.2 dev gre1  proto zebra  metric 20  <span class="comment"># 这条由zebra生成的就是</span></span><br><span class="line">10.10.10.2 dev gre1  proto kernel  scope link  src 10.10.10.1</span><br><span class="line">20.1.1.0/24 dev eth1  proto kernel  scope link  src 20.1.1.1</span><br></pre></td></tr></table></figure>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># root @ routerC in / [17:06:24]</span></span><br><span class="line">$ ip r</span><br><span class="line">default via 30.1.1.1 dev eth1</span><br><span class="line">10.1.1.0/24 via 10.10.10.1 dev gre1  proto zebra  metric 20  <span class="comment"># 这条由zebra生成的就是</span></span><br><span class="line">10.2.1.0/24 dev eth0  proto kernel  scope link  src 10.2.1.1</span><br><span class="line">10.10.10.1 dev gre1  proto kernel  scope link  src 10.10.10.2</span><br><span class="line">30.1.1.0/24 dev eth1  proto kernel  scope link  src 30.1.1.2</span><br><span class="line">192.168.255.0/24 dev eth3  proto kernel  scope link  src 192.168.255.1</span><br></pre></td></tr></table></figure>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># root @ routerB in / [17:00:38]</span></span><br><span class="line">$ ip r  <span class="comment"># routerB确实没有获取到gre相关路由</span></span><br><span class="line">20.1.1.0/24 dev eth0  proto kernel  scope link  src 20.1.1.2</span><br><span class="line">30.1.1.0/24 dev eth1  proto kernel  scope link  src 30.1.1.1</span><br></pre></td></tr></table></figure>
+<h2 id="测试ospf路由通路"><a href="#测试ospf路由通路" class="headerlink" title="测试ospf路由通路"></a>测试ospf路由通路</h2><p>PC1 <code>ping 10.2.1.2</code> 通路<br>PC2 <code>ping 10.1.1.2</code> 通路</p>
+<h2 id="配置pimd"><a href="#配置pimd" class="headerlink" title="配置pimd"></a>配置pimd</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># root @ routerA in / [17:09:14]</span></span><br><span class="line">$ diff -rauN /etc/pimd.conf.bak /etc/pimd.conf</span><br><span class="line">--- /etc/pimd.conf.bak	2021-10-18 16:43:11.313255253 +0800</span><br><span class="line">+++ /etc/pimd.conf	2021-10-19 15:41:13.738745717 +0800</span><br><span class="line">@@ -132,7 +132,7 @@</span><br><span class="line"> <span class="comment">#group-prefix 224.0.0.0 masklen 4</span></span><br><span class="line"></span><br><span class="line"> <span class="comment"># Static rendez-vous point</span></span><br><span class="line">-<span class="comment">#rp-address 192.168.10.1 224.0.0.0/4  # 自选举方式</span></span><br><span class="line">+rp-address 10.10.10.1 224.0.0.0/4  <span class="comment"># 自选举太慢，手动指定汇聚点(这里用gre接口ip,也可用routerA的eth0的ip 10.1.1.1)</span></span><br><span class="line"></span><br><span class="line"> <span class="comment"># Switch to shortest-path tree after first packet, but only after 100 sec.</span></span><br><span class="line"> spt-threshold packets 0 interval 100</span><br><span class="line"></span><br><span class="line"><span class="comment"># root @ routerA in / [17:20:01]</span></span><br><span class="line">$ systemctl restart pimd.service</span><br></pre></td></tr></table></figure>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># root @ routerC in / [17:10:07]</span></span><br><span class="line">$ diff -rauN /etc/pimd.conf.bak /etc/pimd.conf</span><br><span class="line">--- /etc/pimd.conf.bak	2021-09-27 14:49:18.706881067 +0800</span><br><span class="line">+++ /etc/pimd.conf	2021-10-19 15:40:35.242644448 +0800</span><br><span class="line">@@ -112,7 +112,9 @@</span><br><span class="line"></span><br><span class="line"> <span class="comment"># By default, all non-loopback multicast capable interfaces are enabled.</span></span><br><span class="line"> <span class="comment"># If you want to use loopback, set the interface multicast flag on it.</span></span><br><span class="line">-<span class="comment">#phyint eth0 disable</span></span><br><span class="line">+phyint eth3 <span class="built_in">disable</span>  <span class="comment"># 关闭不想要进行组播的端口</span></span><br><span class="line"></span><br><span class="line"> <span class="comment"># IGMP default query interval and querier timeout.  The latter should</span></span><br><span class="line"> <span class="comment"># per RFC always be (robustness * interval) + (query-response / 2), for</span></span><br><span class="line">@@ -132,7 +134,7 @@</span><br><span class="line"> <span class="comment">#group-prefix 224.0.0.0 masklen 4</span></span><br><span class="line"></span><br><span class="line"> <span class="comment"># Static rendez-vous point</span></span><br><span class="line">-<span class="comment">#rp-address 192.168.10.1 224.0.0.0/4  # 自选举方式</span></span><br><span class="line">+rp-address 10.10.10.1 224.0.0.0/4  <span class="comment"># 自选举太慢，手动指定汇聚点(这里用gre接口ip,也可用routerA的eth0的ip 10.1.1.1)</span></span><br><span class="line"></span><br><span class="line"> <span class="comment"># Switch to shortest-path tree after first packet, but only after 100 sec.</span></span><br><span class="line"> spt-threshold packets 0 interval 100</span><br><span class="line"></span><br><span class="line"><span class="comment"># root @ routerC in / [17:22:37]</span></span><br><span class="line">$ systemctl restart pimd.service</span><br></pre></td></tr></table></figure>
+<h2 id="查看组播路由"><a href="#查看组播路由" class="headerlink" title="查看组播路由"></a>查看组播路由</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># root @ routerA in / [17:22:13]</span></span><br><span class="line">$ pimd -r</span><br><span class="line">Virtual Interface Table ======================================================</span><br><span class="line">Vif  Local Address    Subnet              Thresh  Flags      Neighbors</span><br><span class="line">---  ---------------  ------------------  ------  ---------  -----------------</span><br><span class="line">  0  10.1.1.1         10.1.1/24                1  DR NO-NBR</span><br><span class="line">  1  20.1.1.1         20.1.1/24                1  DR NO-NBR</span><br><span class="line">  2  10.10.10.1       10.10.10.1/32            1  PIM        10.10.10.2</span><br><span class="line">  3  10.1.1.1         register_vif0            1</span><br><span class="line"></span><br><span class="line"> Vif  SSM Group        Sources</span><br><span class="line"></span><br><span class="line">Multicast Routing Table ======================================================</span><br><span class="line">----------------------------------- (*,G) ------------------------------------</span><br><span class="line">Source           Group            RP Address       Flags</span><br><span class="line">---------------  ---------------  ---------------  ---------------------------</span><br><span class="line">INADDR_ANY       239.255.255.249  10.10.10.1       WC RP</span><br><span class="line">Joined   oifs: ..j.</span><br><span class="line">Pruned   oifs: ....</span><br><span class="line">Leaves   oifs: ....</span><br><span class="line">Asserted oifs: ....</span><br><span class="line">Outgoing oifs: ..o.</span><br><span class="line">Incoming     : ...I</span><br><span class="line"></span><br><span class="line">TIMERS:  Entry    JP    RS  Assert VIFS:  0  1  2  3</span><br><span class="line">           200    55     0       0        0  0 200  0</span><br><span class="line">----------------------------------- (S,G) ------------------------------------</span><br><span class="line">Source           Group            RP Address       Flags</span><br><span class="line">---------------  ---------------  ---------------  ---------------------------</span><br><span class="line">10.1.1.2         239.255.255.249  10.10.10.1       SPT CACHE SG</span><br><span class="line">Joined   oifs: ..jj</span><br><span class="line">Pruned   oifs: ....</span><br><span class="line">Leaves   oifs: ....</span><br><span class="line">Asserted oifs: ....</span><br><span class="line">Outgoing oifs: ..oo</span><br><span class="line">Incoming     : I...</span><br><span class="line"></span><br><span class="line">TIMERS:  Entry    JP    RS  Assert VIFS:  0  1  2  3</span><br><span class="line">           165    20     0       0        0  0 140  0</span><br><span class="line">Source           Group            RP Address       Flags</span><br><span class="line">---------------  ---------------  ---------------  ---------------------------</span><br><span class="line">10.10.10.1       239.255.255.249  10.10.10.1       RP SG</span><br><span class="line">Joined   oifs: ....</span><br><span class="line">Pruned   oifs: ..p.</span><br><span class="line">Leaves   oifs: ....</span><br><span class="line">Asserted oifs: ....</span><br><span class="line">Outgoing oifs: ....</span><br><span class="line">Incoming     : ...I</span><br><span class="line"></span><br><span class="line">TIMERS:  Entry    JP    RS  Assert VIFS:  0  1  2  3</span><br><span class="line">           205    55     0       0        0  0  0  0</span><br><span class="line">--------------------------------- (*,*,G) ------------------------------------</span><br><span class="line">Number of Groups: 1</span><br><span class="line">Number of Cache MIRRORs: 1</span><br><span class="line">------------------------------------------------------------------------------</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># root @ routerA in / [17:24:23]</span></span><br><span class="line">$ ip mroute show  <span class="comment"># 看到PC1发的组播239.255.255.249数据从eth0进来，从gre1出去</span></span><br><span class="line">(10.1.1.2, 239.255.255.249)      Iif: eth0       Oifs: gre1 pimreg</span><br></pre></td></tr></table></figure>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># root @ routerC in / [17:26:09]</span></span><br><span class="line">$ pimd -r</span><br><span class="line">Virtual Interface Table ======================================================</span><br><span class="line">Vif  Local Address    Subnet              Thresh  Flags      Neighbors</span><br><span class="line">---  ---------------  ------------------  ------  ---------  -----------------</span><br><span class="line">  0  10.2.1.1         10.2.1/24                1  DR NO-NBR</span><br><span class="line">  1  30.1.1.2         30.1.1/24                1  DR NO-NBR</span><br><span class="line">  2  192.168.255.1    192.168.255              1  DISABLED</span><br><span class="line">  3  10.10.10.2       10.10.10.2/32            1  DR PIM     10.10.10.1</span><br><span class="line">  4  10.2.1.1         register_vif0            1</span><br><span class="line"></span><br><span class="line"> Vif  SSM Group        Sources</span><br><span class="line"></span><br><span class="line">Multicast Routing Table ======================================================</span><br><span class="line">----------------------------------- (*,G) ------------------------------------</span><br><span class="line">Source           Group            RP Address       Flags</span><br><span class="line">---------------  ---------------  ---------------  ---------------------------</span><br><span class="line">INADDR_ANY       239.255.255.249  10.10.10.1       WC RP</span><br><span class="line">Joined   oifs: .....</span><br><span class="line">Pruned   oifs: .....</span><br><span class="line">Leaves   oifs: l....</span><br><span class="line">Asserted oifs: .....</span><br><span class="line">Outgoing oifs: o....</span><br><span class="line">Incoming     : ...I.</span><br><span class="line"></span><br><span class="line">TIMERS:  Entry    JP    RS  Assert VIFS:  0  1  2  3  4</span><br><span class="line">             0    55     0       0        0  0  0  0  0</span><br><span class="line">----------------------------------- (S,G) ------------------------------------</span><br><span class="line">Source           Group            RP Address       Flags</span><br><span class="line">---------------  ---------------  ---------------  ---------------------------</span><br><span class="line">10.10.10.1       239.255.255.249  10.10.10.1       SPT CACHE SG</span><br><span class="line">Joined   oifs: ....j</span><br><span class="line">Pruned   oifs: ....p</span><br><span class="line">Leaves   oifs: l....</span><br><span class="line">Asserted oifs: .....</span><br><span class="line">Outgoing oifs: o....</span><br><span class="line">Incoming     : ...I.</span><br><span class="line"></span><br><span class="line">TIMERS:  Entry    JP    RS  Assert VIFS:  0  1  2  3  4</span><br><span class="line">           195    55     1       0        0  0  0  0  0</span><br><span class="line">--------------------------------- (*,*,G) ------------------------------------</span><br><span class="line">Number of Groups: 1</span><br><span class="line">Number of Cache MIRRORs: 1</span><br><span class="line">------------------------------------------------------------------------------</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># root @ routerC in / [17:26:10]</span></span><br><span class="line">$ ip mroute show  <span class="comment"># 看到组播239.255.255.249数据从gre1进来，从eth0出去发给PC2</span></span><br><span class="line">(10.10.10.1, 239.255.255.249)    Iif: gre1       Oifs: eth0 pimreg</span><br></pre></td></tr></table></figure>
+<h2 id="接收端PC2"><a href="#接收端PC2" class="headerlink" title="接收端PC2"></a>接收端PC2</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># zh @ li in ~ [17:35:30]</span></span><br><span class="line">$ ./rcver 239.255.255.249 enp2s0</span><br><span class="line">---MESSAGE FROM:10.2.1.1:44853---</span><br><span class="line">[i am the 32822th message to 239.255.255.249]</span><br><span class="line"></span><br><span class="line">---MESSAGE FROM:10.2.1.1:44853---</span><br><span class="line">[i am the 32821th message to 239.255.255.249]</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+        
+    </section>
+</article>
+
+
+
+<a id="pagenext" href="/2021/10/14/linux%E9%A9%B1%E5%8A%A8%E7%AC%94%E8%AE%B0/" class="article-next" title="linux驱动笔记"><i class="icon-arrow-right"></i></a>
+
+
+<a id="pageprev" href="/2021/11/05/ssh%E7%AC%94%E8%AE%B0/" class="article-prev" title="ssh笔记"><i class="icon-arrow-left"></i></a>
+
+
+
+
+            </div>
+        </div>
+        <footer class="footer">
+    Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>, Theme by <a href="https://github.com/sanonz/hexo-theme-concise" target="_blank">Concise</a>
+
+    
+    <script>
+        var _hmt = _hmt || [];
+        (function () {
+            var hm = document.createElement("script");
+            hm.src = "https://hm.baidu.com/hm.js?e4027971a230b210f4671f485b33846a";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+    
+</footer>
+
+    </main>
+
+    <script type="text/javascript" src="https://unpkg.com/jquery@1.9.1/jquery.min.js"></script>
+    <script type="text/javascript">
+    $(function() {
+        var nodes = {
+            nav: $('#nav'),
+            aside: $('#aside'),
+            asideInner: $('#aside-inner'),
+            navInner: $('#nav-inner')
+        };
+
+        var doing = false;
+        nodes.asideInner.on('webkitAnimationEnd mozAnimationEnd oAnimationEnd oanimationend animationend', function() {
+            if (nodes.aside.hasClass('mobile-open')) {
+                nodes.aside.removeClass('mobile-open');
+            } else {
+                nodes.aside.removeClass('mobile-close panel-show');
+            }
+            doing = false;
+        });
+        $('#open-panel, #aside-mask').on('click', function() {
+            if (doing) {
+                return;
+            }
+
+            if (nodes.aside.hasClass('panel-show')) {
+                nodes.aside.addClass('mobile-close');
+            } else {
+                nodes.aside.addClass('mobile-open panel-show');
+            }
+        });
+        $('#open-menus').on('click', function() {
+            nodes.navInner.slideToggle('normal', slideDone);
+        });
+
+        if (window.innerWidth <= 960) {
+            setTimeout(function() {
+                nodes.navInner.slideUp('normal', slideDone);
+            }, 3000);
+        }
+
+        function slideDone() {
+            if (nodes.navInner.css('display') !== 'none') {
+                nodes.navInner.css('display', '');
+            }
+        }
+
+        $(window).on('resize', function() {
+            if ($(this).width() > 960) {
+                nodes.navInner.css('display', '');
+            }
+        });
+    });
+    </script>
+    
+        
+<script src="/js/scrollspy.min.js"></script>
+
+        <script type="text/javascript">
+        $(document.body).scrollspy({target: '#aside-inner'});
+
+        $(window).on('resize', function() {
+            var hw = $('#header').width();
+            var ww = $('#wrapper').width();
+            var space = ($(this).width() - hw - ww) / 2 / 2;
+
+            var pageprev = $('#pageprev');
+            var pagenext = $('#pagenext');
+            var avg = (pageprev.width() + pagenext.width()) / 2
+
+            if(space > avg) {
+                var len = space - avg / 2;
+                var styles = {position: 'fixed', top: '50%', marginTop: - (pageprev.width() + pagenext.width()) / 4}
+                pageprev.css($.extend({left: hw + len}, styles));
+                pagenext.css($.extend({right: len}, styles));
+            } else {
+                pageprev.removeAttr('style');
+                pagenext.removeAttr('style');
+            }
+        }).trigger('resize');
+        </script>
+    
+
+</body>
+</html>

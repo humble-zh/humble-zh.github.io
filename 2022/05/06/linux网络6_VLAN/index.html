@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+
+    
+
+    
+
+    <title>linux网络6_VLAN | Zhihong&#39;s Blog</title>
+    <meta name="author" content="Zhihong Li" />
+    <meta name="keywords" content="zhbox" />
+    <meta name="description" content="VLAN什么是 VLANVLAN （ Virtual Local Area Network ）又称虚拟局域网，是指在交换局域网的基础上，采用网络管理软件构建的可跨越不同网段、不同网络的端到端的逻辑网络。一个 VLAN 组成 一个逻辑子网， 即一个逻辑广播域，它可以覆盖多个网络设备，允许处于不同地理位置的网 络用户加入到一个逻辑子网中。使用 VLAN 优点控制广播风暴 一个 VLAN 就是一个逻辑广播域，通过对VLAN的创建，隔离了广播，缩小了广播范围，可以控制广播风暴的产生。提高网络整体安全性 " />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no" />
+
+    
+    <link rel="alternate" href="/atom.xml" title="Zhihong&#39;s Blog" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/images/favicon.ico">
+    
+
+    <style type="text/css">
+    @font-face {
+        font-family: 'icomoon';
+        src: url("/fonts/icomoon.eot?q628ml");
+        src: url("/fonts/icomoon.eot?q628ml#iefix") format('embedded-opentype'),
+             url("/fonts/icomoon.ttf?q628ml") format('truetype'),
+             url("/fonts/icomoon.woff?q628ml") format('woff'),
+             url("/fonts/icomoon.svg?q628ml#icomoon") format('svg');
+        font-weight: normal;
+        font-style: normal;
+    }
+    </style>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!--[if lt IE 9]><style type="text/css">.nav-inner {top:0;}.author-meta {position:static;top:0;}.search-form {height:36px;}</style><script type="text/javascript" src="https://unpkg.com/html5shiv@3.7.3/dist/html5shiv.min.js"></script><![endif]-->
+<meta name="generator" content="Hexo 5.3.0"></head>
+<body>
+
+    <main class="app">
+        <header id="header" class="header clearfix">
+    <div id="nav" class="nav">
+    <div class="nav-mobile">
+        <button id="open-panel" class="open-panel nav-mobile-item"><i class="icon-documents"></i></button>
+        <h1 class="nav-mobile-title nav-mobile-item">Zhihong&#39;s Blog</h1>
+        <button id="open-menus" class="open-panel nav-mobile-item"><i class="icon-library"></i></button>
+    </div>
+
+    <nav id="nav-inner" class="nav-inner">
+        
+            <a class="nav-item" href="/">
+                <span class="nav-text">首页</span>
+            </a>
+        
+            <a class="nav-item" href="/zhbox">
+                <span class="nav-text">中盒</span>
+            </a>
+        
+            <a class="nav-item" href="/tags">
+                <span class="nav-text">标签</span>
+            </a>
+        
+            <a class="nav-item" href="/archives">
+                <span class="nav-text">归档</span>
+            </a>
+        
+            <a class="nav-item" href="/about">
+                <span class="nav-text">关于</span>
+            </a>
+        
+    </nav>
+</div>
+
+    <aside id="aside" class="aside">
+    <div id="aside-mask" class="aside-mask"></div>
+    <div id="aside-inner" class="aside-inner">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit"><i class="icon-search-stroke"></i></button><input type="hidden" name="sitesearch" value="https://humble-zh.github.io"></form>
+
+        
+        
+        
+        
+
+        
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#VLAN"><span class="toc-number">1.</span> <span class="toc-text">VLAN</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF-VLAN"><span class="toc-number">1.1.</span> <span class="toc-text">什么是 VLAN</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8-VLAN-%E4%BC%98%E7%82%B9"><span class="toc-number">1.2.</span> <span class="toc-text">使用 VLAN 优点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%89%A9%E7%90%86%E7%BD%91%E5%8D%A1%E3%80%81%E5%AD%90%E7%BD%91%E5%8D%A1%E3%80%81%E8%99%9A%E6%8B%9F-VLAN-%E7%BD%91%E5%8D%A1%E7%9A%84%E5%85%B3%E7%B3%BB%EF%BC%9A"><span class="toc-number">1.3.</span> <span class="toc-text">物理网卡、子网卡、虚拟 VLAN 网卡的关系：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#brctl"><span class="toc-number">2.</span> <span class="toc-text">brctl</span></a></li></ol>
+        
+    </div>
+</aside>
+
+</header>
+
+        <div id="content" class="content">
+            <div id="wrapper" class="wrapper" style="max-width: 800px">
+                <article class="article" itemscope itemprop="blogPost">
+    
+    <header class="article-header">
+        
+        <h1 itemprop="name">
+            linux网络6_VLAN
+        </h1>
+        
+        <div class="article-meta clearfix">
+            <a class="article-date" href="https://humble-zh.github.io/2022/05/06/linux%E7%BD%91%E7%BB%9C6_VLAN/index.html">
+    
+    <i class="icon-calendar vm"></i>
+    
+    <time class="vm" datetime="2022-05-06T07:32:41.000Z" itemprop="datePublished">2022-05-06</time>
+</a>
+
+            
+<div class="article-tag-list">
+    <i class="icon-tag vm"></i>
+    <a class="article-tag-link" href="/tags/VLAN/" rel="tag">VLAN</a>, <a class="article-tag-link" href="/tags/linux/" rel="tag">linux</a>
+</div>
+
+
+        </div>
+    </header>
+    
+    <section class="article-body markdown-body">
+        
+        <h2 id="VLAN"><a href="#VLAN" class="headerlink" title="VLAN"></a>VLAN</h2><h3 id="什么是-VLAN"><a href="#什么是-VLAN" class="headerlink" title="什么是 VLAN"></a>什么是 VLAN</h3><p>VLAN （ Virtual Local Area Network ）又称虚拟局域网，是指在交换局域网的基础上，采用网络管理软件构建的可跨越不同网段、不同网络的端到端的逻辑网络。一个 VLAN 组成 一个逻辑子网， 即一个逻辑广播域，它可以覆盖多个网络设备，允许处于不同地理位置的网 络用户加入到一个逻辑子网中。</p>
+<h3 id="使用-VLAN-优点"><a href="#使用-VLAN-优点" class="headerlink" title="使用 VLAN 优点"></a>使用 VLAN 优点</h3><ol>
+<li><p>控制广播风暴</p>
+<p> 一个 VLAN 就是一个逻辑广播域，通过对VLAN的创建，隔离了广播，缩小了广播范围，可以控制广播风暴的产生。</p>
+</li>
+<li><p>提高网络整体安全性</p>
+<p> 通过路由访问列表和 MAC 地址分配等VLAN划分原则，可以控制用户访问权限和逻辑网段大小，将不同用户群划分在不同VLAN从而提高交换式网络的整体性能和安全性。</p>
+</li>
+<li><p>网络管理简单、直观</p>
+<p> 对于交换式以太网， 如果对某些用户重新进行网段分配， 需要网络管理员对网络系统的 物理结构重新进行调整，甚至需要追加网络设备，增大网络管理的工作量。而对于采用VLAN 技术的网络来说，一个 VLAN 可以根据部门职能、对象组或者应用将不同地理位置的网络用 户划分为一个逻辑网段。在不改动网络物理连接的情况下可以任意地将工作站在工作组或子 网之间移动。利用虚拟网络技术，大大减轻了网络管理和维护工作的负担，降低了网络维护 费用。在一个交换网络中，VLAN 提供了网段和机构的弹性组合机制</p>
+</li>
+</ol>
+<h3 id="物理网卡、子网卡、虚拟-VLAN-网卡的关系："><a href="#物理网卡、子网卡、虚拟-VLAN-网卡的关系：" class="headerlink" title="物理网卡、子网卡、虚拟 VLAN 网卡的关系："></a>物理网卡、子网卡、虚拟 VLAN 网卡的关系：</h3><ol>
+<li>物理网卡：服务器上物理网络接口设备，也就是要配置 trunk 的具体接口。</li>
+<li>子网卡：子网卡并不是网络接口设备，但是可以作为网络接口在系统中出现，如 eth0:1 、 eth1:2 这种网络接口。必须要依赖于物理网卡，可以与物理网卡同时在系统中存 在并使用不同的 IP 地址，而且也拥有它们自己的网络接口配置文件。但是所依赖的物理网 卡 down 掉时子网卡也不能工作。</li>
+<li>虚拟 VLAN 网卡：虚拟 VLAN 网卡也不是物理网络接口设备，可以作为网络接口在系统 中出现，与子网卡不同的是，没有自己的配置文件。是通过将物理网加入不同的 VLAN 而生 成的 VLAN 虚拟网卡。如果将一个物理网卡添加到多个 VLAN 当中去的话，就会有多个 VLAN 虚拟网卡出现，相关的 VLAN 信息都是保存在/proc/net/vlan/config 这文件中的， 以 eth0.1、eth1.2 命名</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br></pre></td><td class="code"><pre><span class="line">[root@li]<span class="comment"># modinfo 8021q # 查看是否有 vlan 模块</span></span><br><span class="line">[root@li]<span class="comment"># modprobe 8021q # 添加模块</span></span><br><span class="line">[root@li]<span class="comment"># vconfig add eth0 10 # 给eth0添加vlan id 10</span></span><br><span class="line">[root@li]<span class="comment"># vconfig add eth0 20 # 给eth0添加vlan id 20</span></span><br><span class="line">[root@li]<span class="comment"># vconfig set_flag eth0.10 1 1 # 设置VLAN的REORDER_HDR参数，默认就行了。</span></span><br><span class="line">[root@li]<span class="comment"># vconfig set_flag eth0.20 1 1 # 同上</span></span><br><span class="line">[root@TSG-li]<span class="comment"># cat /proc/net/vlan/eth0.10 # 查看eth0.10参数</span></span><br><span class="line">eth0.10 VID: 10 REORDER_HDR: 1 dev-&gt;priv_flags: 81</span><br><span class="line">    total frames received 1</span><br><span class="line">    total bytes received 68</span><br><span class="line">    Broadcast/Multicast Rcvd 1</span><br><span class="line">    total frames transmitted 3</span><br><span class="line">    total bytes transmitted 270</span><br><span class="line">    total headroom inc 0</span><br><span class="line">    total encap on xmit 3</span><br><span class="line">Device: eth0</span><br><span class="line">INGRESS priority mappings: 0:0 1:0 2:0 3:0 4:0 5:0 6:0 7:0</span><br><span class="line"> EGRESS priority Mappings:</span><br><span class="line"></span><br><span class="line">[root@li]<span class="comment"># ifconfig eth0 0.0.0.0</span></span><br><span class="line">[root@li]<span class="comment"># ifconfig eth0.10 192.168.10.10 netmask 255.255.255.0 up</span></span><br><span class="line">[root@li]<span class="comment"># ifconfig eth0.20 192.168.20.10 netmask 255.255.255.0 up</span></span><br><span class="line">[root@li]<span class="comment"># ifconfig eth0.10</span></span><br><span class="line">eth0.10 Link encap:Ethernet HWaddr 00:0C:29:27:D6:74</span><br><span class="line"> inet addr:192.168.10.10 Bcast:192.168.10.255 Mask:255.255.255.0</span><br><span class="line"> inet6 addr: fe80::20c:29ff:fe27:d674/64 Scope:Link</span><br><span class="line"> UP BROADCAST RUNNING MULTICAST MTU:1500 Metric:1</span><br><span class="line"> RX packets:1 errors:0 dropped:0 overruns:0 frame:0</span><br><span class="line"> TX packets:3 errors:0 dropped:0 overruns:0 carrier:0</span><br><span class="line"> collisions:0 txqueuelen:0</span><br><span class="line"> RX bytes:68 (68.0 b) TX bytes:270 (270.0 b)</span><br><span class="line"></span><br><span class="line">[root@li]<span class="comment"># ifconfig eth0.20</span></span><br><span class="line">eth0.20 Link encap:Ethernet HWaddr 00:0C:29:27:D6:74</span><br><span class="line"> inet addr:192.168.20.10 Bcast:192.168.20.255 Mask:255.255.255.0</span><br><span class="line"> inet6 addr: fe80::20c:29ff:fe27:d674/64 Scope:Link</span><br><span class="line"> UP BROADCAST RUNNING MULTICAST MTU:1500 Metric:1</span><br><span class="line"> RX packets:1 errors:0 dropped:0 overruns:0 frame:0</span><br><span class="line"> TX packets:2 errors:0 dropped:0 overruns:0 carrier:0</span><br><span class="line"> collisions:0 txqueuelen:0</span><br><span class="line"> RX bytes:68 (68.0 b) TX bytes:176 (176.0 b)</span><br><span class="line"></span><br><span class="line">[root@li]<span class="comment"># brctl addbr br0 # 创建一个网桥</span></span><br><span class="line">[root@li]<span class="comment"># brctl show</span></span><br><span class="line">[root@li]<span class="comment"># brctl addif br0 eth0.10 # 把vlan eth0.10加到网桥上</span></span><br><span class="line">[root@li]<span class="comment"># brctl addif br0 eth0.20 # 把vlan eth0.20加到网桥上</span></span><br><span class="line">[root@li]<span class="comment"># brctl show</span></span><br><span class="line"></span><br><span class="line">bridge name bridge id           STP enabled interfaces</span><br><span class="line">br0         8000.000c29f59487   no          eth0.10,eth0.20</span><br><span class="line"></span><br><span class="line"><span class="comment">#STP enabled为no，可以用brctl stp &lt;bridge&gt; &lt;state&gt; 控制网桥是否加入STP树中，&lt;state&gt;可以是&#x27;on&#x27;或者&#x27;yes&#x27;表示加入stp树中，&#x27;off&#x27;表示关闭stp。</span></span><br><span class="line"></span><br><span class="line">[root@li]<span class="comment"># brctl stp br0 yes</span></span><br><span class="line">[root@li]<span class="comment"># brctl show</span></span><br><span class="line">bridge name bridge id           STP enabled interfaces</span><br><span class="line">br0         8000.000c29f59487   yes         eth0.10,eth0.20</span><br><span class="line"></span><br><span class="line">[root@li]<span class="comment"># brctl stp br0 off</span></span><br><span class="line">[root@li]<span class="comment"># brctl show</span></span><br><span class="line">bridge name bridge id           STP enabled interfaces</span><br><span class="line">br0         8000.000c29f59487   no          eth0.10,eth0.20</span><br><span class="line"></span><br><span class="line">[root@li]<span class="comment"># ifconfig br0 172.16.1.254/24 # 配置网桥br0的ip # ip a a 172.16.1.254/24 dev br0</span></span><br><span class="line"></span><br><span class="line">[root@li]<span class="comment"># ifconfig eth0.10 down</span></span><br><span class="line">[root@li]<span class="comment"># ip link set eth0.10 name eth10 # 改eth0.10网卡名称</span></span><br><span class="line">[root@li]<span class="comment"># ifconfig eth10 up</span></span><br><span class="line">[root@li]<span class="comment"># ifconfig eth10</span></span><br><span class="line"></span><br><span class="line">[root@li]<span class="comment"># brctl showmacs br0 #查看Mac地址和接口的对应关系，即MAC表，思科交换机设备叫CAM表</span></span><br><span class="line"></span><br><span class="line">[root@li]<span class="comment"># vconfig rem eth0.10 #删除vlan</span></span><br><span class="line">[root@li]<span class="comment"># vconfig rem eth0.20</span></span><br><span class="line">[root@li]<span class="comment"># ifconfig br0 down</span></span><br><span class="line">[root@li]<span class="comment"># brctl delbr br0 #删除网桥</span></span><br></pre></td></tr></table></figure>
+<h2 id="brctl"><a href="#brctl" class="headerlink" title="brctl"></a>brctl</h2><p>有五台主机。其中一台主机装有linux ，安装了网桥模块，而且有四块物理网卡，分别连接同一网段的其他主机。我们希望其成为一个网桥，为其他四台主机(IP分别为192.168.1.2 ，192.168.1.3，192.168.1.4，192.168.1.5) 之间转发数据包。同时，为了方便管理，希望网桥能够有一个IP（192.168.1.1），那样管理员就可以在192.168.1.0/24网段内的主机上telnet到网桥，对其进行配置，实现远程管理。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">brctl addbr br0 <span class="comment">#建立一个逻辑网段，名称为br0</span></span><br></pre></td></tr></table></figure>
+<p>建立一个逻辑网段之后，我们还需要为这个网段分配特定的端口。在Linux中，一个端口实际上就是一个物理网卡。而每个物理网卡的名称则分别为eth0，eth1，eth2，eth3。我们需要把每个网卡一一和br0这个网段联系起来，作为br0中的一个端口。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">brctl addif br0 eth0 <span class="comment">#让eth0成为br0的一个端口</span></span><br><span class="line">brctl addif br0 eth1 <span class="comment">#同上</span></span><br><span class="line">brctl addif br0 eth2 <span class="comment">#同上</span></span><br><span class="line">brctl addif br0 eth3 <span class="comment">#同上</span></span><br></pre></td></tr></table></figure>
+<p>网桥的每个物理网卡作为一个端口，运行于混杂模式，而且是在链路层工作，所以就不需要IP了。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ifconfig eth0 0.0.0.0</span><br><span class="line">ifconfig eth1 0.0.0.0</span><br><span class="line">ifconfig eth2 0.0.0.0</span><br><span class="line">ifconfig eth3 0.0.0.0</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ifconfig br0 192.168.1.1 <span class="comment">#给br0的虚拟网卡配置IP，那样就能远程管理网桥。</span></span><br></pre></td></tr></table></figure>
+        
+    </section>
+</article>
+
+
+
+<a id="pagenext" href="/2022/05/05/quilt%E7%AC%94%E8%AE%B0/" class="article-next" title="quilt笔记"><i class="icon-arrow-right"></i></a>
+
+
+<a id="pageprev" href="/2022/05/26/markdown_mermaid%E7%AC%94%E8%AE%B0/" class="article-prev" title="markdown_mermaid笔记"><i class="icon-arrow-left"></i></a>
+
+
+
+
+            </div>
+        </div>
+        <footer class="footer">
+    Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>, Theme by <a href="https://github.com/sanonz/hexo-theme-concise" target="_blank">Concise</a>
+
+    
+    <script>
+        var _hmt = _hmt || [];
+        (function () {
+            var hm = document.createElement("script");
+            hm.src = "https://hm.baidu.com/hm.js?e4027971a230b210f4671f485b33846a";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+    
+</footer>
+
+    </main>
+
+    <script type="text/javascript" src="https://unpkg.com/jquery@1.9.1/jquery.min.js"></script>
+    <script type="text/javascript">
+    $(function() {
+        var nodes = {
+            nav: $('#nav'),
+            aside: $('#aside'),
+            asideInner: $('#aside-inner'),
+            navInner: $('#nav-inner')
+        };
+
+        var doing = false;
+        nodes.asideInner.on('webkitAnimationEnd mozAnimationEnd oAnimationEnd oanimationend animationend', function() {
+            if (nodes.aside.hasClass('mobile-open')) {
+                nodes.aside.removeClass('mobile-open');
+            } else {
+                nodes.aside.removeClass('mobile-close panel-show');
+            }
+            doing = false;
+        });
+        $('#open-panel, #aside-mask').on('click', function() {
+            if (doing) {
+                return;
+            }
+
+            if (nodes.aside.hasClass('panel-show')) {
+                nodes.aside.addClass('mobile-close');
+            } else {
+                nodes.aside.addClass('mobile-open panel-show');
+            }
+        });
+        $('#open-menus').on('click', function() {
+            nodes.navInner.slideToggle('normal', slideDone);
+        });
+
+        if (window.innerWidth <= 960) {
+            setTimeout(function() {
+                nodes.navInner.slideUp('normal', slideDone);
+            }, 3000);
+        }
+
+        function slideDone() {
+            if (nodes.navInner.css('display') !== 'none') {
+                nodes.navInner.css('display', '');
+            }
+        }
+
+        $(window).on('resize', function() {
+            if ($(this).width() > 960) {
+                nodes.navInner.css('display', '');
+            }
+        });
+    });
+    </script>
+    
+        
+<script src="/js/scrollspy.min.js"></script>
+
+        <script type="text/javascript">
+        $(document.body).scrollspy({target: '#aside-inner'});
+
+        $(window).on('resize', function() {
+            var hw = $('#header').width();
+            var ww = $('#wrapper').width();
+            var space = ($(this).width() - hw - ww) / 2 / 2;
+
+            var pageprev = $('#pageprev');
+            var pagenext = $('#pagenext');
+            var avg = (pageprev.width() + pagenext.width()) / 2
+
+            if(space > avg) {
+                var len = space - avg / 2;
+                var styles = {position: 'fixed', top: '50%', marginTop: - (pageprev.width() + pagenext.width()) / 4}
+                pageprev.css($.extend({left: hw + len}, styles));
+                pagenext.css($.extend({right: len}, styles));
+            } else {
+                pageprev.removeAttr('style');
+                pagenext.removeAttr('style');
+            }
+        }).trigger('resize');
+        </script>
+    
+
+</body>
+</html>

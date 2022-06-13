@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+
+    
+
+    
+
+    <title>java学习3_如何重写对象的equals方法和hashCode方法 | Zhihong&#39;s Blog</title>
+    <meta name="author" content="Zhihong Li" />
+    <meta name="keywords" content="zhbox" />
+    <meta name="description" content="Source前言：Java 对象如果要比较是否相等，则需要重写 equals 方法，同时重写 hashCode 方法，而且 hashCode 方法里面使用质数 31。接下来看看各种为什么。一、需求： 对比两个对象是否相等。对于下面的 User 对象，只需姓名和年龄相等则认为是同一个对象。二、解决方案： 需要重写对象的 equals 方法和 hashCode 方法 1234567891011121314151617181920212223242526272829303132333435363738" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no" />
+
+    
+    <link rel="alternate" href="/atom.xml" title="Zhihong&#39;s Blog" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/images/favicon.ico">
+    
+
+    <style type="text/css">
+    @font-face {
+        font-family: 'icomoon';
+        src: url("/fonts/icomoon.eot?q628ml");
+        src: url("/fonts/icomoon.eot?q628ml#iefix") format('embedded-opentype'),
+             url("/fonts/icomoon.ttf?q628ml") format('truetype'),
+             url("/fonts/icomoon.woff?q628ml") format('woff'),
+             url("/fonts/icomoon.svg?q628ml#icomoon") format('svg');
+        font-weight: normal;
+        font-style: normal;
+    }
+    </style>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!--[if lt IE 9]><style type="text/css">.nav-inner {top:0;}.author-meta {position:static;top:0;}.search-form {height:36px;}</style><script type="text/javascript" src="https://unpkg.com/html5shiv@3.7.3/dist/html5shiv.min.js"></script><![endif]-->
+<meta name="generator" content="Hexo 5.3.0"></head>
+<body>
+
+    <main class="app">
+        <header id="header" class="header clearfix">
+    <div id="nav" class="nav">
+    <div class="nav-mobile">
+        <button id="open-panel" class="open-panel nav-mobile-item"><i class="icon-documents"></i></button>
+        <h1 class="nav-mobile-title nav-mobile-item">Zhihong&#39;s Blog</h1>
+        <button id="open-menus" class="open-panel nav-mobile-item"><i class="icon-library"></i></button>
+    </div>
+
+    <nav id="nav-inner" class="nav-inner">
+        
+            <a class="nav-item" href="/">
+                <span class="nav-text">首页</span>
+            </a>
+        
+            <a class="nav-item" href="/zhbox">
+                <span class="nav-text">中盒</span>
+            </a>
+        
+            <a class="nav-item" href="/tags">
+                <span class="nav-text">标签</span>
+            </a>
+        
+            <a class="nav-item" href="/archives">
+                <span class="nav-text">归档</span>
+            </a>
+        
+            <a class="nav-item" href="/about">
+                <span class="nav-text">关于</span>
+            </a>
+        
+    </nav>
+</div>
+
+    <aside id="aside" class="aside">
+    <div id="aside-mask" class="aside-mask"></div>
+    <div id="aside-inner" class="aside-inner">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit"><i class="icon-search-stroke"></i></button><input type="hidden" name="sitesearch" value="https://humble-zh.github.io"></form>
+
+        
+        
+        
+        
+
+        
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E9%9C%80%E6%B1%82%EF%BC%9A"><span class="toc-number">1.</span> <span class="toc-text">一、需求：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88%EF%BC%9A"><span class="toc-number">2.</span> <span class="toc-text">二、解决方案：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E6%B5%8B%E8%AF%95"><span class="toc-number">3.</span> <span class="toc-text">三、测试</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E9%87%8D%E5%86%99-equals-%E6%96%B9%E6%B3%95"><span class="toc-number">4.</span> <span class="toc-text">四、为什么要重写 equals 方法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%94%E3%80%81%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E9%87%8D%E5%86%99-hashCode-%E6%96%B9%E6%B3%95"><span class="toc-number">5.</span> <span class="toc-text">五、为什么要重写 hashCode 方法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%AD%E3%80%81%E5%A6%82%E4%BD%95%E9%87%8D%E5%86%99-hashCode"><span class="toc-number">6.</span> <span class="toc-text">六、如何重写 hashCode</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%83%E3%80%81%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E4%BD%BF%E7%94%A8-31"><span class="toc-number">7.</span> <span class="toc-text">七、为什么要使用 31</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8E%9F%E5%9B%A0%E4%B8%80%EF%BC%9A%E6%9B%B4%E5%B0%91%E7%9A%84%E4%B9%98%E7%A7%AF%E7%BB%93%E6%9E%9C%E5%86%B2%E7%AA%81"><span class="toc-number">7.1.</span> <span class="toc-text">原因一：更少的乘积结果冲突</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8E%9F%E5%9B%A0%E4%BA%8C%EF%BC%9A31-%E5%8F%AF%E4%BB%A5%E8%A2%AB-JVM-%E4%BC%98%E5%8C%96"><span class="toc-number">7.2.</span> <span class="toc-text">原因二：31 可以被 JVM 优化</span></a></li></ol></li></ol>
+        
+    </div>
+</aside>
+
+</header>
+
+        <div id="content" class="content">
+            <div id="wrapper" class="wrapper" style="max-width: 800px">
+                <article class="article" itemscope itemprop="blogPost">
+    
+    <header class="article-header">
+        
+        <h1 itemprop="name">
+            java学习3_如何重写对象的equals方法和hashCode方法
+        </h1>
+        
+        <div class="article-meta clearfix">
+            <a class="article-date" href="https://humble-zh.github.io/2021/01/24/java%E5%AD%A6%E4%B9%A03_%E5%A6%82%E4%BD%95%E9%87%8D%E5%86%99%E5%AF%B9%E8%B1%A1%E7%9A%84equals%E6%96%B9%E6%B3%95%E5%92%8ChashCode%E6%96%B9%E6%B3%95/index.html">
+    
+    <i class="icon-calendar vm"></i>
+    
+    <time class="vm" datetime="2021-01-24T06:29:22.000Z" itemprop="datePublished">2021-01-24</time>
+</a>
+
+            
+<div class="article-tag-list">
+    <i class="icon-tag vm"></i>
+    <a class="article-tag-link" href="/tags/JAVA/" rel="tag">JAVA</a>
+</div>
+
+
+        </div>
+    </header>
+    
+    <section class="article-body markdown-body">
+        
+        <p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/yuxiaole/p/9570850.html" title="Permalink to Java 如何重写对象的 equals 方法和 hashCode 方法 - 取个名字吧 - 博客园">Source</a></p>
+<blockquote>
+<p>前言：Java 对象如果要比较是否相等，则需要重写 equals 方法，同时重写 hashCode 方法，而且 hashCode 方法里面使用质数 31。接下来看看各种为什么。</p>
+</blockquote>
+<h2 id="一、需求："><a href="#一、需求：" class="headerlink" title="一、需求："></a>一、需求：</h2><p> 对比两个对象是否相等。对于下面的 User 对象，只需姓名和年龄相等则认为是同一个对象。</p>
+<h2 id="二、解决方案："><a href="#二、解决方案：" class="headerlink" title="二、解决方案："></a>二、解决方案：</h2><p> 需要重写对象的 equals 方法和 hashCode 方法</p>
+ <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.yule.user.entity;</span><br><span class="line"><span class="keyword">import</span> org.springframework.util.StringUtils;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 用户实体</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> yule</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2018/8/6 21:51</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">User</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> String id;</span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    <span class="keyword">private</span> String age;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">User</span><span class="params">()</span></span>&#123; &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">User</span><span class="params">(String id, String name, String age)</span></span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.id = id;</span><br><span class="line">        <span class="keyword">this</span>.name = name;</span><br><span class="line">        <span class="keyword">this</span>.age = age;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getId</span><span class="params">()</span> </span>&#123; <span class="keyword">return</span> id; &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setId</span><span class="params">(String id)</span> </span>&#123; <span class="keyword">this</span>.id = id; &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getName</span><span class="params">()</span> </span>&#123; <span class="keyword">return</span> name; &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setName</span><span class="params">(String name)</span> </span>&#123; <span class="keyword">this</span>.name = name; &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getAge</span><span class="params">()</span> </span>&#123; <span class="keyword">return</span> age; &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setAge</span><span class="params">(String age)</span> </span>&#123; <span class="keyword">this</span>.age = age; &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123; <span class="keyword">return</span> <span class="keyword">this</span>.id + <span class="string">&quot; &quot;</span> + <span class="keyword">this</span>.name + <span class="string">&quot; &quot;</span> + <span class="keyword">this</span>.age; &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">equals</span><span class="params">(Object obj)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(<span class="keyword">this</span> == obj)&#123; <span class="keyword">return</span> <span class="keyword">true</span>; &#125;<span class="comment">//地址相等</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span>(obj == <span class="keyword">null</span>)&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;<span class="comment">//非空性：对于任意非空引用x，x.equals(null)应该返回false。</span></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span>(obj <span class="keyword">instanceof</span> User)&#123;</span><br><span class="line">            User other = (User) obj;</span><br><span class="line">            <span class="comment">//需要比较的字段相等，则这两个对象相等</span></span><br><span class="line">            <span class="keyword">if</span>(equalsStr(<span class="keyword">this</span>.name, other.name) &amp;&amp; equalsStr(<span class="keyword">this</span>.age, other.age))&#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">boolean</span> <span class="title">equalsStr</span><span class="params">(String str1, String str2)</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(StringUtils.isEmpty(str1) &amp;&amp; StringUtils.isEmpty(str2))&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span>(!StringUtils.isEmpty(str1) &amp;&amp; str1.equals(str2))&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">hashCode</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> result = <span class="number">17</span>;</span><br><span class="line">        result = <span class="number">31</span> * result + (name == <span class="keyword">null</span> ? <span class="number">0</span> : name.hashCode());</span><br><span class="line">        result = <span class="number">31</span> * result + (age == <span class="keyword">null</span> ? <span class="number">0</span> : age.hashCode());</span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="三、测试"><a href="#三、测试" class="headerlink" title="三、测试"></a>三、测试</h2><p> 1、创建两个对象，名字和年龄相等则对象 equals 为 true。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testEqualsObj</span><span class="params">()</span></span>&#123;</span><br><span class="line">    User user1 = <span class="keyword">new</span> User(<span class="string">&quot;1&quot;</span>, <span class="string">&quot;xiaohua&quot;</span>, <span class="string">&quot;14&quot;</span>);</span><br><span class="line">    User user2 = <span class="keyword">new</span> User(<span class="string">&quot;2&quot;</span>, <span class="string">&quot;xiaohua&quot;</span>, <span class="string">&quot;14&quot;</span>);</span><br><span class="line">    System.out.println((user1.equals(user2)));<span class="comment">//打印为 true</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="四、为什么要重写-equals-方法"><a href="#四、为什么要重写-equals-方法" class="headerlink" title="四、为什么要重写 equals 方法"></a>四、为什么要重写 equals 方法</h2><p> 因为不重写 equals 方法，执行 user1.equals(user2) 比较的就是两个对象的地址（即 user1 == user2），肯定是不相等的，见 Object 源码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">equals</span><span class="params">(Object obj)</span> </span>&#123; <span class="keyword">return</span> (<span class="keyword">this</span> == obj); &#125;</span><br></pre></td></tr></table></figure>
+<h2 id="五、为什么要重写-hashCode-方法"><a href="#五、为什么要重写-hashCode-方法" class="headerlink" title="五、为什么要重写 hashCode 方法"></a>五、为什么要重写 hashCode 方法</h2><p> 既然比较两个对象是否相等，使用的是 equals 方法，那么只要重写了 equals 方法就好了，干嘛又要重写 hashCode 方法呢？</p>
+<p> 其实当 equals 方法被重写时，通常有必要重写 hashCode 方法，以维护 hashCode 方法的常规协定，该协定声明相等对象必须具有相等的哈希码。那这又是为什么呢？看看下面这个例子就懂了。</p>
+<p> User 对象的 hashCode 方法如下，没有重写父类的 hashCode 方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">hashCode</span><span class="params">()</span> </span>&#123; <span class="keyword">return</span> <span class="keyword">super</span>.hashCode(); &#125;</span><br></pre></td></tr></table></figure>
+<p> 使用 hashSet</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testHashCodeObj</span><span class="params">()</span></span>&#123;</span><br><span class="line">    User user1 = <span class="keyword">new</span> User(<span class="string">&quot;1&quot;</span>, <span class="string">&quot;xiaohua&quot;</span>, <span class="string">&quot;14&quot;</span>);</span><br><span class="line">    User user2 = <span class="keyword">new</span> User(<span class="string">&quot;2&quot;</span>, <span class="string">&quot;xiaohua&quot;</span>, <span class="string">&quot;14&quot;</span>);</span><br><span class="line">    Set&lt;User&gt; userSet = <span class="keyword">new</span> HashSet&lt;&gt;();</span><br><span class="line">    userSet.add(user1);</span><br><span class="line">    userSet.add(user2);</span><br><span class="line">    System.out.println(user1.equals(user2));</span><br><span class="line">    System.out.println(user1.hashCode() == user2.hashCode());</span><br><span class="line">    System.out.println(userSet);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p> 结果</p>
+<p><img src="/2021/01/24/java%E5%AD%A6%E4%B9%A03_%E5%A6%82%E4%BD%95%E9%87%8D%E5%86%99%E5%AF%B9%E8%B1%A1%E7%9A%84equals%E6%96%B9%E6%B3%95%E5%92%8ChashCode%E6%96%B9%E6%B3%95/java%E5%AD%A6%E4%B9%A03_01.png"></p>
+<p> 显然，这不是我们要的结果，我们是希望两个对象如果相等，那么在使用 hashSet 存储时也能认为这两个对象相等。</p>
+<p> 通过看 hashSet 的 add 方法能够得知 add 方法里面使用了对象的 hashCode 方法来判断，所以我们需要重写 hashCode 方法来达到我们想要的效果。</p>
+<p>将 hashCode 方法重写后，执行上面结果为</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">hashCode</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> result = <span class="number">17</span>;</span><br><span class="line">    result = <span class="number">31</span> * result + (name == <span class="keyword">null</span> ? <span class="number">0</span> : name.hashCode());</span><br><span class="line">    result = <span class="number">31</span> * result + (age == <span class="keyword">null</span> ? <span class="number">0</span> : age.hashCode());</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">true</span><br><span class="line">true</span><br><span class="line">[1 xiaohua 14]</span><br></pre></td></tr></table></figure>
+<p> <strong>所以：hashCode 是用于散列数据的快速存取，如利用 HashSet/HashMap/Hashtable 类来存储数据时，都会根据存储对象的 hashCode 值来进行判断是否相同的。</strong></p>
+<h2 id="六、如何重写-hashCode"><a href="#六、如何重写-hashCode" class="headerlink" title="六、如何重写 hashCode"></a>六、如何重写 hashCode</h2><p> 生成一个 int 类型的变量 result，并且初始化一个值，比如17</p>
+<p> 对类中每一个重要字段，也就是影响对象的值的字段，也就是 equals 方法里有比较的字段，进行以下操作：a. 计算这个字段的值<code>filedHashValue = filed.hashCode();</code> b. 执行 <code>result = 31 * result + filedHashValue</code>;</p>
+<h2 id="七、为什么要使用-31"><a href="#七、为什么要使用-31" class="headerlink" title="七、为什么要使用 31"></a>七、为什么要使用 31</h2><p> 看一看 String hashCode 方法的源码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Returns a hash code for this string. The hash code for a</span></span><br><span class="line"><span class="comment"> * &#123;<span class="doctag">@code</span> String&#125; object is computed as</span></span><br><span class="line"><span class="comment"> * s[0]*31^(n-1) + s[1]*31^(n-2) + ... + s[n-1]</span></span><br><span class="line"><span class="comment"> * using &#123;<span class="doctag">@code</span> int&#125; arithmetic, where &#123;<span class="doctag">@code</span> s[i]&#125; is the</span></span><br><span class="line"><span class="comment"> * &lt;i&gt;i&lt;/i&gt;th character of the string, &#123;<span class="doctag">@code</span> n&#125; is the length of</span></span><br><span class="line"><span class="comment"> * the string, and &#123;<span class="doctag">@code</span> ^&#125; indicates exponentiation.</span></span><br><span class="line"><span class="comment"> * (The hash value of the empty string is zero.)</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span>  a hash code value for this object.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">hashCode</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> h = hash;</span><br><span class="line">    <span class="keyword">if</span> (h == <span class="number">0</span> &amp;&amp; value.length &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">char</span> val[] = value;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; value.length; i++) &#123;</span><br><span class="line">            h = <span class="number">31</span> * h + val[i];</span><br><span class="line">        &#125;</span><br><span class="line">        hash = h;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> h;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p> 可以从注释看出：空字符串的 hashCode 方法返回是 0。并且注释中也给了个公式，可以了解了解。</p>
+<p> String 源码中也使用的 31，然后网上说有这两点原因：</p>
+<h3 id="原因一：更少的乘积结果冲突"><a href="#原因一：更少的乘积结果冲突" class="headerlink" title="原因一：更少的乘积结果冲突"></a>原因一：更少的乘积结果冲突</h3><p> 31是质子数中一个“不大不小”的存在，如果你使用的是一个如2的较小质数，那么得出的乘积会在一个很小的范围，很容易造成哈希值的冲突。而如果选择一个100以上的质数，得出的哈希值会超出int的最大范围，这两种都不合适。而如果对超过 50,000 个英文单词（由两个不同版本的 Unix 字典合并而成）进行 hash code 运算，并使用常数 31, 33, 37, 39 和 41 作为乘子，每个常数算出的哈希值冲突数都小于7个（国外大神做的测试），那么这几个数就被作为生成hashCode值得备选乘数了。</p>
+<p> 所以从 31,33,37,39 等中间选择了 31 的原因看原因二。</p>
+<h3 id="原因二：31-可以被-JVM-优化"><a href="#原因二：31-可以被-JVM-优化" class="headerlink" title="原因二：31 可以被 JVM 优化"></a>原因二：31 可以被 JVM 优化</h3><p> JVM里最有效的计算方式就是进行位运算了：</p>
+<ul>
+<li><p>左移 <code>&lt;&lt;</code> : 左边的最高位丢弃，右边补全0（把 <code>&lt;&lt;</code> 左边的数据<code>*</code>2的移动次幂）。</p>
+</li>
+<li><p>右移 <code>&gt;&gt;</code> : 把<code>&gt;&gt;</code>左边的数据<code>/</code>2的移动次幂。</p>
+</li>
+<li><p>无符号右移 <code>&gt;&gt;&gt;</code> : 无论最高位是0还是1，左边补齐0。</p>
+<p>所以 ： <code>31 * i = (i &lt;&lt; 5) - i</code>（左边<code>31*2=62</code>,右边<code>2*2^5-2=62</code>） - 两边相等，JVM就可以高效的进行计算啦。。。</p>
+</li>
+</ul>
+
+        
+    </section>
+</article>
+
+
+
+<a id="pagenext" href="/2021/01/13/java%E5%AD%A6%E4%B9%A02_2020%E6%96%B0%E7%89%88_Java%E5%B8%B8%E7%94%A8%E7%B1%BB%E6%9C%80%E6%96%B0%E6%95%99%E7%A8%8B_%E9%80%9A%E4%BF%97%E6%98%93%E6%87%82/" class="article-next" title="java学习2 Java常用类最新教程 通俗易懂"><i class="icon-arrow-right"></i></a>
+
+
+<a id="pageprev" href="/2021/01/24/java%E5%AD%A6%E4%B9%A04_Java%E9%9B%86%E5%90%88%E6%A1%86%E6%9E%B6%E8%AF%A6%E8%A7%A3_%E9%80%9A%E4%BF%97%E6%98%93%E6%87%82/" class="article-prev" title="java学习4_Java集合框架详解_通俗易懂"><i class="icon-arrow-left"></i></a>
+
+
+
+<div class="comments">
+    <div id="comments"></div>
+    <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+    <script>
+    new Gitalk({
+        clientID: "7fbe80427f54741e289f",
+        clientSecret: "f34ed5fd92e54c9000bd37ba951948cb939deff5",
+        repo: "sanonz.github.io",
+        owner: "sanonz",
+        admin: ["sanonz"],
+        id: "a5fed7621a89621c13f73b2303efd1d7",
+        distractionFreeMode: true,
+        title: "java学习3_如何重写对象的equals方法和hashCode方法",
+        body: "https://humble-zh.github.io/2021/01/24/java%E5%AD%A6%E4%B9%A03_%E5%A6%82%E4%BD%95%E9%87%8D%E5%86%99%E5%AF%B9%E8%B1%A1%E7%9A%84equals%E6%96%B9%E6%B3%95%E5%92%8ChashCode%E6%96%B9%E6%B3%95/",
+        labels: ["JAVA"]
+    }).render('comments');
+    </script>
+</div>
+
+
+
+            </div>
+        </div>
+        <footer class="footer">
+    Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>, Theme by <a href="https://github.com/sanonz/hexo-theme-concise" target="_blank">Concise</a>
+
+    
+    <script>
+        var _hmt = _hmt || [];
+        (function () {
+            var hm = document.createElement("script");
+            hm.src = "https://hm.baidu.com/hm.js?e4027971a230b210f4671f485b33846a";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+    
+</footer>
+
+    </main>
+
+    <script type="text/javascript" src="https://unpkg.com/jquery@1.9.1/jquery.min.js"></script>
+    <script type="text/javascript">
+    $(function() {
+        var nodes = {
+            nav: $('#nav'),
+            aside: $('#aside'),
+            asideInner: $('#aside-inner'),
+            navInner: $('#nav-inner')
+        };
+
+        var doing = false;
+        nodes.asideInner.on('webkitAnimationEnd mozAnimationEnd oAnimationEnd oanimationend animationend', function() {
+            if (nodes.aside.hasClass('mobile-open')) {
+                nodes.aside.removeClass('mobile-open');
+            } else {
+                nodes.aside.removeClass('mobile-close panel-show');
+            }
+            doing = false;
+        });
+        $('#open-panel, #aside-mask').on('click', function() {
+            if (doing) {
+                return;
+            }
+
+            if (nodes.aside.hasClass('panel-show')) {
+                nodes.aside.addClass('mobile-close');
+            } else {
+                nodes.aside.addClass('mobile-open panel-show');
+            }
+        });
+        $('#open-menus').on('click', function() {
+            nodes.navInner.slideToggle('normal', slideDone);
+        });
+
+        if (window.innerWidth <= 960) {
+            setTimeout(function() {
+                nodes.navInner.slideUp('normal', slideDone);
+            }, 3000);
+        }
+
+        function slideDone() {
+            if (nodes.navInner.css('display') !== 'none') {
+                nodes.navInner.css('display', '');
+            }
+        }
+
+        $(window).on('resize', function() {
+            if ($(this).width() > 960) {
+                nodes.navInner.css('display', '');
+            }
+        });
+    });
+    </script>
+    
+        
+<script src="/js/scrollspy.min.js"></script>
+
+        <script type="text/javascript">
+        $(document.body).scrollspy({target: '#aside-inner'});
+
+        $(window).on('resize', function() {
+            var hw = $('#header').width();
+            var ww = $('#wrapper').width();
+            var space = ($(this).width() - hw - ww) / 2 / 2;
+
+            var pageprev = $('#pageprev');
+            var pagenext = $('#pagenext');
+            var avg = (pageprev.width() + pagenext.width()) / 2
+
+            if(space > avg) {
+                var len = space - avg / 2;
+                var styles = {position: 'fixed', top: '50%', marginTop: - (pageprev.width() + pagenext.width()) / 4}
+                pageprev.css($.extend({left: hw + len}, styles));
+                pagenext.css($.extend({right: len}, styles));
+            } else {
+                pageprev.removeAttr('style');
+                pagenext.removeAttr('style');
+            }
+        }).trigger('resize');
+        </script>
+    
+
+</body>
+</html>

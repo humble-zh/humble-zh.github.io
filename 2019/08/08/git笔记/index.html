@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+
+    
+
+    
+
+    <title>git笔记 | Zhihong&#39;s Blog</title>
+    <meta name="author" content="Zhihong Li" />
+    <meta name="keywords" content="zhbox" />
+    <meta name="description" content="git config查看配置1git config --list全局123cat ~/.gitconfiggit config --global user.name  &amp;quot;username&amp;quot;git config --global user.email  &amp;quot;email&amp;quot;github令牌2021年8月13号之后，github已经不让直接使用账号名密码来登录了，必须使用personal access token(个人访问令牌)明文的密码很容易被泄露，如果换成有时限" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no" />
+
+    
+    <link rel="alternate" href="/atom.xml" title="Zhihong&#39;s Blog" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/images/favicon.ico">
+    
+
+    <style type="text/css">
+    @font-face {
+        font-family: 'icomoon';
+        src: url("/fonts/icomoon.eot?q628ml");
+        src: url("/fonts/icomoon.eot?q628ml#iefix") format('embedded-opentype'),
+             url("/fonts/icomoon.ttf?q628ml") format('truetype'),
+             url("/fonts/icomoon.woff?q628ml") format('woff'),
+             url("/fonts/icomoon.svg?q628ml#icomoon") format('svg');
+        font-weight: normal;
+        font-style: normal;
+    }
+    </style>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!--[if lt IE 9]><style type="text/css">.nav-inner {top:0;}.author-meta {position:static;top:0;}.search-form {height:36px;}</style><script type="text/javascript" src="https://unpkg.com/html5shiv@3.7.3/dist/html5shiv.min.js"></script><![endif]-->
+<meta name="generator" content="Hexo 5.3.0"></head>
+<body>
+
+    <main class="app">
+        <header id="header" class="header clearfix">
+    <div id="nav" class="nav">
+    <div class="nav-mobile">
+        <button id="open-panel" class="open-panel nav-mobile-item"><i class="icon-documents"></i></button>
+        <h1 class="nav-mobile-title nav-mobile-item">Zhihong&#39;s Blog</h1>
+        <button id="open-menus" class="open-panel nav-mobile-item"><i class="icon-library"></i></button>
+    </div>
+
+    <nav id="nav-inner" class="nav-inner">
+        
+            <a class="nav-item" href="/">
+                <span class="nav-text">首页</span>
+            </a>
+        
+            <a class="nav-item" href="/zhbox">
+                <span class="nav-text">中盒</span>
+            </a>
+        
+            <a class="nav-item" href="/tags">
+                <span class="nav-text">标签</span>
+            </a>
+        
+            <a class="nav-item" href="/archives">
+                <span class="nav-text">归档</span>
+            </a>
+        
+            <a class="nav-item" href="/about">
+                <span class="nav-text">关于</span>
+            </a>
+        
+    </nav>
+</div>
+
+    <aside id="aside" class="aside">
+    <div id="aside-mask" class="aside-mask"></div>
+    <div id="aside-inner" class="aside-inner">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit"><i class="icon-search-stroke"></i></button><input type="hidden" name="sitesearch" value="https://humble-zh.github.io"></form>
+
+        
+        
+        
+        
+
+        
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#git-config"><span class="toc-number">1.</span> <span class="toc-text">git config</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9F%A5%E7%9C%8B%E9%85%8D%E7%BD%AE"><span class="toc-number">1.1.</span> <span class="toc-text">查看配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%A8%E5%B1%80"><span class="toc-number">1.2.</span> <span class="toc-text">全局</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#github%E4%BB%A4%E7%89%8C"><span class="toc-number">1.3.</span> <span class="toc-text">github令牌</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ssh%E8%AE%BF%E9%97%AEgithub"><span class="toc-number">1.4.</span> <span class="toc-text">ssh访问github</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B1%80%E9%83%A8%EF%BC%88%E9%A1%B9%E7%9B%AE%E5%86%85%E7%9A%84%EF%BC%89"><span class="toc-number">1.5.</span> <span class="toc-text">局部（项目内的）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%B0%E4%BD%8F%E6%88%96%E5%8F%96%E6%B6%88%E5%AF%86%E7%A0%81%E8%AE%B0%E5%BD%95"><span class="toc-number">1.6.</span> <span class="toc-text">记住或取消密码记录</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%AC%E5%9C%B0origin%E5%88%86%E6%94%AF%E4%B8%8E%E8%BF%9C%E7%A8%8B%E4%B8%8D%E5%90%8C%E6%AD%A5"><span class="toc-number">1.7.</span> <span class="toc-text">本地origin分支与远程不同步</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#windows%E5%88%A0%E9%99%A4git%E8%AE%B0%E5%BD%95"><span class="toc-number">1.8.</span> <span class="toc-text">windows删除git记录</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#git%E6%9F%A5%E7%9C%8B%E5%90%84%E5%88%86%E6%94%AF%E4%B9%8B%E9%97%B4%E5%85%B3%E7%B3%BB"><span class="toc-number">1.9.</span> <span class="toc-text">git查看各分支之间关系</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#git-status%E4%B8%AD%E6%96%87%E4%B9%B1%E7%A0%81"><span class="toc-number">1.10.</span> <span class="toc-text">git status中文乱码</span></a></li></ol></li></ol>
+        
+    </div>
+</aside>
+
+</header>
+
+        <div id="content" class="content">
+            <div id="wrapper" class="wrapper" style="max-width: 800px">
+                <article class="article" itemscope itemprop="blogPost">
+    
+    <header class="article-header">
+        
+        <h1 itemprop="name">
+            git笔记
+        </h1>
+        
+        <div class="article-meta clearfix">
+            <a class="article-date" href="https://humble-zh.github.io/2019/08/08/git%E7%AC%94%E8%AE%B0/index.html">
+    
+    <i class="icon-calendar vm"></i>
+    
+    <time class="vm" datetime="2019-08-08T07:32:41.000Z" itemprop="datePublished">2019-08-08</time>
+</a>
+
+            
+<div class="article-tag-list">
+    <i class="icon-tag vm"></i>
+    <a class="article-tag-link" href="/tags/git/" rel="tag">git</a>
+</div>
+
+
+        </div>
+    </header>
+    
+    <section class="article-body markdown-body">
+        
+        <h2 id="git-config"><a href="#git-config" class="headerlink" title="git config"></a>git config</h2><h3 id="查看配置"><a href="#查看配置" class="headerlink" title="查看配置"></a>查看配置</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git config --list</span><br></pre></td></tr></table></figure>
+<h3 id="全局"><a href="#全局" class="headerlink" title="全局"></a>全局</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cat ~/.gitconfig</span><br><span class="line">git config --global user.name  <span class="string">&quot;username&quot;</span></span><br><span class="line">git config --global user.email  <span class="string">&quot;email&quot;</span></span><br></pre></td></tr></table></figure>
+<h3 id="github令牌"><a href="#github令牌" class="headerlink" title="github令牌"></a>github令牌</h3><p>2021年8月13号之后，github已经不让直接使用账号名密码来登录了，必须使用personal access token(个人访问令牌)</p>
+<ul>
+<li>明文的密码很容易被泄露，如果换成有时限的token，即使泄露了影响也会非常有限。</li>
+<li>可以为同一个github账号根据不同的使用途径，生成不同的token，并且随时都可以控制token的有效状态和不同token代表的权限。最大限度的保证账号的安全性。</li>
+<li>生成的token可随时撤销，并且令牌的随机性更高，不容易被暴力破解。</li>
+</ul>
+<p>我的账号-&gt;settings-&gt;Developer settings-&gt;Personal access tokens-&gt;Generate new token-&gt;(pc名字,粘贴key)-&gt;(Note:哪台电脑，有效期(Expiration)选90天，Select scopes选repo)</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ git <span class="built_in">clone</span> https://github.com/username/repo.git</span><br><span class="line">Username: your_username</span><br><span class="line">Password: your_token</span><br></pre></td></tr></table></figure>
+<h3 id="ssh访问github"><a href="#ssh访问github" class="headerlink" title="ssh访问github"></a>ssh访问github</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#如果没有~/.ssh 目录就执行下面，一直回车到结束即可</span></span><br><span class="line">ssh-keygen -t rsa -C <span class="string">&quot;your email&quot;</span></span><br><span class="line"><span class="comment">#查看ssh key并且拷贝</span></span><br><span class="line">cat ~/.ssh/id_rsa.pub</span><br></pre></td></tr></table></figure>
+<p>我的账号-&gt;settings-&gt;SSH and GPG keys-&gt;New SSH key-&gt;(pc名字,粘贴key)</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ssh -T git@github.com</span><br><span class="line"><span class="comment">#运行结果出现类似如下</span></span><br><span class="line">Hi &lt;username&gt;! You<span class="string">&#x27;ve successfully authenticated, but GitHub does not provide shell access.</span></span><br></pre></td></tr></table></figure>
+<h3 id="局部（项目内的）"><a href="#局部（项目内的）" class="headerlink" title="局部（项目内的）"></a>局部（项目内的）</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> projectdir/</span><br><span class="line">cat .git/config</span><br><span class="line">git config user.name <span class="string">&quot;username&quot;</span></span><br><span class="line">git config user.email <span class="string">&quot;email&quot;</span></span><br><span class="line">cat .git/config</span><br><span class="line"></span><br><span class="line"><span class="comment">#设置记住密码（默认15分钟）：</span></span><br><span class="line">git config credential.helper cache</span><br><span class="line"><span class="comment">#设置记住密码1小时</span></span><br><span class="line">git config credential.helper <span class="string">&#x27;cache --timeout=3600&#x27;</span></span><br><span class="line"><span class="comment">#长期存储密码：记住密码,以明文存在~/.git-credentials电脑送人后记得删掉该文件</span></span><br><span class="line">git config credential.helper store</span><br><span class="line"><span class="comment">#重新指定.git-credentials文件路径</span></span><br><span class="line">git config credential.helper <span class="string">&#x27;store --file /data/git/.git-credentials&#x27;</span></span><br><span class="line">cat .git/config</span><br></pre></td></tr></table></figure>
+<h3 id="记住或取消密码记录"><a href="#记住或取消密码记录" class="headerlink" title="记住或取消密码记录"></a>记住或取消密码记录</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">(repository_home)/.git/config <span class="comment"># for the subject repository.</span></span><br><span class="line">~/.gitconfig                  <span class="comment"># for this particular user.</span></span><br><span class="line">/etc/gitconfig                <span class="comment"># for all users on this system.</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#记住密码记录</span></span><br><span class="line">git config --<span class="built_in">set</span> credential.helper <span class="string">&#x27;cache --timeout=600&#x27;</span></span><br><span class="line">git config --global --<span class="built_in">set</span> credential.helper <span class="string">&#x27;cache --timeout=600&#x27;</span></span><br><span class="line">git config --system --<span class="built_in">set</span> credential.helper <span class="string">&#x27;cache --timeout=600&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#取消密码记录</span></span><br><span class="line">git config --unset-all credential.helper</span><br><span class="line">git config --global --unset-all credential.helper</span><br><span class="line">git config --system --unset-all credential.helper</span><br></pre></td></tr></table></figure>
+<h3 id="本地origin分支与远程不同步"><a href="#本地origin分支与远程不同步" class="headerlink" title="本地origin分支与远程不同步"></a>本地origin分支与远程不同步</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git remote show origin <span class="comment"># 发现不是tracked的分支(远程已删，本地还有)</span></span><br><span class="line">git remote prune origin <span class="comment"># 删除远程没有本地还在的分支</span></span><br></pre></td></tr></table></figure>
+<h3 id="windows删除git记录"><a href="#windows删除git记录" class="headerlink" title="windows删除git记录"></a>windows删除git记录</h3><ol>
+<li>进入控制面板</li>
+<li>选择用户账户</li>
+<li>选择管理你的凭据</li>
+<li>选择Windows凭据</li>
+<li>选择git保存的用户信息</li>
+<li>选择编辑或者进行删除操作</li>
+</ol>
+<h3 id="git查看各分支之间关系"><a href="#git查看各分支之间关系" class="headerlink" title="git查看各分支之间关系"></a>git查看各分支之间关系</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">log</span> --graph --decorate --oneline --simplify-by-decoration --all</span><br></pre></td></tr></table></figure>
+<h3 id="git-status中文乱码"><a href="#git-status中文乱码" class="headerlink" title="git status中文乱码"></a><code>git status</code>中文乱码</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git config --global core.quotepath <span class="literal">false</span></span><br></pre></td></tr></table></figure>
+        
+    </section>
+</article>
+
+
+
+<a id="pagenext" href="/2019/08/08/python-pandas/" class="article-next" title="python_pandas"><i class="icon-arrow-right"></i></a>
+
+
+<a id="pageprev" href="/2019/08/27/Docker%E5%85%A5%E9%97%A8%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" class="article-prev" title="Docker入门学习笔记"><i class="icon-arrow-left"></i></a>
+
+
+
+
+            </div>
+        </div>
+        <footer class="footer">
+    Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>, Theme by <a href="https://github.com/sanonz/hexo-theme-concise" target="_blank">Concise</a>
+
+    
+    <script>
+        var _hmt = _hmt || [];
+        (function () {
+            var hm = document.createElement("script");
+            hm.src = "https://hm.baidu.com/hm.js?e4027971a230b210f4671f485b33846a";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+    
+</footer>
+
+    </main>
+
+    <script type="text/javascript" src="https://unpkg.com/jquery@1.9.1/jquery.min.js"></script>
+    <script type="text/javascript">
+    $(function() {
+        var nodes = {
+            nav: $('#nav'),
+            aside: $('#aside'),
+            asideInner: $('#aside-inner'),
+            navInner: $('#nav-inner')
+        };
+
+        var doing = false;
+        nodes.asideInner.on('webkitAnimationEnd mozAnimationEnd oAnimationEnd oanimationend animationend', function() {
+            if (nodes.aside.hasClass('mobile-open')) {
+                nodes.aside.removeClass('mobile-open');
+            } else {
+                nodes.aside.removeClass('mobile-close panel-show');
+            }
+            doing = false;
+        });
+        $('#open-panel, #aside-mask').on('click', function() {
+            if (doing) {
+                return;
+            }
+
+            if (nodes.aside.hasClass('panel-show')) {
+                nodes.aside.addClass('mobile-close');
+            } else {
+                nodes.aside.addClass('mobile-open panel-show');
+            }
+        });
+        $('#open-menus').on('click', function() {
+            nodes.navInner.slideToggle('normal', slideDone);
+        });
+
+        if (window.innerWidth <= 960) {
+            setTimeout(function() {
+                nodes.navInner.slideUp('normal', slideDone);
+            }, 3000);
+        }
+
+        function slideDone() {
+            if (nodes.navInner.css('display') !== 'none') {
+                nodes.navInner.css('display', '');
+            }
+        }
+
+        $(window).on('resize', function() {
+            if ($(this).width() > 960) {
+                nodes.navInner.css('display', '');
+            }
+        });
+    });
+    </script>
+    
+        
+<script src="/js/scrollspy.min.js"></script>
+
+        <script type="text/javascript">
+        $(document.body).scrollspy({target: '#aside-inner'});
+
+        $(window).on('resize', function() {
+            var hw = $('#header').width();
+            var ww = $('#wrapper').width();
+            var space = ($(this).width() - hw - ww) / 2 / 2;
+
+            var pageprev = $('#pageprev');
+            var pagenext = $('#pagenext');
+            var avg = (pageprev.width() + pagenext.width()) / 2
+
+            if(space > avg) {
+                var len = space - avg / 2;
+                var styles = {position: 'fixed', top: '50%', marginTop: - (pageprev.width() + pagenext.width()) / 4}
+                pageprev.css($.extend({left: hw + len}, styles));
+                pagenext.css($.extend({right: len}, styles));
+            } else {
+                pageprev.removeAttr('style');
+                pagenext.removeAttr('style');
+            }
+        }).trigger('resize');
+        </script>
+    
+
+</body>
+</html>

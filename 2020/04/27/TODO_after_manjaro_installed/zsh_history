@@ -1,0 +1,179 @@
+: 1627617081:0;sudo pacman-mirrors -i -c China -m rank
+: 1627617081:0;sudo pacman -Syyu
+: 1630155749:0;sudo pacman -Scc
+: 1627617081:0;sudo pacman -S archlinuxcn-keyring
+: 1627617081:0;sudo pacman -S firefox-i18n-zh-cn fcitx fcitx-im fcitx-configtool fcitx-ui-light ttf-dejavu adobe-source-han-sans-otc-fonts fcitx-libpinyin fcitx-sunpinyin fcitx-cloudpinyin ntp sshpass mosquitto scrot the_silver_searcher fzf base-devel cmake unrar unzip yay inkscape cloc nfs-utils rpcbind visual-studio-code-bin neovim vlc you-get wireshark-qt strace net-tools iperf3 ctags base-devel gdb
+: 1627617081:0;sudo pacman -Rns local/palemoon-bin
+: 1627882600:0;sudo pacman -Rns $(pacman -Qdtq)
+: 1631253311:0;pacman -Ql libconfig
+: 1628228566:0;pacman -Qs wps-office
+: 1627864700:0;yay -S wps-office ttf-wps-fonts albert typora-free
+: 1634622527:0;xrandr -s 1280x800
+: 1608650320:0;du -h --max-depth=1 ./
+: 1634625760:0;nohup ss-local -c ~/li/.hk2.json &
+: 1634627060:0;kill -9 `pidof ss-local`
+: 1629854941:0;sudo vim /etc/exports
+: 1635727833:0;sudo systemctl restart lightdm.service
+: 1631588840:0;sudo systemctl restart rpcbind.service;sudo systemctl restart nfs-server.service
+: 1644581666:0;sudo systemctl restart nginx.service
+: 1644580961:0;sudo systemctl restart php-fpm.service
+: 1644581063:0;systemctl status php-fpm.service
+: 1644581346:0;systemctl status nginx.service
+: 1627867286:0;ssh-keygen
+: 1628961607:0;sudo passwd root
+: 1628961862:0;sudo vim /etc/ssh/sshd_config
+: 1628961971:0;sudo systemctl restart sshd.service
+: 1631255589:0;grset origin https://github.com/hyperrealm/libconfig.git
+: 1636622235:0;git config user.email "li.zhihong@gd-linux.com";git config user.name "li.zhihong"
+: 1634610952:0;git config user.email "humble_zh@163.com";git config user.name "humble-zh"
+: 1637718851:0;git config credential.helper 'store --file ~/li/.github-credentials-humble'
+: 1641783321:0;git tag -a v2.1.3 -m "version 2.1.3"
+: 1641783346:0;git push origin v2.1.3
+: 1642039568:0;git tag -l|xargs git tag -d
+: 1642039596:0;git pull origin --tags
+: 1595385616:0;git submodule update --init --recursive
+: 1641782870:0;curl --request DELETE --header "PRIVATE-TOKEN: hH8qXGxV9tVD9n8Svm2y" http://192.168.16.65:8888/api/v4/projects/32/releases/beta2.0.1
+: 1648002906:0;ip neigh
+: 1627893865:0;ip route show
+: 1627893885:0;ip link
+: 1627893910:0;ip addr show
+: 1628213684:0;ctags -R .
+: 1628236866:0;z zbb s p
+: 1641807523:0;z iqt
+: 1641807523:0;z pqt
+: 1628589959:0;sudo xargs rm < install_manifest.txt
+: 1628758274:0;scp ${f} zh@${ip}:/tmp
+: 1637142196:0;ssh -o HostKeyAlgorithms=+ssh-rsa root@192.168.16.119
+: 1630924656:0;sshpass -p ${PWDSERVER61} scp -o stricthostkeychecking=no ${f} 61:/tmp/
+: 1640588465:0;sshpass -p ${PWDSERVER65} scp -o stricthostkeychecking=no -p ${PORTSERVER65} ${f} 65:/tmp/
+: 1628758274:0;sshpass -p ${PWDCJH} scp -o stricthostkeychecking=no ${f} ${USERCJH}@${ip}:/tmp
+: 1627959419:0;sshpass -p ${SERVER251PWD} ssh -o stricthostkeychecking=no 251
+: 1642057427:0;sshpass -p ${PWDICBT3000PICG} ssh -o stricthostkeychecking=no ${USERICG}@${ip}
+: 1627951421:0;sshpass -p ${PWDCJH} ssh -o stricthostkeychecking=no ${USERCJH}@${ip}
+: 1627959419:0;sshpass -p ${PWDSERVER61} ssh -o stricthostkeychecking=no 61
+: 1636450849:0;sshpass -p ${PWDSERVER65} ssh -o stricthostkeychecking=no 65
+: 1649987015:0;export PATH=${PATH}:/home/zh/li/tmp/rv1126_gcc/prebuilts/gcc/linux-x86/arm/gcc-arm-8.3-2019.03-x86_64-arm-linux-gnueabihf/bin
+: 1649931769:0;rm -rf build;mkdir build && cmake -B build -S . -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_C_COMPILER=arm-linux-gnueabihf-gcc -DCMAKE_CXX_COMPILER=arm-linux-gnueabihf-g++ && make VERBOSE=1
+: 1648436985:0;rm -rf build;mkdir build && cmake -B build -S . -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCONFIG_ZHIBO_WLAN_DEVICE=1 -DCMAKE_TOOLCHAIN_FILE=../cmake/toolchain_6818.cmake
+f 1650943966:0;rm -rf build;mkdir build && cmake -B build -S . -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCMAKE_TOOLCHAIN_FILE=./cmake/toolchain.i686.cmake
+: 1628759824:0;rm -rf build;mkdir build && cmake -B build -S . -DCMAKE_EXPORT_COMPILE_COMMANDS=ON && make -C build VERBOSE=1
+: 1650943987:0;make -C build VERBOSE=1
+: 1629791477:0;cat /proc/`pidof hello`/status |grep 'VmData:'
+: 1629857830:0;vim icgmodem/main.c libmodem/*.[ch] libmodem/include/* CMakeLists.txt
+: 1630564055:0;sudo pacman -S docker
+: 1630564633:0;sudo vim /etc/docker/daemon.json
+: 1630564274:0;sudo groupadd docker
+: 1630564292:0;sudo gpasswd -a $USER docker
+: 1630564301:0;newgrp docker
+: 1630565160:0;sudo chmod a+rw /var/run/docker.sock
+: 1630564741:0;sudo systemctl daemon-reload
+: 1630564220:0;sudo systemctl restart docker.service
+: 1630564714:0;docker info
+: 1630565791:0;docker cp rcver.c 9bb3dfd6e40f:/
+: 1612446781:0;docker pull emqx/emqx:4.2.7
+: 1612450146:0;docker run -d --name emqx -p 1883:1883 -p 8083:8083 -p 8883:8883 -p 8084:8084 -p 18083:18083 emqx/emqx:4.2.7
+: 1612451812:0;docker start emqx
+: 1612451949:0;docker stop emqx
+: 1645412614:0;docker build -t zh:1.0 .
+: 1645412754:0;docker ps -a
+: 1645412766:0;docker run -it -v /home/zh/li/gwai:/var/www/html/ --name lzh -p 80:80 zh:1.0
+: 1645412766:0;docker start -a lzh
+: 1645412904:0;docker exec -it lzh /bin/bash
+: 1645494200:0;docker stop lzh;docker rm lzh;docker rmi zh:1.0
+: 1645496234:0;docker stop lzh
+: 1630924608:0;rm rcver snder;make rcver snder
+: 1634783511:0;sudo systemctl start runsunloginclient.service
+: 1632449149:0;nohup ./snder 239.255.255.249 enp1s0 2>&1 &
+: 1630924643:0;./rcver 239.255.255.249 enp1s0
+: 1630914655:0;sudo tcpdump -i enp2s0 dst host 239.255.255.251
+: 1631256463:0;./ls-config -f hello.conf -s hello -d "hahah"
+: 1631258495:0;./ls-config -f hello.conf -g "info" -qv
+: 1631258497:0;./ls-config -f hello.conf -g "info" -qt
+: 1631258949:0;./ls-config -f hello.conf -s "info" -d 10 -p string
+: 1631259023:0;./ls-config -f hello.conf -g "grp.name" -qv
+: 1631497699:0;sudo pacman -S net-snmp
+: 1631497987:0;snmpwalk -v 2c -c public 192.168.255.1
+: 1631498154:0;snmpget -v 2c -c public 192.168.255.1 HOST-RESOURCES-MIB::hrSystemUptime.0
+: 1631498202:0;snmpwalk -v 2c -c public 192.168.255.1
+: 1631498438:0;snmptranslate -On -IR HOST-RESOURCES-MIB::hrSystem
+: 1631499585:0;snmptranslate -On -IR NET-SNMP-EXTEND-MIB
+: 1631500034:0;snmpget -v 2c -c public 192.168.255.1 .1.3.6.1.4.1.2021.11.11.0
+: 1631613298:0;yay -S webmin
+: 1631613589:0;sudo systemctl restart webmin.service
+: 1631613605:0;systemctl status webmin.service
+: 1630405340:0;vim todo.md
+: 1648001483:0;sudo tcpdump -envvvi enp1s0 'not arp and ether src b4:77:cd:66:c0:c7 and ether dest b4:77:cd:66:c0:c7'
+: 1635305420:0;sudo tcpdump -nvvvi enp1s0 'icmp'
+: 1637042058:0;cat /proc/net/tcp
+: 1637042066:0;cat /proc/net/udp
+: 1637042217:0;cat /proc/net/unix
+: 1637042184:0;grep '769958' /proc/net/udp
+: 1637042188:0;grep '769958' /proc/net/tcp
+: 1637042197:0;grep '769958' /proc/net/unix
+: 1643007216:0;sudo pacman -S nginx keepalived
+: 1643007375:0;sudo cp /etc/keepalived/keepalived.conf /etc/keepalived/keepalived.conf.bak
+: 1643007379:0;sudo vim /etc/keepalived/keepalived.conf
+: 1643007882:0;vim check_nginx_pid.sh
+: 1643007907:0;chmod 764 check_nginx_pid.sh
+: 1643007946:0;sudo vim /usr/share/nginx/html/a.html
+: 1643007921:0;sudo systemctl restart nginx.service
+: 1643007927:0;sudo systemctl restart keepalived.service
+: 1643007255:0;systemctl status nginx.service
+: 1643007255:0;systemctl status keepalived.service
+: 1636187115:0;systemctl get-default
+: 1636169799:0;sudo systemctl daemon-reload
+: 1636169699:0;systemctl status humbleservice
+: 1636708073:0;cp config_openwrt .config
+: 1637145351:0;nc -u 192.168.16.119 6886
+: 1641454266:0;sudo ./build/uarttd -sf -L7 -3 /dev/ttyUSB0 -8 /dev/ttyUSB1
+: 1642580631:0;mkdir -p /tmp/icg;mount -t nfs -o nolock -o tcp ${ip}:/home/zh/li/icg /tmp/icg
+: 1610806121:0;proxychains npm install
+: 1610805817:0;proxychains sudo npm install -g hexo-cli
+: 1632848953:0;sudo npm install hexo-renderer-less --save
+: 1632848990:0;npm audit fix
+: 1632849244:0;yay -S hexo-cli
+: 1613046449:0;hexo clean;hexo g --debug
+: 1613195399:0;hexo new post hello --debug
+: 1613197818:0;hexo new post zhboxè¿ƒ¾æƒ®¥å¸¸è§ƒ¤MQTT_Broker --debug
+: 1613052639:0;pip3 install jedi numpy
+: 1618922141:0;cargo new hello_cargo
+: 1618922429:0;cargo build
+: 1618922442:0;cargo run
+: 1618922523:0;cargo check
+: 1618922544:0;cargo build --release
+: 1619090110:0;cargo new rust9_1
+: 1619090151:0;cd ../rust9_1
+: 1611847999:0;proxychains make download
+: 1611923277:0;./scripts/feeds update hp4op
+: 1611923321:0;./scripts/feeds install -a
+: 1611936188:0;./scripts/feeds install zhbox
+: 1614520666:0;make package/zhbox/download V=s
+: 1611936902:0;make package/zhbox/check V=s FIXUP=1
+: 1611937054:0;make package/zhbox/{clean,compile} V=s
+: 1611988063:0;make package/libcfu/{clean,compile} V=s
+: 1612029750:0;./autogen.sh && ./configure --prefix=/usr
+: 1612029834:0;pkg-config --cflags --libs libcfu
+: 1620336277:0;sudo ./bin/zhbox -sc ./test/01alidirect/zhbox.cfg -i ./test/01alidirect -f
+: 1620661157:0;top -p `pidof zhbox`
+: 1620708495:0;vim plugin/n_aliyun/src/* zhbox/src/* zhbox/include/*
+: 1631110593:0;sudo pacman -S xf86-video-amdgpu
+: 1630939966:0;yay -S sunloginclient
+: 1632845719:0;cd /var/log/lightdm
+: 1632846938:0;cd /usr/share/X11/xorg.conf.d
+: 1634985067:0;cd /etc/X11/xorg.conf.d/
+: 1634452850:0;sudo mv 10-amdgpu.conf ~/usersharX11xorgconfd/10-amdgpu.conf
+: 1635994587:0;git clone https://github.com.cnpmjs.org/sebknzl/cmake-debhelper.git
+: 1635995382:0;pacman -Ss debhelper
+: 1635995412:0;yay -S debhelper
+: 1636618167:0;scp -o HostKeyAlgorithms=+ssh-rsa feeds/luci/modules/luci-base/root/usr/libexec/rpcd/luci root@192.168.1.254:/usr/libexec/rpcd/luci
+: 1636618329:0;scp -o HostKeyAlgorithms=+ssh-rsa feeds/luci/modules/luci-base/root/usr/share/rpcd/acl.d/luci-base.json root@192.168.1.254:/usr/share/rpcd/acl.d/luci-base.json
+: 1636618503:0;scp -o HostKeyAlgorithms=+ssh-rsa feeds/luci/modules/luci-mod-status/htdocs/luci-static/resources/view/status/include/10_system.js root@192.168.1.254:/www/luci-static/resources/view/status/include/10_system.js
+: 1636618619:0;vim feeds/luci/modules/luci-base/root/usr/libexec/rpcd/luci feeds/luci/modules/luci-base/root/usr/share/rpcd/acl.d/luci-base.json feeds/luci/modules/luci-mod-status/htdocs/luci-static/resources/view/status/include/10_system.js
+: 1644580532:0;sudo vim /etc/nginx/nginx.conf
+: 1644581296:0;sudo vim /usr/share/nginx/html/index.php
+: 1644582163:0;sudo vim /etc/php/php-fpm.d/www.conf
+: 1645493526:0;sudo pacman -S xdebug
+: 1645493549:0;sudo vim /etc/php/conf.d/xdebug.ini
+: 1646098777:0;ffmpeg -re -i li/cat.mp4 -vcodec mpeg2video -f mpeg2video udp://233.233.233.233:6666
+: 1646098931:0;ffplay -vcodec mpeg2video udp://233.233.233.233:6666
+: 1643116788:0;vim ~/.zsh_history

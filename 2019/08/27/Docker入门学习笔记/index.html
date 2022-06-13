@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+
+    
+
+    
+
+    <title>Docker入门学习笔记 | Zhihong&#39;s Blog</title>
+    <meta name="author" content="Zhihong Li" />
+    <meta name="keywords" content="zhbox" />
+    <meta name="description" content="版权声明：本文为CSDN博主「渣渣的夏天」的原创文章，遵循CC 4.0 by-sa版权协议，转载请附上原文出处链接及本声明。原文链接：https://blog.csdn.net/qq_39564555/article/details/97620705B站——【公开课】Docker入坑教程【33集】 庄七Docker入门学习笔记1. 什么是Docker？将应用程序自动部署到容器2. Docke的目标提供简单轻量的建模方式职责的逻辑分离快速高效的开发周期鼓励面向服务的架构3. Docker通常应用场" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no" />
+
+    
+    <link rel="alternate" href="/atom.xml" title="Zhihong&#39;s Blog" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/images/favicon.ico">
+    
+
+    <style type="text/css">
+    @font-face {
+        font-family: 'icomoon';
+        src: url("/fonts/icomoon.eot?q628ml");
+        src: url("/fonts/icomoon.eot?q628ml#iefix") format('embedded-opentype'),
+             url("/fonts/icomoon.ttf?q628ml") format('truetype'),
+             url("/fonts/icomoon.woff?q628ml") format('woff'),
+             url("/fonts/icomoon.svg?q628ml#icomoon") format('svg');
+        font-weight: normal;
+        font-style: normal;
+    }
+    </style>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!--[if lt IE 9]><style type="text/css">.nav-inner {top:0;}.author-meta {position:static;top:0;}.search-form {height:36px;}</style><script type="text/javascript" src="https://unpkg.com/html5shiv@3.7.3/dist/html5shiv.min.js"></script><![endif]-->
+<meta name="generator" content="Hexo 5.3.0"></head>
+<body>
+
+    <main class="app">
+        <header id="header" class="header clearfix">
+    <div id="nav" class="nav">
+    <div class="nav-mobile">
+        <button id="open-panel" class="open-panel nav-mobile-item"><i class="icon-documents"></i></button>
+        <h1 class="nav-mobile-title nav-mobile-item">Zhihong&#39;s Blog</h1>
+        <button id="open-menus" class="open-panel nav-mobile-item"><i class="icon-library"></i></button>
+    </div>
+
+    <nav id="nav-inner" class="nav-inner">
+        
+            <a class="nav-item" href="/">
+                <span class="nav-text">首页</span>
+            </a>
+        
+            <a class="nav-item" href="/zhbox">
+                <span class="nav-text">中盒</span>
+            </a>
+        
+            <a class="nav-item" href="/tags">
+                <span class="nav-text">标签</span>
+            </a>
+        
+            <a class="nav-item" href="/archives">
+                <span class="nav-text">归档</span>
+            </a>
+        
+            <a class="nav-item" href="/about">
+                <span class="nav-text">关于</span>
+            </a>
+        
+    </nav>
+</div>
+
+    <aside id="aside" class="aside">
+    <div id="aside-mask" class="aside-mask"></div>
+    <div id="aside-inner" class="aside-inner">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit"><i class="icon-search-stroke"></i></button><input type="hidden" name="sitesearch" value="https://humble-zh.github.io"></form>
+
+        
+        
+        
+        
+
+        
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Docker%E5%85%A5%E9%97%A8%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0"><span class="toc-number">1.</span> <span class="toc-text">Docker入门学习笔记</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E4%BB%80%E4%B9%88%E6%98%AFDocker%EF%BC%9F"><span class="toc-number">1.1.</span> <span class="toc-text">1. 什么是Docker？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-Docke%E7%9A%84%E7%9B%AE%E6%A0%87"><span class="toc-number">1.2.</span> <span class="toc-text">2. Docke的目标</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-Docker%E9%80%9A%E5%B8%B8%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-number">1.3.</span> <span class="toc-text">3. Docker通常应用场景</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-Docker%E7%9A%84%E5%9F%BA%E6%9C%AC%E7%BB%84%E6%88%90"><span class="toc-number">1.4.</span> <span class="toc-text">4. Docker的基本组成</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-Docker%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C"><span class="toc-number">1.5.</span> <span class="toc-text">5. Docker基本操作</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-%E5%AE%88%E6%8A%A4%E5%BC%8F%E5%AE%B9%E5%99%A8"><span class="toc-number">1.6.</span> <span class="toc-text">6. 守护式容器</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-%E5%9C%A8%E5%AE%B9%E5%99%A8%E4%B8%AD%E9%83%A8%E7%BD%B2%E9%9D%99%E6%80%81%E7%BD%91%E7%AB%99"><span class="toc-number">1.7.</span> <span class="toc-text">7. 在容器中部署静态网站</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#8-%E9%95%9C%E5%83%8F%E7%9A%84%E7%9B%B8%E5%85%B3%E6%93%8D%E4%BD%9C"><span class="toc-number">1.8.</span> <span class="toc-text">8. 镜像的相关操作</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#9-Docker%E7%9A%84C-S%E6%A8%A1%E5%BC%8F"><span class="toc-number">1.9.</span> <span class="toc-text">9. Docker的C&#x2F;S模式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#10-Docker%E5%AE%88%E6%8A%A4%E8%BF%9B%E7%A8%8B%E7%9A%84%E9%85%8D%E7%BD%AE%E5%92%8C%E6%93%8D%E4%BD%9C"><span class="toc-number">1.10.</span> <span class="toc-text">10. Docker守护进程的配置和操作</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#11-Docker%E7%9A%84%E8%BF%9C%E7%A8%8B%E8%AE%BF%E9%97%AE"><span class="toc-number">1.11.</span> <span class="toc-text">11. Docker的远程访问</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#12-Dockerfile%E6%8C%87%E4%BB%A4"><span class="toc-number">1.12.</span> <span class="toc-text">12. Dockerfile指令</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#13-Dockerfile%E6%9E%84%E5%BB%BA%E8%BF%87%E7%A8%8B"><span class="toc-number">1.13.</span> <span class="toc-text">13. Dockerfile构建过程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#14-Docker%E5%AE%B9%E5%99%A8%E7%9A%84%E7%BD%91%E7%BB%9C%E8%BF%9E%E6%8E%A5"><span class="toc-number">1.14.</span> <span class="toc-text">14. Docker容器的网络连接</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#15-Docker%E5%AE%B9%E5%99%A8%E7%9A%84%E6%95%B0%E6%8D%AE%E7%AE%A1%E7%90%86"><span class="toc-number">1.15.</span> <span class="toc-text">15. Docker容器的数据管理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#16-Docker%E5%AE%B9%E5%99%A8%E7%9A%84%E8%B7%A8%E4%B8%BB%E6%9C%BA%E8%BF%9E%E6%8E%A5"><span class="toc-number">1.16.</span> <span class="toc-text">16. Docker容器的跨主机连接</span></a></li></ol></li></ol>
+        
+    </div>
+</aside>
+
+</header>
+
+        <div id="content" class="content">
+            <div id="wrapper" class="wrapper" style="max-width: 800px">
+                <article class="article" itemscope itemprop="blogPost">
+    
+    <header class="article-header">
+        
+        <h1 itemprop="name">
+            Docker入门学习笔记
+        </h1>
+        
+        <div class="article-meta clearfix">
+            <a class="article-date" href="https://humble-zh.github.io/2019/08/27/Docker%E5%85%A5%E9%97%A8%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/index.html">
+    
+    <i class="icon-calendar vm"></i>
+    
+    <time class="vm" datetime="2019-08-27T07:32:41.000Z" itemprop="datePublished">2019-08-27</time>
+</a>
+
+            
+<div class="article-tag-list">
+    <i class="icon-tag vm"></i>
+    <a class="article-tag-link" href="/tags/docker/" rel="tag">docker</a>
+</div>
+
+
+        </div>
+    </header>
+    
+    <section class="article-body markdown-body">
+        
+        <p>版权声明：本文为CSDN博主「渣渣的夏天」的原创文章，遵循CC 4.0 by-sa版权协议，转载请附上原文出处链接及本声明。</p>
+<p>原文链接：<a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_39564555/article/details/97620705">https://blog.csdn.net/qq_39564555/article/details/97620705</a></p>
+<p>B站——<a target="_blank" rel="noopener" href="https://www.bilibili.com/video/av17854410?from=search&amp;seid=1543774132825041407">【公开课】Docker入坑教程【33集】 庄七</a></p>
+<h1 id="Docker入门学习笔记"><a href="#Docker入门学习笔记" class="headerlink" title="Docker入门学习笔记"></a>Docker入门学习笔记</h1><h2 id="1-什么是Docker？"><a href="#1-什么是Docker？" class="headerlink" title="1. 什么是Docker？"></a>1. 什么是Docker？</h2><ul>
+<li>将应用程序自动部署到容器</li>
+</ul>
+<h2 id="2-Docke的目标"><a href="#2-Docke的目标" class="headerlink" title="2. Docke的目标"></a>2. Docke的目标</h2><ul>
+<li>提供简单轻量的建模方式</li>
+<li>职责的逻辑分离</li>
+<li>快速高效的开发周期</li>
+<li>鼓励面向服务的架构</li>
+</ul>
+<h2 id="3-Docker通常应用场景"><a href="#3-Docker通常应用场景" class="headerlink" title="3. Docker通常应用场景"></a>3. Docker通常应用场景</h2><ul>
+<li>使用Docker容器开发、测试、部署服务</li>
+<li>创建隔离的运行环境</li>
+<li>搭建多用户的平台即服务（PaaS）基础设施</li>
+<li>提供软件即服务（SaaS）应用程序</li>
+<li>高性能、超大规模的宿主机部署</li>
+</ul>
+<h2 id="4-Docker的基本组成"><a href="#4-Docker的基本组成" class="headerlink" title="4. Docker的基本组成"></a>4. Docker的基本组成</h2><ul>
+<li>Docker Client 客户端</li>
+<li>Docker Daemon 守护进程</li>
+<li>Docker Image 镜像</li>
+<li>Docker Container 容器</li>
+<li>Docker Registey 仓库</li>
+</ul>
+<h2 id="5-Docker基本操作"><a href="#5-Docker基本操作" class="headerlink" title="5. Docker基本操作"></a>5. Docker基本操作</h2><p>运行容器</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">docker run IMAGE [COMMAND] [ARG…]</span><br><span class="line">    run 在新容器中执行命令</span><br></pre></td></tr></table></figure>
+<p>启动交互式容器：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">docker run -i -t IMAGE /bin/bash</span><br><span class="line">    -i  --interactive=<span class="literal">true</span>|<span class="literal">false</span> 默认为<span class="literal">false</span></span><br><span class="line">    -t  --tty=<span class="literal">true</span>|<span class="literal">false</span> 默认为<span class="literal">false</span></span><br></pre></td></tr></table></figure>
+<p>查看容器：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">docker ps [-a] [-l]</span><br><span class="line"><span class="comment"># docker inspect 容器名/id</span></span><br></pre></td></tr></table></figure>
+<p>自定义容器名：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker run --name=自定义名 -i -t /bin/bash</span><br></pre></td></tr></table></figure>
+<p>重新启动已经停止的容器：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker start [-i] 容器名/id</span><br></pre></td></tr></table></figure>
+<p>删除停止的容器：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker rm 容器名/id</span><br></pre></td></tr></table></figure>
+<h2 id="6-守护式容器"><a href="#6-守护式容器" class="headerlink" title="6. 守护式容器"></a>6. 守护式容器</h2><ul>
+<li>能够长期运行</li>
+<li>没有交互式会话</li>
+<li>适合运行应用程序和服务</li>
+</ul>
+<p>以守护形式运行容器</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">docker run -i -t IMAGE /bin/bash</span><br><span class="line">Ctrl+P Ctrl+Q</span><br></pre></td></tr></table></figure>
+<p>附加到运行中的容器</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker attach 容器名/id</span><br></pre></td></tr></table></figure>
+<p>启动守护式容器</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">docker run -d 镜像名 [COMMAND] [ARG…]</span><br><span class="line">    -d  以后台运行方式启动</span><br></pre></td></tr></table></figure>
+<p>查看容器日志</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">docker logs [-f] [-t] [--tail] 容器名/id</span><br><span class="line">    -f --follows=<span class="literal">true</span>|<span class="literal">false</span> 默认为<span class="literal">false</span></span><br><span class="line">        一直跟踪日志变化并返回结果，Ctrl+C停止</span><br><span class="line">    -t --timestamps=<span class="literal">true</span>|<span class="literal">false</span> 默认为<span class="literal">false</span></span><br><span class="line">        附加时间戳</span><br><span class="line">    --tail =<span class="string">&quot;all&quot;</span></span><br><span class="line">        返回结尾处日志，未指定则返回所有日志</span><br></pre></td></tr></table></figure>
+<p>查看容器内进程</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker top 容器名/id</span><br></pre></td></tr></table></figure>
+<p>在运行中的容器内启动新进程</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker <span class="built_in">exec</span> [-d][-i][-t] 容器名/id [COMMAND] [ARG…]</span><br></pre></td></tr></table></figure>
+<p>停止守护容器</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">docker stop 容器名/id     发送信号后等待服务器停止</span><br><span class="line"><span class="comment"># docker kill 容器名/id     直接终止</span></span><br></pre></td></tr></table></figure>
+<p>使用docker帮助文档</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">man docker-run</span><br></pre></td></tr></table></figure>
+<h2 id="7-在容器中部署静态网站"><a href="#7-在容器中部署静态网站" class="headerlink" title="7. 在容器中部署静态网站"></a>7. 在容器中部署静态网站</h2><p>设置容器的端口映射</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">run [-P] [-p]</span><br><span class="line">    -P --publish-all=<span class="literal">true</span> | <span class="literal">false</span> 默认为<span class="literal">false</span></span><br><span class="line">        <span class="comment"># docker run -P -i -t ubuntu /bin/bash</span></span><br><span class="line">        映射所有端口</span><br><span class="line">    -p --publish=[]     指定映射端口</span><br><span class="line">        containerPort</span><br><span class="line">            <span class="comment"># docker run -p 80 -i -t ubuntu /bin/bash</span></span><br><span class="line">        hostPort:containerPort</span><br><span class="line">            <span class="comment"># docker run -p 8080:80 -i -t ubuntu /bin/bash</span></span><br><span class="line">        ip:containerPort</span><br><span class="line">            <span class="comment"># docker run -p 0.0.0.0:80 -i -t ubuntu /bin/bash</span></span><br><span class="line">        ip:hostPort:containerPort</span><br><span class="line">            <span class="comment"># docker run -p 0.0.0.0:8080:80 -i -t ubuntu /bin/bash</span></span><br></pre></td></tr></table></figure>
+<p>Nginx部署静态网页流程</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">- 创建映射80端口的交互式容器</span><br><span class="line">- 安装Nginx</span><br><span class="line">- 安装文本编辑器vim</span><br><span class="line">- 创建静态页面</span><br><span class="line">- 修改Nginx配置文件</span><br><span class="line">- 运行Nginx</span><br><span class="line">- 验证网站访问</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">docker run -p 80 --name web -i -t ubuntu /bin/bash</span><br><span class="line">apt-get update</span><br><span class="line">apt-get install -y nginx</span><br><span class="line">apt-get install -y vim</span><br><span class="line"></span><br><span class="line">mkdir -p /var/www/html</span><br><span class="line"><span class="built_in">cd</span> /var/www/html</span><br><span class="line">vim index.html</span><br></pre></td></tr></table></figure>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>Nginx in Docker<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">h1</span>&gt;</span>hello, I&#x27;m website in docker!<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">whereis nginx</span><br><span class="line">vim /etc/nginx/sites-enabled/default   <span class="comment"># 修改 root 的值为 /var/www/html</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">cd</span> /</span><br><span class="line">nginx</span><br><span class="line">ps -ef</span><br><span class="line">Ctrl+P Ctrl+Q 退出，后台运行</span><br><span class="line"></span><br><span class="line"><span class="comment"># docker ps     查看运行的容器</span></span><br><span class="line"><span class="comment"># docker port web       查看端口映射情况</span></span><br><span class="line"><span class="comment"># docker top web        查看容器进程情况</span></span><br><span class="line"></span><br><span class="line">curl http://127.0.0.1:32768     以映射的端口为准</span><br><span class="line"></span><br><span class="line"><span class="comment"># docekr inspect web        查看容器对应的IPAddress</span></span><br><span class="line">curl 172.17.0.2</span><br><span class="line"></span><br><span class="line"><span class="comment"># 关闭容器</span></span><br><span class="line"><span class="comment"># docker stop web</span></span><br><span class="line"><span class="comment"># docker start -i web</span></span><br><span class="line"><span class="comment"># ps -ef</span></span><br><span class="line"><span class="comment"># nignx并未启动</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># docker exec web nginx</span></span><br><span class="line"><span class="comment"># 重新启动Nginx</span></span><br><span class="line"><span class="comment"># 映射的端口和IP地址均已改变</span></span><br></pre></td></tr></table></figure>
+<h2 id="8-镜像的相关操作"><a href="#8-镜像的相关操作" class="headerlink" title="8. 镜像的相关操作"></a>8. 镜像的相关操作</h2><p>Docker镜像：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">容器的基石</span><br><span class="line">层叠的只读文件系统</span><br><span class="line">联合加载（union mount）</span><br><span class="line"></span><br><span class="line"><span class="comment"># docker info</span></span><br><span class="line">查看docker配置的相关信息</span><br></pre></td></tr></table></figure>
+<p>列出镜像</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">docker images [OPTIONS] [REPOSITORY]</span><br><span class="line">    -a  --all=False 显示所有镜像</span><br><span class="line">    -f  --filter=[] 显示时的过滤条件</span><br><span class="line">    --no-trunc=<span class="literal">false</span>    不使用截断的形式显示命令</span><br><span class="line">    -q  --quiet=<span class="literal">false</span>   只显示镜像的v-id</span><br></pre></td></tr></table></figure>
+<p>查看镜像</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker inspect [OPTIONS] CONTAINER|IMAGE[CONTAINER|IMAGE……]</span><br></pre></td></tr></table></figure>
+<p>删除镜像</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">docker rmi [OPTIONS] IMAGE [IMAGE…]</span><br><span class="line">-f  --force=<span class="literal">false</span>   强制删除镜像</span><br><span class="line">--no-prune=<span class="literal">false</span>    保留删除镜像中未打标签的父镜像</span><br></pre></td></tr></table></figure>
+<p>查找镜像</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Docker Hub  https://hub.docker.com/</span><br><span class="line"><span class="comment"># docker search [OPTIONS] TERM</span></span><br><span class="line">    --automated=<span class="literal">false</span>   只显示自动化构建的选项</span><br><span class="line">    --no-trunc=<span class="literal">false</span>    以截断方式显示image id</span><br><span class="line">    -s  --stars=0   设置显示结果的最低星级</span><br><span class="line">    一次最多返回25个结果</span><br></pre></td></tr></table></figure>
+<p>拉取镜像</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">docker pull [OPTIONS] NAME[:TAG]</span><br><span class="line">    -a  --all-tags=<span class="literal">false</span>    下载仓库中所有标签镜像</span><br><span class="line"></span><br><span class="line">提速</span><br><span class="line">    使用--registry-mirror选项</span><br><span class="line">        1.修改：vim /etc/default/docker</span><br><span class="line">        2.添加：DOCKER_OPTS = <span class="string">&quot;--registry-mirror=http://MIRROR-ADDR&quot;</span></span><br><span class="line">            https://www.daocloud.io</span><br></pre></td></tr></table></figure>
+<p>推送镜像</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker push NAME[:TAG]</span><br></pre></td></tr></table></figure>
+<p>构建镜像</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line">保存对容器的修改，并再次使用</span><br><span class="line">自定义镜像的能力</span><br><span class="line">以软件的形式打包并分发服务及其运行环境</span><br><span class="line"></span><br><span class="line">1.使用commit构建镜像</span><br><span class="line">    <span class="comment"># docker commit [OPTIONS] CONTAINER [REPOSITORY[:TAG]]</span></span><br><span class="line">    -a  --author=<span class="string">&quot;&quot;</span> 指定镜像作者，一般：name@email</span><br><span class="line">    -m  --message=<span class="string">&quot;&quot;</span>    提交信息</span><br><span class="line">    -p  --pause=<span class="literal">true</span>    在commit过程中不暂停容器</span><br><span class="line"></span><br><span class="line">    ********************demo***************</span><br><span class="line">    <span class="comment"># docker run -it -p 80 --name commit_test ubuntu /bin/bash</span></span><br><span class="line">    <span class="comment"># apt-get update</span></span><br><span class="line">    <span class="comment"># apt-get install -y nginx</span></span><br><span class="line">    <span class="comment"># exit</span></span><br><span class="line">    <span class="comment"># docker ps -l</span></span><br><span class="line">    生成镜像</span><br><span class="line">    <span class="comment"># docker commit -a &quot;summer&quot; -m &quot;nginx&quot; commit_test summer258/commit_test1</span></span><br><span class="line">    <span class="comment"># docker images</span></span><br><span class="line">    <span class="comment"># docker run -d --name nginx_web -p 80 summer258/commit_test1 nginx -g &quot;daemon off;&quot;</span></span><br><span class="line">    <span class="comment"># docker ps</span></span><br><span class="line">    <span class="comment"># curl http://127.0.0.1:32770</span></span><br><span class="line">    ***************************************</span><br><span class="line"></span><br><span class="line">2.使用dockerfile构建镜像</span><br><span class="line"></span><br><span class="line">    <span class="comment"># docker build [OPTIONS] PATH | URL | -</span></span><br><span class="line">        --force-rm=<span class="literal">false</span></span><br><span class="line">        --no-cache=<span class="literal">false</span></span><br><span class="line">        --pull=<span class="literal">false</span></span><br><span class="line">        -q  --quiet=<span class="literal">false</span></span><br><span class="line">        --rm=<span class="literal">true</span></span><br><span class="line">        -t  --tag=<span class="string">&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">    创建一个Dockerfile</span><br><span class="line">        <span class="comment"># first dockerfile</span></span><br><span class="line">        FROM ubuntu:14.04</span><br><span class="line">        MAINTAINER  name <span class="string">&quot;name@email&quot;</span></span><br><span class="line">        RUN apt-get update</span><br><span class="line">        RUN apt-get install -y nginx</span><br><span class="line">        EXPOSE 80</span><br><span class="line"></span><br><span class="line">    ********************demo***************</span><br><span class="line">    <span class="comment"># mkdir -p dockerfile/df_test1</span></span><br><span class="line">    <span class="comment"># cd dockerfile/df_test1</span></span><br><span class="line">    <span class="comment"># vim Dockerfile</span></span><br><span class="line">        <span class="comment"># first dockerfile</span></span><br><span class="line">        FROM ubuntu:14.04</span><br><span class="line">        MAINTAINER  name <span class="string">&quot;name@email&quot;</span></span><br><span class="line">        RUN apt-get update</span><br><span class="line">        RUN apt-get install -y nginx</span><br><span class="line">        EXPOSE 80</span><br><span class="line">    <span class="comment"># docker build -t=&#x27;summer258/df_test1&#x27; .</span></span><br><span class="line">    <span class="comment"># docker run -d --name nginx_web2 -p 80 summer258/df_test1 nginx -g &quot;daemon off;&quot;</span></span><br><span class="line">    <span class="comment"># docker ps</span></span><br><span class="line">    <span class="comment"># curl http://127.0.0.1:32770</span></span><br><span class="line">    ***************************************</span><br></pre></td></tr></table></figure>
+<h2 id="9-Docker的C-S模式"><a href="#9-Docker的C-S模式" class="headerlink" title="9. Docker的C/S模式"></a>9. Docker的C/S模式</h2><p><img src="https://img-blog.csdnimg.cn/20190801111028168.png" alt="Alt"></p>
+<p>Remote API</p>
+<p>RESTful风格的API</p>
+<p>STDIN、STDOUT、STDERR</p>
+<p><img src="https://img-blog.csdnimg.cn/2019080111200989.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM5NTY0NTU1,size_16,color_FFFFFF,t_70" alt="Alt"></p>
+<p>连接方式</p>
+<p>unix:///var/run/docker.sock</p>
+<p>tcp://host:port</p>
+<p>fd://socketfd</p>
+<p><img src="https://img-blog.csdnimg.cn/20190801111918280.png" alt="Alt"></p>
+<p>test</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ps -ef | grep docker</span><br><span class="line"><span class="comment"># docker version</span></span><br><span class="line"><span class="comment"># nc -U /var/run/docker.sock</span></span><br><span class="line">GET /info HTTP/1.1</span><br></pre></td></tr></table></figure>
+<h2 id="10-Docker守护进程的配置和操作"><a href="#10-Docker守护进程的配置和操作" class="headerlink" title="10. Docker守护进程的配置和操作"></a>10. Docker守护进程的配置和操作</h2><p>查看守护进程</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ps -ef | grep docker</span><br><span class="line"><span class="comment"># status docker</span></span><br></pre></td></tr></table></figure>
+<p>使用service命令管理</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">service docker start|stop|restart</span><br></pre></td></tr></table></figure>
+<p>Docker的启动选项</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line">docker -d [OPTIONS]</span><br><span class="line">    -d 表示以守护进程形式运行</span><br><span class="line"></span><br><span class="line">    运行相关：</span><br><span class="line">    -D  --debug=<span class="literal">false</span></span><br><span class="line">    -e  --exec-drive=<span class="string">&quot;native&quot;</span></span><br><span class="line">    -g  --graph=<span class="string">&quot;/var/lib/docker&quot;</span></span><br><span class="line">    --icc=<span class="literal">true</span></span><br><span class="line">    -l  --log-level=<span class="string">&quot;info&quot;</span></span><br><span class="line">    --label=[]</span><br><span class="line">    =p  --pidfile=<span class="string">&quot;/var/run/docker.pid&quot;</span></span><br><span class="line"></span><br><span class="line">    Docker服务器连接相关：</span><br><span class="line">    -G,--group=<span class="string">&quot;docker&quot;</span></span><br><span class="line">    -H,--host=[]</span><br><span class="line">    --tls=<span class="literal">false</span></span><br><span class="line">    --tlscacert=<span class="string">&quot;/home/sven/.docker/ca.pem&quot;</span></span><br><span class="line">    --tlscert=<span class="string">&quot;/home/sven/.docker/cert.pem&quot;</span></span><br><span class="line">    --tlskey=<span class="string">&quot;/home/sven/.docker/key.pem&quot;</span></span><br><span class="line">    --tlsverify=<span class="literal">false</span></span><br><span class="line"></span><br><span class="line">    RemoteAPI相关：</span><br><span class="line">    --api-enable-cors=<span class="literal">false</span></span><br><span class="line"></span><br><span class="line">    存储相关：</span><br><span class="line">    -s,--storage-drive=<span class="string">&quot;&quot;</span></span><br><span class="line">    --selinux-enabled=<span class="literal">false</span></span><br><span class="line">    --storage-opt=[]</span><br><span class="line"></span><br><span class="line">    Registry相关：</span><br><span class="line">    --insecure-registry=[]</span><br><span class="line">    --registry-mirror=[]</span><br><span class="line"></span><br><span class="line">    网络设置相关：</span><br><span class="line">    -b,--bridge=<span class="string">&quot;&quot;</span></span><br><span class="line">    --bip=<span class="string">&quot;&quot;</span></span><br><span class="line">    --fixed-cidr=<span class="string">&quot;&quot;</span></span><br><span class="line">    --fixed-cidr-v6=<span class="string">&quot;&quot;</span></span><br><span class="line">    --dns=[]</span><br><span class="line">    --dns-search=[]</span><br><span class="line">    --ip=0.0.0.0</span><br><span class="line">    --ip-forward=<span class="literal">true</span></span><br><span class="line">    --ip-masq=<span class="literal">true</span></span><br><span class="line">    --iptables=<span class="literal">true</span></span><br><span class="line">    --ipv6=<span class="literal">false</span></span><br><span class="line">    --mtu=0</span><br></pre></td></tr></table></figure>
+<p>docker启动配置文件：/etc/default/docker</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">DOCKER_OPTS = <span class="string">&quot;……&quot;</span></span><br></pre></td></tr></table></figure>
+<h2 id="11-Docker的远程访问"><a href="#11-Docker的远程访问" class="headerlink" title="11. Docker的远程访问"></a>11. Docker的远程访问</h2><p>环境准备：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">第二台安装Docker的服务器</span><br><span class="line">修改Docker守护进程启动选项，区别服务器</span><br><span class="line">保证Client API和Server API版本一致</span><br><span class="line"></span><br><span class="line"><span class="comment"># docker version</span></span><br><span class="line">    查看版本API是否一致</span><br></pre></td></tr></table></figure>
+<p>修改服务器端配置</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">修改Docker守护进程启动项</span><br><span class="line">-H  tcp://host:port</span><br><span class="line">    unix:///path/to/socket</span><br><span class="line">    fd://* or fd://socketfd</span><br><span class="line">守护进程默认配置：</span><br><span class="line">-H  unix:///var/run/docker.sock</span><br><span class="line"></span><br><span class="line">vim /etc/default/docker</span><br><span class="line">    DOCKER_OPTS = <span class="string">&quot;-H tcp://0.0.0.0:2375&quot;</span></span><br><span class="line">    <span class="comment"># 一般选择2375端口</span></span><br><span class="line">重启服务 <span class="comment"># service docker restart</span></span><br><span class="line">ifconfig    获取本机IP地址</span><br></pre></td></tr></table></figure>
+<p>远程访问</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl http://服务器IP：配置port/info</span><br></pre></td></tr></table></figure>
+<p>客户端远程访问：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">修改客户端配置</span><br><span class="line">使用Docker客户端命令选项</span><br><span class="line">-H  tcp://host:port</span><br><span class="line">    unix:///path/to/socket</span><br><span class="line">    fd://* or fd://socketfd</span><br><span class="line">客户端默认配置：</span><br><span class="line">-H  unix:///var/run/docker.sock</span><br><span class="line"></span><br><span class="line"><span class="comment"># docker -H tcp://ip:port info</span></span><br><span class="line"></span><br><span class="line">使用环境变量简化操作DOCKER_HOST</span><br><span class="line"><span class="built_in">export</span> DOCKER_HOST=<span class="string">&quot;tcp://ip:port&quot;</span></span><br><span class="line"></span><br><span class="line">将环境变量置空则返回本机服务</span><br><span class="line"><span class="built_in">export</span> DOCKER_HOST=<span class="string">&quot;&quot;</span></span><br></pre></td></tr></table></figure>
+<p>设置了远程访问模式后的服务端不再支持本机连接</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">1.将本机作为远程客户端，通过DOCKER_HOST连接</span><br><span class="line">2.修改本机配置，添加默认配置</span><br><span class="line">vim /etc/default/docker</span><br><span class="line">    DOCKER_OPTS = <span class="string">&quot;-H tcp://0.0.0.0:2375 -H  unix:///var/run/docker.sock&quot;</span></span><br></pre></td></tr></table></figure>
+<h2 id="12-Dockerfile指令"><a href="#12-Dockerfile指令" class="headerlink" title="12. Dockerfile指令"></a>12. Dockerfile指令</h2><p>创建一个Dockerfile</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">first dockerfile</span><br><span class="line">FROM ubuntu:14.04</span><br><span class="line">MAINTAINER  name <span class="string">&quot;name@email&quot;</span></span><br><span class="line">RUN apt-get update</span><br><span class="line">RUN apt-get install -y nginx</span><br><span class="line">EXPOSE 80</span><br></pre></td></tr></table></figure>
+<p>指令格式</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Comment</span><br><span class="line">INSTRUCTION argument</span><br></pre></td></tr></table></figure>
+<p>FROM &lt;image&gt;[:&lt;tag&gt;]</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">已经存在的镜像</span><br><span class="line">基础镜像</span><br><span class="line">必须是第一条非注释指令</span><br></pre></td></tr></table></figure>
+<p>MAINTAINER  &lt;name&gt;</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">指定镜像的作者信息，包含镜像的所有者和联系信息</span><br></pre></td></tr></table></figure>
+<p>RUN</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">指定当前镜像中运行的命令</span><br><span class="line">shell模式</span><br><span class="line">    RUN &lt;<span class="built_in">command</span>&gt;</span><br><span class="line">    默认shell   /bin/sh -c <span class="built_in">command</span></span><br><span class="line"><span class="built_in">exec</span>模式</span><br><span class="line">    RUN [ <span class="string">&quot;executable&quot;</span>, <span class="string">&quot;param1&quot;</span>, <span class="string">&quot;param2&quot;</span>]</span><br><span class="line">    可以指定其他shell   RUN [<span class="string">&quot;/bin/bash&quot;</span>, <span class="string">&quot;-c&quot;</span>, <span class="string">&quot;echo hello&quot;</span>]</span><br></pre></td></tr></table></figure>
+<p>EXPOSE &lt;port&gt; [&lt;port&gt;…]</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">指定运行该镜像的容器使用的端口</span><br><span class="line">在使用时仍需指定    -p port</span><br></pre></td></tr></table></figure>
+<p>CMD</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">提供容器运行时的命令，作为默认设置，会被docker run中相同命令覆盖</span><br><span class="line">CMD [ <span class="string">&quot;executable&quot;</span>, <span class="string">&quot;param1&quot;</span>, <span class="string">&quot;param2&quot;</span>] (<span class="built_in">exec</span>模式)</span><br><span class="line">CMD <span class="built_in">command</span> param1 param2   (shell模式)</span><br><span class="line">CMD [<span class="string">&quot;param1&quot;</span>, <span class="string">&quot;param2&quot;</span>]    (作为ENTRYPOINT指令的默认参数)</span><br></pre></td></tr></table></figure>
+<p>ENTRYPOINT</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ENTRYPOINT [ <span class="string">&quot;executable&quot;</span>, <span class="string">&quot;param1&quot;</span>, <span class="string">&quot;param2&quot;</span>] (<span class="built_in">exec</span>模式)</span><br><span class="line">ENTRYPOINT <span class="built_in">command</span> param1 param2   (shell模式)</span><br><span class="line">默认不会被docker run中命令覆盖</span><br><span class="line">可以使用 docker run entrypoint 覆盖</span><br></pre></td></tr></table></figure>
+<p>ADD、COPY</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">将文件/目录复制到Dockerfile构建的文件中，源地址，目标地址</span><br><span class="line">ADD &lt;src&gt;…&lt;dest&gt;</span><br><span class="line">ADD [<span class="string">&quot;&lt;src&gt;&quot;</span>…<span class="string">&quot;&lt;dest&gt;&quot;</span>]  (使用于文件路径中有空格的情况)</span><br><span class="line"></span><br><span class="line">COPY &lt;src&gt;…&lt;dest&gt;</span><br><span class="line">COPY [<span class="string">&quot;&lt;src&gt;&quot;</span>…<span class="string">&quot;&lt;dest&gt;&quot;</span>]  (使用于文件路径中有空格的情况)</span><br><span class="line"></span><br><span class="line">ADD vs COPY</span><br><span class="line">    ADD包含类似tar的解压功能</span><br><span class="line">    如果单纯复制文件，Docker推荐使用COPY</span><br></pre></td></tr></table></figure>
+<p>VOLUME [“/data”]</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">用于向基于镜像创建的容器添加数据卷，共享数据/数据持久化</span><br></pre></td></tr></table></figure>
+<p>WORKDIR /path/to/workdir</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">在镜像创建新容器时，指定工作目录，一般使用绝对路径，相对路径会持续传递</span><br></pre></td></tr></table></figure>
+<p>ENV &lt;key&gt;&lt;value&gt;</p>
+<p>ENV &lt;key&gt;=&lt;value&gt;…</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">用户设置环境变量</span><br></pre></td></tr></table></figure>
+<p>USER daemon</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">指定镜像运行的用户，默认为root</span><br></pre></td></tr></table></figure>
+<p>ONBUILD [INSTRUCTION]</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">镜像触发器</span><br><span class="line">当一个镜像被其他镜像作为基础镜像时执行</span><br><span class="line">会在构建过程中插入指令</span><br></pre></td></tr></table></figure>
+<h2 id="13-Dockerfile构建过程"><a href="#13-Dockerfile构建过程" class="headerlink" title="13. Dockerfile构建过程"></a>13. Dockerfile构建过程</h2><ul>
+<li><p>从基础镜像运行一个容器</p>
+</li>
+<li><p>执行一条指令，对容器做出修改</p>
+</li>
+<li><p>执行类似docker commit的操作，提交一个新的镜像层</p>
+</li>
+<li><p>基于刚提交的镜像运行一个新容器</p>
+</li>
+<li><p>执行Dockefile中的下一条指令，直至所有指令执行完毕</p>
+</li>
+<li><p>中间层镜像不会被删除，中间层容器会被删除</p>
+</li>
+<li><p>可以使用中间层镜像调试</p>
+<p>  查找错误</p>
+</li>
+<li><p>构建缓存</p>
+</li>
+<li><p>不适用构建缓存</p>
+</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">docker build --no-cache</span><br><span class="line">或者</span><br><span class="line">在Dockerfile中设置缓存刷新时间</span><br><span class="line">ENV REFRESH_DATE 2019-8-2</span><br></pre></td></tr></table></figure>
+<ul>
+<li>查看镜像构建的过程</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker <span class="built_in">history</span> [image]</span><br></pre></td></tr></table></figure>
+<h2 id="14-Docker容器的网络连接"><a href="#14-Docker容器的网络连接" class="headerlink" title="14. Docker容器的网络连接"></a>14. Docker容器的网络连接</h2><ul>
+<li>Docker容器的网络基础</li>
+</ul>
+<p><img src="https://img-blog.csdnimg.cn/20190802093313966.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM5NTY0NTU1,size_16,color_FFFFFF,t_70" alt="Alt"></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">docker0——Linux虚拟网桥</span><br><span class="line"></span><br><span class="line">    Linux虚拟网桥:</span><br><span class="line">        可以设置IP地址</span><br><span class="line">        相当于拥有一个隐藏的虚拟网卡</span><br><span class="line"></span><br><span class="line">    docker0 地址划分</span><br><span class="line">        IP:172.17.42.1  子网掩码：255.255.0.0</span><br><span class="line">        MAC：02:42:ac:11:00:00到02:42:ac:11:ff:ff</span><br><span class="line">        总共提供了65534个地址</span><br><span class="line"></span><br><span class="line">    安装网桥管理程序</span><br><span class="line">        yum -y install bridge-utils</span><br><span class="line">    查看网桥设备</span><br><span class="line">        <span class="comment"># brctl show</span></span><br><span class="line"></span><br><span class="line">自定义Docker0</span><br><span class="line"></span><br><span class="line">    修改docker0地址</span><br><span class="line">    $ sudo ifconfig docker0 192.168.200.1 netmask 255.255.255.0</span><br><span class="line"></span><br><span class="line">自定义虚拟网桥</span><br><span class="line"></span><br><span class="line">    添加虚拟网桥</span><br><span class="line">        $ sudo brctl addbr br0</span><br><span class="line">        $ sudo ifconfig br0 192.168.100.1 netmask 255.255.255.0</span><br><span class="line">    更改docker守护进程的启动配置</span><br><span class="line">        /etc/default/docker 中添加DOCKER_OPTS值</span><br><span class="line">        -b=br0</span><br></pre></td></tr></table></figure>
+<ul>
+<li>Docker容器的互联</li>
+</ul>
+<p>环境准备</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">用于测试的Docker镜像Dockerfile：</span><br><span class="line">    <span class="comment"># ./cct/Dockerfile</span></span><br><span class="line">    <span class="comment"># container connection test</span></span><br><span class="line">    FROM ubuntu:14.04</span><br><span class="line">    RUN apt-get install -y ping</span><br><span class="line">    RUN apt-get update</span><br><span class="line">    RUN apt-get install -y nginx</span><br><span class="line">    RUN apt-get install -y curl</span><br><span class="line">    EXPOSE 80</span><br><span class="line">    CMD /bin/bash</span><br><span class="line"></span><br><span class="line">    <span class="comment"># docker build -t summer258/cct .</span></span><br></pre></td></tr></table></figure>
+<p>允许所有容器间互联</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">默认设置</span><br><span class="line">--icc=<span class="literal">true</span>  默认</span><br><span class="line"></span><br><span class="line">启动第一个容器</span><br><span class="line"><span class="comment"># docker run -it --name cct1 summer258/cct</span></span><br><span class="line">/<span class="comment"># nginx</span></span><br><span class="line">Ctrl+P Ctrl+Q</span><br><span class="line"></span><br><span class="line">启动第二个容器</span><br><span class="line"><span class="comment"># docker run -it --name cct2 summer258/cct</span></span><br><span class="line">/<span class="comment"># ifconfig</span></span><br><span class="line">Ctrl+P Ctrl+Q</span><br><span class="line"></span><br><span class="line">inet addr:172.17.0.3</span><br><span class="line"></span><br><span class="line">连接到第一个容器cct1</span><br><span class="line"><span class="comment"># docker attach cct1</span></span><br><span class="line">/<span class="comment"># ifconfig</span></span><br><span class="line"></span><br><span class="line">inet addr:172.17.0.2</span><br><span class="line"></span><br><span class="line">测试连接：ping 172.0.3</span><br><span class="line"></span><br><span class="line">连接到第一个容器cct2</span><br><span class="line"><span class="comment"># docker attach cct2</span></span><br><span class="line">测试连接：curl http://172.17.0.2</span><br><span class="line"></span><br><span class="line">--link</span><br><span class="line">    <span class="comment"># docker run --link=[CONTAINER_NAME]:[ALIAS] [IMAGE] [COMMAND]</span></span><br><span class="line"></span><br><span class="line">启动第三个容器</span><br><span class="line"><span class="comment"># docker run -it --name cct3 --link=cct1:webtest summer258/cct</span></span><br><span class="line">/<span class="comment"># ping webtest</span></span><br><span class="line"></span><br><span class="line">重启docker服务</span><br><span class="line">    <span class="comment"># systemctl restart docker</span></span><br><span class="line">    <span class="comment"># docker restart cct1 cct2 cct3</span></span><br><span class="line">    /<span class="comment"># ping webtest</span></span><br></pre></td></tr></table></figure>
+<p>拒绝所有容器间互联</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">Docker守护进程的启动选项</span><br><span class="line">    DOCKER_OPTS= <span class="string">&quot; --icc=false&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># ubuntu</span></span><br><span class="line">$ sudo vim /etc/default/docker</span><br><span class="line">    DOCKER_OPTS = <span class="string">&quot;--icc=false&quot;</span></span><br><span class="line"><span class="comment"># centos</span></span><br><span class="line">$ sudo vim /etc/docker/daemon.json</span><br><span class="line">    &#123;</span><br><span class="line">        …</span><br><span class="line">        “icc”:<span class="literal">false</span>,</span><br><span class="line">        …</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">$ sudo systemctl restart docker</span><br><span class="line">$ ps -ef | grep docker</span><br><span class="line">$ sudo docker restart cct1 cct2 cct3</span><br><span class="line">$ sudo docker attach cct3</span><br><span class="line">/<span class="comment"># ping webtest</span></span><br></pre></td></tr></table></figure>
+<p>允许特定容器间的连接</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Docker守护进程的启动选项</span><br><span class="line">    --icc=<span class="literal">false</span> --iptables=<span class="literal">true</span></span><br><span class="line">    --link</span><br><span class="line"></span><br><span class="line">$ sudo iptables -F</span><br><span class="line">$ sudo iptables -L -n</span><br></pre></td></tr></table></figure>
+<ul>
+<li>Docker容器与外部网络的连接</li>
+</ul>
+<p>ip-forward</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">--ip-forward=<span class="literal">true</span></span><br><span class="line">    决定系统是否会转发流量</span><br><span class="line"></span><br><span class="line">$ sudo sysctl net.ipv4.conf.all.forwarding</span><br></pre></td></tr></table></figure>
+<p>iptables</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">iptables是与Linux内核集成的包过滤防火墙系统，</span><br><span class="line">几乎所有的Linux发行版本都会包含iptables的功能</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20190802105416694.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM5NTY0NTU1,size_16,color_FFFFFF,t_70" alt="Alt"></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">filter表中包含的链：</span><br><span class="line">    INPUT</span><br><span class="line">    FORWARD</span><br><span class="line">    OUTPUT</span><br><span class="line"></span><br><span class="line">$ sudo iptables -L -n</span><br></pre></td></tr></table></figure>
+<p>限制IP访问容器</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo iptables -I DOCKER -s 10.211.55.3 -d 127.17.0.7 -p TCP --dport 80 j DROP</span><br></pre></td></tr></table></figure>
+<p>端口映射访问</p>
+<h2 id="15-Docker容器的数据管理"><a href="#15-Docker容器的数据管理" class="headerlink" title="15. Docker容器的数据管理"></a>15. Docker容器的数据管理</h2><ul>
+<li><p>Docker容器的数据卷</p>
+<p>  什么是数据卷？（Data Volume）</p>
+<ul>
+<li>数据卷是经过特殊设计的目录，可以绕过联合文件系统（UFS），为一个或多个容器提供访问</li>
+<li>数据卷设计的目的，在于数据的永久化，它完全独立于容器的生存周期，因此，Docker不会在容器删除时删除其挂载的数据卷，也不会存在类似的垃圾收集机制，对容器引用的数据卷进行处理。</li>
+</ul>
+</li>
+</ul>
+<p><img src="https://img-blog.csdnimg.cn/20190802111712300.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM5NTY0NTU1,size_16,color_FFFFFF,t_70" alt="Alt"></p>
+<pre><code>数据卷（Data Volume）的特点
+</code></pre>
+<ul>
+<li>数据卷在容器启动时初始化，如果容器使用的镜像在挂载点包含了数据，这些数据会拷贝到新初始化的数据卷中。</li>
+<li>数据卷可以在容器之间共享和重用。</li>
+<li>可以对数据卷里的内容直接进行修改</li>
+<li>数据卷的变化不会影响镜像的更新</li>
+<li>卷会一直存在，及时挂载数据卷的容器已经被删除</li>
+</ul>
+<p>为容器添加数据卷</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ sudo docker run -it -v ~/container_data:/data ubuntu /bin/bash</span><br><span class="line">/<span class="comment"># ls</span></span><br><span class="line"></span><br><span class="line">$ sudo docker inspect 容器名/id</span><br><span class="line">可以查看Volume目录信息</span><br></pre></td></tr></table></figure>
+<p>为数据卷添加访问权限</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ sudo docker run -it -v ~/datavolume:/data:ro ubuntu /bin/bash</span><br><span class="line">ro：只读</span><br></pre></td></tr></table></figure>
+<p>使用Dockerfile构建包含数据卷的镜像</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Dockerfile指令：VOLUME[<span class="string">&quot;/data&quot;</span>]</span><br><span class="line">不能映射到已经存在的文件目录，系统默认创建</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>Docker的数据卷容器</p>
+<p>  什么是数据卷容器：<br>命名的容器挂载数据卷，其他容器通过挂载这个容器实现数据共享，挂载数据卷的容器，就叫做数据卷容器。</p>
+</li>
+</ul>
+<p><img src="https://img-blog.csdnimg.cn/20190802115901717.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM5NTY0NTU1,size_16,color_FFFFFF,t_70" alt="Alt"></p>
+<p>挂载数据卷容器的方法</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo docker run --volumes-from [CONTAINER NAME]</span><br></pre></td></tr></table></figure>
+<ul>
+<li>Docker数据卷的备份和还原</li>
+</ul>
+<p>数据备份方法</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo docker run --volumes-from [container name] -v $(<span class="built_in">pwd</span>):/backup[:wr] ubuntu tar cvf /backup/backup.tar [container data volume]</span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/2019080212104349.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM5NTY0NTU1,size_16,color_FFFFFF,t_70" alt="Alt"></p>
+<p>数据还原方法</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo docker run --volumes-from [container name] -v $(<span class="built_in">pwd</span>):/backup[:wr] ubuntu tar xvf /backup/backup.tar [container data volume]</span><br></pre></td></tr></table></figure>
+<h2 id="16-Docker容器的跨主机连接"><a href="#16-Docker容器的跨主机连接" class="headerlink" title="16. Docker容器的跨主机连接"></a>16. Docker容器的跨主机连接</h2><ul>
+<li><p>使用网桥实现跨主机连接</p>
+<p>  原理：</p>
+<p>  网络拓扑</p>
+<p>  <img src="https://img-blog.csdnimg.cn/20190802151358850.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM5NTY0NTU1,size_16,color_FFFFFF,t_70" alt="Alt"></p>
+<p>  环境准备：</p>
+</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Mac OS X + Parallels</span><br><span class="line">两台Ubuntu 14.04 虚拟机</span><br><span class="line">安装网桥管理工具：</span><br><span class="line">    apt-get install bridge-utils</span><br><span class="line">IP地址：Host1：10.211.55.3</span><br><span class="line">        Host2：10.211.55.5</span><br></pre></td></tr></table></figure>
+<p>网络配置：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">修改/etc/network/interfaces 文件</span><br><span class="line">auto br0</span><br><span class="line">iface br0 inet static</span><br><span class="line">address 10.211.55.3</span><br><span class="line">netmask 255.255.255.0</span><br><span class="line">gateway 10.211.55.1</span><br><span class="line">bridge_ports eth0</span><br></pre></td></tr></table></figure>
+<p>Docker设置：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">修改/etc/default/docker文件</span><br><span class="line">-b 指定使用自定义网桥</span><br><span class="line">    -b=br0</span><br><span class="line">--fixed-cidr限制IP地址分配范围</span><br><span class="line">    IP地址划分：</span><br><span class="line">    Host1：10.211.55.64/26</span><br><span class="line">        地址范围：10.211.555.65~10.211.55.126</span><br><span class="line">    Host2:192.168.59.126/26</span><br><span class="line">        地址范围：10.211.55.129~10.211.55.190</span><br></pre></td></tr></table></figure>
+<p>优点：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">配置简单，不依赖第三方软件</span><br></pre></td></tr></table></figure>
+<p>缺点：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">与主机在同网段，需要小心划分IP地址</span><br><span class="line">需要有网段控制权，在生产环境中不易实现</span><br><span class="line">不容易管理</span><br><span class="line">兼容性不佳</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>使用Open vSwitch实现跨主机容器连接</p>
+<p>  Open vSwitch是什么？</p>
+<p>    Open vSwitch是一个高质量、多层虚拟交换机，使用开源Apache2.0许可协议，由Nicira Networks开发，主要实现代码为可移植的C代码。它的目的是让大规模网络自动化可以通过编程扩展，同时仍然支持标准的管理接口和协议（例如NetFlow，sFlow，SPAN，RSPAN，CLI，LACP，8022.lag）</p>
+<p>  原理：</p>
+<p>  <img src="https://img-blog.csdnimg.cn/20190802153203460.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM5NTY0NTU1,size_16,color_FFFFFF,t_70" alt="Alt"></p>
+<p>  什么是GRE隧道？</p>
+<p>    GRE：通用路由协议封装</p>
+<p>    隧道技术（Tunneling）是一种通过使用互联网络的基础设施在网络之间传递数据的方式。使用随带传递的数据（或负载）可以使不同协议的数据帧或包。隧道协议将其它协议的数据帧或包重新封装然后通过隧道发送新的帧头提供路由信息，以便通过互联网传递被封装的负载数据。</p>
+<p>  环境准备：</p>
+</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Mac OS X + Virtualbox</span><br><span class="line">两台Ubuntu14.04虚拟机</span><br><span class="line">双网卡，Host-Only&amp;amp;NAT</span><br><span class="line">安装Open vSwitch：</span><br><span class="line">    apt-get install openvswitch-switch</span><br><span class="line">安装网桥管理工具：</span><br><span class="line">    apt-get install bridge-utils</span><br><span class="line">IP地址：Host1：192.168.59.103</span><br><span class="line">        Host2：192.168.59.104</span><br></pre></td></tr></table></figure>
+
+<p>操作：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line">建立ovs网桥</span><br><span class="line">添加gre连接</span><br><span class="line">配置docker容器虚拟网桥</span><br><span class="line">为虚拟网桥添加ovs接口</span><br><span class="line">添加不同Docker容器网段路由</span><br><span class="line"></span><br><span class="line">  主机：192.168.59.103</span><br><span class="line">查看ovs状态</span><br><span class="line">$ sudo ovs-vsctl show</span><br><span class="line">建立ovs网桥</span><br><span class="line">$ sudo ovs-vsctl add-br obr0</span><br><span class="line">添加gre接口</span><br><span class="line">$ sudo ovs-vsctl add-port obr0 gre0</span><br><span class="line">$ sudo ovs-vsctl <span class="built_in">set</span> interface gre0 <span class="built_in">type</span>=gre options:remote_ip=192.168.59.104</span><br><span class="line">$ sudo ovs-vsctl show</span><br><span class="line"></span><br><span class="line">  建立本机docker需要使用的网桥</span><br><span class="line">$ sudo brctl addbr br0</span><br><span class="line">$ sudo ifconfig br0 192.168.1.1 netmask 255.255.255.0</span><br><span class="line">$ sudo brctl addif br0 obr0</span><br><span class="line">$ sudo brctl show</span><br><span class="line"></span><br><span class="line">  配置docker，用新建的网桥代替docker0</span><br><span class="line">$ sudo vim /etc/default/docker</span><br><span class="line">  DOCKER_OPTS=<span class="string">&quot;obr0&quot;</span></span><br><span class="line">$ sudo service docker restart</span><br><span class="line"></span><br><span class="line">  新建一个docker容器</span><br><span class="line">$ sudo docker run -it ubuntu /bin/bash</span><br><span class="line">/<span class="comment"># ifconfig</span></span><br><span class="line">  inet addr:192.168.1.2</span><br><span class="line">/<span class="comment"># ping 192.168.59.104</span></span><br><span class="line"></span><br><span class="line">  切换主机：192.168.59.104</span><br><span class="line">$ ifconfig</span><br><span class="line">  inet addr:192.168.2.1</span><br><span class="line">启动一个docker容器</span><br><span class="line">$ sudo docker run -it ubuntu /bin/bash</span><br><span class="line">/<span class="comment"># ifconfig</span></span><br><span class="line">  inet addr:192.168.2.4</span><br><span class="line">/<span class="comment"># ping 192.168.59.104</span></span><br><span class="line"></span><br><span class="line">  切回主机：192.168.59.103</span><br><span class="line">/<span class="comment"># ping 192.168.2.4</span></span><br><span class="line">  ping不通，因为不同网段需要查找路由表来确定不同网段的网络地址</span><br><span class="line">$ route</span><br><span class="line">$ sudo ip route add 192.168.2.0/24 via 192.168.59.104 dev eth0</span><br><span class="line"></span><br><span class="line">  $ sudo docker run -it ubuntu /bin/bash</span><br><span class="line">/<span class="comment"># ping 192.168.2.4</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>使用weave实现跨主机容器连接</p>
+<p>  weave是什么？</p>
+</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">语义：编织</span><br><span class="line">建立一个虚拟的网络，用于将运行在不同主机的Docker容器连接起来</span><br><span class="line">https://www.weave.works/</span><br><span class="line">https://github.com/weaveworks/weave<span class="comment">#readme</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://img-blog.csdnimg.cn/20190802160953349.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM5NTY0NTU1,size_16,color_FFFFFF,t_70" alt="Alt"></p>
+<p>  环境准备：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Mac OS X + Virtualbox</span><br><span class="line">两台Ubuntu14.04虚拟机</span><br><span class="line">双网卡，Host-Only&amp;amp;NAT</span><br><span class="line">IP地址：Host1：192.168.59.103</span><br><span class="line">        Host2:192.168.59.104</span><br></pre></td></tr></table></figure>
+<p>操作：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">安装weave</span><br><span class="line">启动weave</span><br><span class="line">  $ weave launch</span><br><span class="line">连接不同主机</span><br><span class="line">通过weave启动容器</span><br><span class="line"></span><br><span class="line">  主机：192.168.59.103</span><br><span class="line">$ sudo wget -O /usr/bin/weave https://raw.githubusercontent.com/zettio/weave/master/weave</span><br><span class="line">$ sudo chmod a+x /usr/bin/weave</span><br><span class="line">$ weave launch</span><br><span class="line">$ sudo docker ps -l</span><br><span class="line"></span><br><span class="line">  切换主机：192.168.59.104</span><br><span class="line">重复安装操作</span><br><span class="line">$ sudo wget -O /usr/bin/weave https://raw.githubusercontent.com/zettio/weave/master/weave</span><br><span class="line">$ sudo chmod a+x /usr/bin/weave</span><br><span class="line">$ weave launch 192.168.59.103</span><br><span class="line">启动容器，将ID赋值给c2</span><br><span class="line">c2=$(weave run 192.168.1.2/24 -it ubuntu /bin/bash)</span><br><span class="line">$ <span class="built_in">echo</span> <span class="variable">$c2</span></span><br><span class="line">$ docker attach $ c2</span><br><span class="line">/<span class="comment"># ifconfig</span></span><br><span class="line">多了一个网络设备ethwe，inet addr：192.168.1.2</span><br><span class="line"></span><br><span class="line">  切换Host1:192.168.59.103</span><br><span class="line">$ weave run 192.168.1.10/24 -it --name wc1 ubuntu /bin/bash</span><br><span class="line">相同网段的IP地址</span><br><span class="line">$ sudo docker aatach wc1</span><br><span class="line">/<span class="comment"># ifconfig</span></span><br><span class="line">增加wthwe，inet addr:192.168.1.10</span><br><span class="line">/<span class="comment"># ping 192.168.1.2</span></span><br><span class="line">能够ping通</span><br></pre></td></tr></table></figure>
+
+        
+    </section>
+</article>
+
+
+
+<a id="pagenext" href="/2019/08/08/git%E7%AC%94%E8%AE%B0/" class="article-next" title="git笔记"><i class="icon-arrow-right"></i></a>
+
+
+<a id="pageprev" href="/2019/10/23/linux%E4%BD%BF%E7%94%A8mail%E5%91%BD%E4%BB%A4%E5%8F%91%E9%82%AE%E4%BB%B6/" class="article-prev" title="linux使用mail命令发邮件"><i class="icon-arrow-left"></i></a>
+
+
+
+<div class="comments">
+    <div id="comments"></div>
+    <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+    <script>
+    new Gitalk({
+        clientID: "7fbe80427f54741e289f",
+        clientSecret: "f34ed5fd92e54c9000bd37ba951948cb939deff5",
+        repo: "sanonz.github.io",
+        owner: "sanonz",
+        admin: ["sanonz"],
+        id: "8eb982c7d315655bd086b0c481a86b67",
+        distractionFreeMode: true,
+        title: "Docker入门学习笔记",
+        body: "https://humble-zh.github.io/2019/08/27/Docker%E5%85%A5%E9%97%A8%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/",
+        labels: ["docker"]
+    }).render('comments');
+    </script>
+</div>
+
+
+
+            </div>
+        </div>
+        <footer class="footer">
+    Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>, Theme by <a href="https://github.com/sanonz/hexo-theme-concise" target="_blank">Concise</a>
+
+    
+    <script>
+        var _hmt = _hmt || [];
+        (function () {
+            var hm = document.createElement("script");
+            hm.src = "https://hm.baidu.com/hm.js?e4027971a230b210f4671f485b33846a";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+    
+</footer>
+
+    </main>
+
+    <script type="text/javascript" src="https://unpkg.com/jquery@1.9.1/jquery.min.js"></script>
+    <script type="text/javascript">
+    $(function() {
+        var nodes = {
+            nav: $('#nav'),
+            aside: $('#aside'),
+            asideInner: $('#aside-inner'),
+            navInner: $('#nav-inner')
+        };
+
+        var doing = false;
+        nodes.asideInner.on('webkitAnimationEnd mozAnimationEnd oAnimationEnd oanimationend animationend', function() {
+            if (nodes.aside.hasClass('mobile-open')) {
+                nodes.aside.removeClass('mobile-open');
+            } else {
+                nodes.aside.removeClass('mobile-close panel-show');
+            }
+            doing = false;
+        });
+        $('#open-panel, #aside-mask').on('click', function() {
+            if (doing) {
+                return;
+            }
+
+            if (nodes.aside.hasClass('panel-show')) {
+                nodes.aside.addClass('mobile-close');
+            } else {
+                nodes.aside.addClass('mobile-open panel-show');
+            }
+        });
+        $('#open-menus').on('click', function() {
+            nodes.navInner.slideToggle('normal', slideDone);
+        });
+
+        if (window.innerWidth <= 960) {
+            setTimeout(function() {
+                nodes.navInner.slideUp('normal', slideDone);
+            }, 3000);
+        }
+
+        function slideDone() {
+            if (nodes.navInner.css('display') !== 'none') {
+                nodes.navInner.css('display', '');
+            }
+        }
+
+        $(window).on('resize', function() {
+            if ($(this).width() > 960) {
+                nodes.navInner.css('display', '');
+            }
+        });
+    });
+    </script>
+    
+        
+<script src="/js/scrollspy.min.js"></script>
+
+        <script type="text/javascript">
+        $(document.body).scrollspy({target: '#aside-inner'});
+
+        $(window).on('resize', function() {
+            var hw = $('#header').width();
+            var ww = $('#wrapper').width();
+            var space = ($(this).width() - hw - ww) / 2 / 2;
+
+            var pageprev = $('#pageprev');
+            var pagenext = $('#pagenext');
+            var avg = (pageprev.width() + pagenext.width()) / 2
+
+            if(space > avg) {
+                var len = space - avg / 2;
+                var styles = {position: 'fixed', top: '50%', marginTop: - (pageprev.width() + pagenext.width()) / 4}
+                pageprev.css($.extend({left: hw + len}, styles));
+                pagenext.css($.extend({right: len}, styles));
+            } else {
+                pageprev.removeAttr('style');
+                pagenext.removeAttr('style');
+            }
+        }).trigger('resize');
+        </script>
+    
+
+</body>
+</html>

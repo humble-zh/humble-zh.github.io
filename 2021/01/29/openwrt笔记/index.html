@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+
+    
+
+    
+
+    <title>openwrt笔记 | Zhihong&#39;s Blog</title>
+    <meta name="author" content="Zhihong Li" />
+    <meta name="keywords" content="zhbox" />
+    <meta name="description" content="feeds.conf.default1234567891011121314151617181920212223src-git packages https://github.com/openwrt/packages.gitsrc-git luci http://git.openwrt.org/project/luci.gitsrc-git routing https://github.com/openwrt-routing/packages.gitsrc-git telephony http:/" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no" />
+
+    
+    <link rel="alternate" href="/atom.xml" title="Zhihong&#39;s Blog" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/images/favicon.ico">
+    
+
+    <style type="text/css">
+    @font-face {
+        font-family: 'icomoon';
+        src: url("/fonts/icomoon.eot?q628ml");
+        src: url("/fonts/icomoon.eot?q628ml#iefix") format('embedded-opentype'),
+             url("/fonts/icomoon.ttf?q628ml") format('truetype'),
+             url("/fonts/icomoon.woff?q628ml") format('woff'),
+             url("/fonts/icomoon.svg?q628ml#icomoon") format('svg');
+        font-weight: normal;
+        font-style: normal;
+    }
+    </style>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!--[if lt IE 9]><style type="text/css">.nav-inner {top:0;}.author-meta {position:static;top:0;}.search-form {height:36px;}</style><script type="text/javascript" src="https://unpkg.com/html5shiv@3.7.3/dist/html5shiv.min.js"></script><![endif]-->
+<meta name="generator" content="Hexo 5.3.0"></head>
+<body>
+
+    <main class="app">
+        <header id="header" class="header clearfix">
+    <div id="nav" class="nav">
+    <div class="nav-mobile">
+        <button id="open-panel" class="open-panel nav-mobile-item"><i class="icon-documents"></i></button>
+        <h1 class="nav-mobile-title nav-mobile-item">Zhihong&#39;s Blog</h1>
+        <button id="open-menus" class="open-panel nav-mobile-item"><i class="icon-library"></i></button>
+    </div>
+
+    <nav id="nav-inner" class="nav-inner">
+        
+            <a class="nav-item" href="/">
+                <span class="nav-text">首页</span>
+            </a>
+        
+            <a class="nav-item" href="/zhbox">
+                <span class="nav-text">中盒</span>
+            </a>
+        
+            <a class="nav-item" href="/tags">
+                <span class="nav-text">标签</span>
+            </a>
+        
+            <a class="nav-item" href="/archives">
+                <span class="nav-text">归档</span>
+            </a>
+        
+            <a class="nav-item" href="/about">
+                <span class="nav-text">关于</span>
+            </a>
+        
+    </nav>
+</div>
+
+    <aside id="aside" class="aside">
+    <div id="aside-mask" class="aside-mask"></div>
+    <div id="aside-inner" class="aside-inner">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit"><i class="icon-search-stroke"></i></button><input type="hidden" name="sitesearch" value="https://humble-zh.github.io"></form>
+
+        
+        
+        
+        
+
+        
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#feeds-conf-default"><span class="toc-number">1.</span> <span class="toc-text">feeds.conf.default</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Makefile%E4%B8%AD%E5%91%BD%E4%BB%A4%E5%89%8D-%E7%AC%A6%E5%8F%B7%E7%9A%84%E6%84%8F%E4%B9%89"><span class="toc-number">2.</span> <span class="toc-text">Makefile中命令前-+@符号的意义</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%87%E7%BA%A7cmake"><span class="toc-number">3.</span> <span class="toc-text">升级cmake</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BC%96%E8%AF%91glibc%E7%89%88%E7%9A%84openwrt"><span class="toc-number">4.</span> <span class="toc-text">编译glibc版的openwrt</span></a></li></ol>
+        
+    </div>
+</aside>
+
+</header>
+
+        <div id="content" class="content">
+            <div id="wrapper" class="wrapper" style="max-width: 800px">
+                <article class="article" itemscope itemprop="blogPost">
+    
+    <header class="article-header">
+        
+        <h1 itemprop="name">
+            openwrt笔记
+        </h1>
+        
+        <div class="article-meta clearfix">
+            <a class="article-date" href="https://humble-zh.github.io/2021/01/29/openwrt%E7%AC%94%E8%AE%B0/index.html">
+    
+    <i class="icon-calendar vm"></i>
+    
+    <time class="vm" datetime="2021-01-29T09:44:26.000Z" itemprop="datePublished">2021-01-29</time>
+</a>
+
+            
+<div class="article-tag-list">
+    <i class="icon-tag vm"></i>
+    <a class="article-tag-link" href="/tags/OpenWRT/" rel="tag">OpenWRT</a>
+</div>
+
+
+        </div>
+    </header>
+    
+    <section class="article-body markdown-body">
+        
+        <h2 id="feeds-conf-default"><a href="#feeds-conf-default" class="headerlink" title="feeds.conf.default"></a><a target="_blank" rel="noopener" href="https://www.openwrtdl.com/wordpress/openwrt-feeds%e8%bd%af%e4%bb%b6%e5%8c%85%e6%94%af%e6%8c%81">feeds.conf.default</a></h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">src-git packages https://github.com/openwrt/packages.git</span><br><span class="line">src-git luci http://git.openwrt.org/project/luci.git</span><br><span class="line">src-git routing https://github.com/openwrt-routing/packages.git</span><br><span class="line">src-git telephony http://git.openwrt.org/feed/telephony.git</span><br><span class="line">src-git management https://github.com/openwrt-management/packages.git</span><br><span class="line">src-git oldpackages http://git.openwrt.org/packages.git</span><br><span class="line"><span class="comment">#src-svn xwrt http://x-wrt.googlecode.com/svn/trunk/package</span></span><br><span class="line"><span class="comment">#src-svn phone svn://svn.openwrt.org/openwrt/feeds/phone</span></span><br><span class="line"><span class="comment">#src-svn efl svn://svn.openwrt.org/openwrt/feeds/efl</span></span><br><span class="line"><span class="comment">#src-svn xorg svn://svn.openwrt.org/openwrt/feeds/xorg</span></span><br><span class="line"><span class="comment">#src-svn desktop svn://svn.openwrt.org/openwrt/feeds/desktop</span></span><br><span class="line"><span class="comment">#src-svn xfce svn://svn.openwrt.org/openwrt/feeds/xfce</span></span><br><span class="line"><span class="comment">#src-svn lxde svn://svn.openwrt.org/openwrt/feeds/lxde</span></span><br><span class="line"><span class="comment">#src-link custom /usr/src/openwrt/custom-feed</span></span><br><span class="line"><span class="comment">#src-bzr 通过使用bzr从数据源的path/URL下载数据</span></span><br><span class="line"><span class="comment">#src-cpy 通过从数据源path拷贝数据</span></span><br><span class="line"><span class="comment">#src-darcs 通过使用darcs从数据源path/URL下载数据</span></span><br><span class="line"><span class="comment">#src-git 通过使用git从数据源path/URL下载数据</span></span><br><span class="line"><span class="comment">#src-git local_feed_name https://example.com/repo_name/something.git;branch_name</span></span><br><span class="line"><span class="comment">#src-git local_feed_name https://example.com/repo_name/something.git^commit_hash</span></span><br><span class="line"><span class="comment">#src-hg 通过使用hg从数据源path/URL 下载数据</span></span><br><span class="line"><span class="comment">#src-link 创建一个数据源path的symlink</span></span><br><span class="line"><span class="comment">#src-svn 通过使用svn从数据源path/URL下载数据</span></span><br></pre></td></tr></table></figure>
+<h2 id="Makefile中命令前-符号的意义"><a href="#Makefile中命令前-符号的意义" class="headerlink" title="Makefile中命令前-+@符号的意义"></a><a target="_blank" rel="noopener" href="https://www.openwrtdl.com/wordpress/makefile%e4%b8%ad%e5%91%bd%e4%bb%a4%e5%89%8d-%e7%9a%84%e6%84%8f%e4%b9%89">Makefile中命令前-+@符号的意义</a></h2><figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">all: clean</span></span><br><span class="line">    @echo <span class="string">&quot;make start&quot;</span></span><br><span class="line">    ....</span><br><span class="line"><span class="section">clean:</span></span><br><span class="line">    -rm -f log $&#123;target&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">@   使命令在被执行前不被回显</span><br><span class="line">-   make的时候，带`-`的命令行出错不会终止编译</span><br><span class="line">+   使命令行可以通过指定 -n、-q 或 -t 选项来执行。</span><br></pre></td></tr></table></figure>
+<h2 id="升级cmake"><a href="#升级cmake" class="headerlink" title="升级cmake"></a><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_22237829/article/details/74174322">升级cmake</a></h2><p>下载最新cmake源码tar包放到dl目录并计算md5</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> openwrt</span><br><span class="line"><span class="built_in">cd</span> tools/cmake</span><br><span class="line">mv patches temp</span><br><span class="line">vim Makefile</span><br><span class="line"><span class="comment"># PKG_VERSION:=2.8.12.2 改成 PKG_VERSION:=3.7.2</span></span><br><span class="line"><span class="comment"># PKG_SOURCE_URL:=http://www.cmake.org/files/v2.8/ 改成 PKG_SOURCE_URL:=https://cmake.org/files/v3.7/</span></span><br><span class="line"><span class="comment"># PKG_MD5SUM:XXXXXXX 改成 # PKG_MD5SUM:79bd7e65cd81ea3aa2619484ad6ff25a</span></span><br><span class="line"><span class="built_in">cd</span> -</span><br><span class="line">make tools/cmake/compile V=s</span><br></pre></td></tr></table></figure>
+<h2 id="编译glibc版的openwrt"><a href="#编译glibc版的openwrt" class="headerlink" title="编译glibc版的openwrt"></a>编译glibc版的openwrt</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">make menuconfig</span><br><span class="line">    -&gt; [*] Advanced configuration options (<span class="keyword">for</span> developers)</span><br><span class="line">        -&gt; [*]   Toolchain Options</span><br><span class="line">            -&gt; C Library implementation (Use glibc) <span class="comment"># 用glibc替换musl</span></span><br></pre></td></tr></table></figure>
+        
+    </section>
+</article>
+
+
+
+<a id="pagenext" href="/2021/01/27/VMWare%E5%AE%89%E8%A3%85linux%E8%99%9A%E6%8B%9F%E6%9C%BA/" class="article-next" title="VMWare安装linux虚拟机"><i class="icon-arrow-right"></i></a>
+
+
+<a id="pageprev" href="/2021/01/30/%E6%B5%8F%E8%A7%88%E5%99%A8%E7%AC%94%E8%AE%B0/" class="article-prev" title="浏览器笔记"><i class="icon-arrow-left"></i></a>
+
+
+
+<div class="comments">
+    <div id="comments"></div>
+    <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+    <script>
+    new Gitalk({
+        clientID: "7fbe80427f54741e289f",
+        clientSecret: "f34ed5fd92e54c9000bd37ba951948cb939deff5",
+        repo: "sanonz.github.io",
+        owner: "sanonz",
+        admin: ["sanonz"],
+        id: "63b13a8ce33d4fd7d96918de588c8794",
+        distractionFreeMode: true,
+        title: "openwrt笔记",
+        body: "https://humble-zh.github.io/2021/01/29/openwrt%E7%AC%94%E8%AE%B0/",
+        labels: ["OpenWRT"]
+    }).render('comments');
+    </script>
+</div>
+
+
+
+            </div>
+        </div>
+        <footer class="footer">
+    Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>, Theme by <a href="https://github.com/sanonz/hexo-theme-concise" target="_blank">Concise</a>
+
+    
+    <script>
+        var _hmt = _hmt || [];
+        (function () {
+            var hm = document.createElement("script");
+            hm.src = "https://hm.baidu.com/hm.js?e4027971a230b210f4671f485b33846a";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+    
+</footer>
+
+    </main>
+
+    <script type="text/javascript" src="https://unpkg.com/jquery@1.9.1/jquery.min.js"></script>
+    <script type="text/javascript">
+    $(function() {
+        var nodes = {
+            nav: $('#nav'),
+            aside: $('#aside'),
+            asideInner: $('#aside-inner'),
+            navInner: $('#nav-inner')
+        };
+
+        var doing = false;
+        nodes.asideInner.on('webkitAnimationEnd mozAnimationEnd oAnimationEnd oanimationend animationend', function() {
+            if (nodes.aside.hasClass('mobile-open')) {
+                nodes.aside.removeClass('mobile-open');
+            } else {
+                nodes.aside.removeClass('mobile-close panel-show');
+            }
+            doing = false;
+        });
+        $('#open-panel, #aside-mask').on('click', function() {
+            if (doing) {
+                return;
+            }
+
+            if (nodes.aside.hasClass('panel-show')) {
+                nodes.aside.addClass('mobile-close');
+            } else {
+                nodes.aside.addClass('mobile-open panel-show');
+            }
+        });
+        $('#open-menus').on('click', function() {
+            nodes.navInner.slideToggle('normal', slideDone);
+        });
+
+        if (window.innerWidth <= 960) {
+            setTimeout(function() {
+                nodes.navInner.slideUp('normal', slideDone);
+            }, 3000);
+        }
+
+        function slideDone() {
+            if (nodes.navInner.css('display') !== 'none') {
+                nodes.navInner.css('display', '');
+            }
+        }
+
+        $(window).on('resize', function() {
+            if ($(this).width() > 960) {
+                nodes.navInner.css('display', '');
+            }
+        });
+    });
+    </script>
+    
+        
+<script src="/js/scrollspy.min.js"></script>
+
+        <script type="text/javascript">
+        $(document.body).scrollspy({target: '#aside-inner'});
+
+        $(window).on('resize', function() {
+            var hw = $('#header').width();
+            var ww = $('#wrapper').width();
+            var space = ($(this).width() - hw - ww) / 2 / 2;
+
+            var pageprev = $('#pageprev');
+            var pagenext = $('#pagenext');
+            var avg = (pageprev.width() + pagenext.width()) / 2
+
+            if(space > avg) {
+                var len = space - avg / 2;
+                var styles = {position: 'fixed', top: '50%', marginTop: - (pageprev.width() + pagenext.width()) / 4}
+                pageprev.css($.extend({left: hw + len}, styles));
+                pagenext.css($.extend({right: len}, styles));
+            } else {
+                pageprev.removeAttr('style');
+                pagenext.removeAttr('style');
+            }
+        }).trigger('resize');
+        </script>
+    
+
+</body>
+</html>

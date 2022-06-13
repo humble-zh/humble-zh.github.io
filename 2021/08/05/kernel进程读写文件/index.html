@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+
+    
+
+    
+
+    <title>kernel进程读写文件 | Zhihong&#39;s Blog</title>
+    <meta name="author" content="Zhihong Li" />
+    <meta name="keywords" content="zhbox" />
+    <meta name="description" content="在kernel驱动程序中读写文件，没有标准库可用，需要用kernel提供的一些函数12345678910#include &amp;lt;linux/fs.h&amp;gt;#include &amp;lt;asm/uaccess.h&amp;gt;filp_open()filp_close()vfs_read()vfs_write()set_fs()get_fs()...打开文件12345//filename: 表明要打开或创建文件的名称(包括路径部分)。需要先挂载文件系统再挂载驱动才能打开文件。//open_mode: 打" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no" />
+
+    
+    <link rel="alternate" href="/atom.xml" title="Zhihong&#39;s Blog" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/images/favicon.ico">
+    
+
+    <style type="text/css">
+    @font-face {
+        font-family: 'icomoon';
+        src: url("/fonts/icomoon.eot?q628ml");
+        src: url("/fonts/icomoon.eot?q628ml#iefix") format('embedded-opentype'),
+             url("/fonts/icomoon.ttf?q628ml") format('truetype'),
+             url("/fonts/icomoon.woff?q628ml") format('woff'),
+             url("/fonts/icomoon.svg?q628ml#icomoon") format('svg');
+        font-weight: normal;
+        font-style: normal;
+    }
+    </style>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!--[if lt IE 9]><style type="text/css">.nav-inner {top:0;}.author-meta {position:static;top:0;}.search-form {height:36px;}</style><script type="text/javascript" src="https://unpkg.com/html5shiv@3.7.3/dist/html5shiv.min.js"></script><![endif]-->
+<meta name="generator" content="Hexo 5.3.0"></head>
+<body>
+
+    <main class="app">
+        <header id="header" class="header clearfix">
+    <div id="nav" class="nav">
+    <div class="nav-mobile">
+        <button id="open-panel" class="open-panel nav-mobile-item"><i class="icon-documents"></i></button>
+        <h1 class="nav-mobile-title nav-mobile-item">Zhihong&#39;s Blog</h1>
+        <button id="open-menus" class="open-panel nav-mobile-item"><i class="icon-library"></i></button>
+    </div>
+
+    <nav id="nav-inner" class="nav-inner">
+        
+            <a class="nav-item" href="/">
+                <span class="nav-text">首页</span>
+            </a>
+        
+            <a class="nav-item" href="/zhbox">
+                <span class="nav-text">中盒</span>
+            </a>
+        
+            <a class="nav-item" href="/tags">
+                <span class="nav-text">标签</span>
+            </a>
+        
+            <a class="nav-item" href="/archives">
+                <span class="nav-text">归档</span>
+            </a>
+        
+            <a class="nav-item" href="/about">
+                <span class="nav-text">关于</span>
+            </a>
+        
+    </nav>
+</div>
+
+    <aside id="aside" class="aside">
+    <div id="aside-mask" class="aside-mask"></div>
+    <div id="aside-inner" class="aside-inner">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit"><i class="icon-search-stroke"></i></button><input type="hidden" name="sitesearch" value="https://humble-zh.github.io"></form>
+
+        
+        
+        
+        
+
+        
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%89%93%E5%BC%80%E6%96%87%E4%BB%B6"><span class="toc-number">1.</span> <span class="toc-text">打开文件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AF%BB%E5%86%99%E6%96%87%E4%BB%B6"><span class="toc-number">2.</span> <span class="toc-text">读写文件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%B3%E9%97%AD%E6%96%87%E4%BB%B6"><span class="toc-number">3.</span> <span class="toc-text">关闭文件</span></a></li></ol>
+        
+    </div>
+</aside>
+
+</header>
+
+        <div id="content" class="content">
+            <div id="wrapper" class="wrapper" style="max-width: 800px">
+                <article class="article" itemscope itemprop="blogPost">
+    
+    <header class="article-header">
+        
+        <h1 itemprop="name">
+            kernel进程读写文件
+        </h1>
+        
+        <div class="article-meta clearfix">
+            <a class="article-date" href="https://humble-zh.github.io/2021/08/05/kernel%E8%BF%9B%E7%A8%8B%E8%AF%BB%E5%86%99%E6%96%87%E4%BB%B6/index.html">
+    
+    <i class="icon-calendar vm"></i>
+    
+    <time class="vm" datetime="2021-08-05T07:32:41.000Z" itemprop="datePublished">2021-08-05</time>
+</a>
+
+            
+<div class="article-tag-list">
+    <i class="icon-tag vm"></i>
+    <a class="article-tag-link" href="/tags/IO/" rel="tag">IO</a>, <a class="article-tag-link" href="/tags/kernel/" rel="tag">kernel</a>, <a class="article-tag-link" href="/tags/linux/" rel="tag">linux</a>
+</div>
+
+
+        </div>
+    </header>
+    
+    <section class="article-body markdown-body">
+        
+        <p>在kernel驱动程序中读写文件，没有标准库可用，需要用kernel提供的一些函数</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;linux/fs.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;asm/uaccess.h&gt;</span></span></span><br><span class="line"></span><br><span class="line">filp_open()</span><br><span class="line">filp_close()</span><br><span class="line">vfs_read()</span><br><span class="line">vfs_write()</span><br><span class="line">set_fs()</span><br><span class="line">get_fs()</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<h2 id="打开文件"><a href="#打开文件" class="headerlink" title="打开文件"></a>打开文件</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//filename: 表明要打开或创建文件的名称(包括路径部分)。需要先挂载文件系统再挂载驱动才能打开文件。</span></span><br><span class="line"><span class="comment">//open_mode: 打开方式，其取值与标准库中的open相应参数类似，可以取O_CREAT,O_RDWR,O_RDONLY等。</span></span><br><span class="line"><span class="comment">//mode: 创建文件时的默认权限</span></span><br><span class="line"><span class="comment">//返回strcut file*指针，供后继函数操作使用，返回值用IS_ERR(file)检测是否打开出错</span></span><br><span class="line"><span class="function">strcut file* <span class="title">filp_open</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span>* filename, <span class="keyword">int</span> open_mode, <span class="keyword">int</span> mode)</span></span>;</span><br></pre></td></tr></table></figure>
+<h2 id="读写文件"><a href="#读写文件" class="headerlink" title="读写文件"></a>读写文件</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//参数loff_t * pos所指向的值要初始化，表明从文件的什么地方开始读写。</span></span><br><span class="line"><span class="function"><span class="keyword">ssize_t</span> <span class="title">vfs_read</span><span class="params">(struct file* filp, <span class="keyword">char</span> __user* buffer, <span class="keyword">size_t</span> len, <span class="keyword">loff_t</span>* pos)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">ssize_t</span> <span class="title">vfs_write</span><span class="params">(struct file* filp, <span class="keyword">const</span> <span class="keyword">char</span> __user* buffer, <span class="keyword">size_t</span> len, <span class="keyword">loff_t</span>* pos)</span></span>;</span><br></pre></td></tr></table></figure>
+<p>这两个函数的第二个参数buffer，前面有<code>__user</code>修饰符，这就要求buffer指针应该指向用户空间的内存，如果传入kernel空间的指针，就会返回失败<code>-EFAULT</code></p>
+<p>但在Kernel中，我们一般不容易生成用户空间的指针，或者不方便独立使用用户空间内存。想要使这两个读写函数使用kernel空间的buffer指针也能正确工作，就需要使用<code>set_fs()</code>宏/函数</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//获取kernel当前对内存地址检查的处理方式，默认情况下是USER_DS,即对用户空间地址检查并做变换。</span></span><br><span class="line"><span class="function"><span class="keyword">mm_segment_t</span> fs <span class="title">get_fs</span><span class="params">(<span class="keyword">void</span>)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">//改变kernel对内存地址检查的处理方式</span></span><br><span class="line"><span class="comment">//fs取值：USER_DS,KERNEL_DS 分别代表用户空间和内核空间</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">set_fs</span><span class="params">(<span class="keyword">mm_segment_t</span> fs)</span></span>;</span><br></pre></td></tr></table></figure>
+<p>要在对内存地址做检查变换的函数中使用内核空间地址，可以用<code>set_fs(KERNEL_DS)</code>进行设置</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">mm_segment_t</span> old_fs = get_fs();</span><br><span class="line">set_fs(KERNEL_DS);</span><br><span class="line"></span><br><span class="line">vfs_read() <span class="function"><span class="keyword">or</span> <span class="title">vfs_write</span><span class="params">()</span> <span class="comment">//与内存有关的操作</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"><span class="title">set_fs</span><span class="params">(old_fs)</span></span>;</span><br></pre></td></tr></table></figure>
+<p>还有一些其它的内核函数参数也用<code>__user</code>修饰的参数，在kernel中需要用kernel空间的内存代替时，都可以使用类似办法。</p>
+<h2 id="关闭文件"><a href="#关闭文件" class="headerlink" title="关闭文件"></a>关闭文件</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//第二个参数一般传递NULL值，也有用current-&gt;files作为实参的</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">filp_close</span><span class="params">(struct file*filp, <span class="keyword">fl_owner_t</span> id)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>使用以上函数的其它注意点：</p>
+<ol>
+<li>其实Linux Kernel组成员不赞成在kernel中独立的读写文件(这样做可能会影响到策略和安全问题)，对内核需要的文件内容，最好由应用层配合完成。</li>
+<li>在可加载的kernel module中使用这种方式读写文件可能使模块加载失败，原因是内核可能没有EXPORT你所需要的所有这些函数。</li>
+<li>分析以上某些函数的参数可以看出，这些函数的正确运行需要依赖于进程环境，因此，有些函数不能在’中断的handle’或’Kernel中不属于任可进程的代码’中执行，否则可能出现崩溃，要避免这种情况发生，可以在kernel中创建内核线程，将这些函数放在线程环境下执行(创建内核线程的方式请参数kernel_thread()函数)。</li>
+</ol>
+
+        
+    </section>
+</article>
+
+
+
+<a id="pagenext" href="/2021/07/25/vnc/" class="article-next" title="vnc"><i class="icon-arrow-right"></i></a>
+
+
+<a id="pageprev" href="/2021/08/06/pacman%E7%AC%94%E8%AE%B0/" class="article-prev" title="pacman笔记"><i class="icon-arrow-left"></i></a>
+
+
+
+
+            </div>
+        </div>
+        <footer class="footer">
+    Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>, Theme by <a href="https://github.com/sanonz/hexo-theme-concise" target="_blank">Concise</a>
+
+    
+    <script>
+        var _hmt = _hmt || [];
+        (function () {
+            var hm = document.createElement("script");
+            hm.src = "https://hm.baidu.com/hm.js?e4027971a230b210f4671f485b33846a";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+    
+</footer>
+
+    </main>
+
+    <script type="text/javascript" src="https://unpkg.com/jquery@1.9.1/jquery.min.js"></script>
+    <script type="text/javascript">
+    $(function() {
+        var nodes = {
+            nav: $('#nav'),
+            aside: $('#aside'),
+            asideInner: $('#aside-inner'),
+            navInner: $('#nav-inner')
+        };
+
+        var doing = false;
+        nodes.asideInner.on('webkitAnimationEnd mozAnimationEnd oAnimationEnd oanimationend animationend', function() {
+            if (nodes.aside.hasClass('mobile-open')) {
+                nodes.aside.removeClass('mobile-open');
+            } else {
+                nodes.aside.removeClass('mobile-close panel-show');
+            }
+            doing = false;
+        });
+        $('#open-panel, #aside-mask').on('click', function() {
+            if (doing) {
+                return;
+            }
+
+            if (nodes.aside.hasClass('panel-show')) {
+                nodes.aside.addClass('mobile-close');
+            } else {
+                nodes.aside.addClass('mobile-open panel-show');
+            }
+        });
+        $('#open-menus').on('click', function() {
+            nodes.navInner.slideToggle('normal', slideDone);
+        });
+
+        if (window.innerWidth <= 960) {
+            setTimeout(function() {
+                nodes.navInner.slideUp('normal', slideDone);
+            }, 3000);
+        }
+
+        function slideDone() {
+            if (nodes.navInner.css('display') !== 'none') {
+                nodes.navInner.css('display', '');
+            }
+        }
+
+        $(window).on('resize', function() {
+            if ($(this).width() > 960) {
+                nodes.navInner.css('display', '');
+            }
+        });
+    });
+    </script>
+    
+        
+<script src="/js/scrollspy.min.js"></script>
+
+        <script type="text/javascript">
+        $(document.body).scrollspy({target: '#aside-inner'});
+
+        $(window).on('resize', function() {
+            var hw = $('#header').width();
+            var ww = $('#wrapper').width();
+            var space = ($(this).width() - hw - ww) / 2 / 2;
+
+            var pageprev = $('#pageprev');
+            var pagenext = $('#pagenext');
+            var avg = (pageprev.width() + pagenext.width()) / 2
+
+            if(space > avg) {
+                var len = space - avg / 2;
+                var styles = {position: 'fixed', top: '50%', marginTop: - (pageprev.width() + pagenext.width()) / 4}
+                pageprev.css($.extend({left: hw + len}, styles));
+                pagenext.css($.extend({right: len}, styles));
+            } else {
+                pageprev.removeAttr('style');
+                pagenext.removeAttr('style');
+            }
+        }).trigger('resize');
+        </script>
+    
+
+</body>
+</html>

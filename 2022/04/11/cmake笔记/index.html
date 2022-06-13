@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+
+    
+
+    
+
+    <title>cmake笔记 | Zhihong&#39;s Blog</title>
+    <meta name="author" content="Zhihong Li" />
+    <meta name="keywords" content="zhbox" />
+    <meta name="description" content="cmakeproject()1234567891011121314151617181920212223242526272829303132333435363738394041424344454647484950515253545556575859606162636465666768697071727374757677# zh @ li in ~/tmp/hello [22:45:26]$ tree.├── CMakeLists.txt└── subhello    └── CMakeLists." />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no" />
+
+    
+    <link rel="alternate" href="/atom.xml" title="Zhihong&#39;s Blog" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/images/favicon.ico">
+    
+
+    <style type="text/css">
+    @font-face {
+        font-family: 'icomoon';
+        src: url("/fonts/icomoon.eot?q628ml");
+        src: url("/fonts/icomoon.eot?q628ml#iefix") format('embedded-opentype'),
+             url("/fonts/icomoon.ttf?q628ml") format('truetype'),
+             url("/fonts/icomoon.woff?q628ml") format('woff'),
+             url("/fonts/icomoon.svg?q628ml#icomoon") format('svg');
+        font-weight: normal;
+        font-style: normal;
+    }
+    </style>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!--[if lt IE 9]><style type="text/css">.nav-inner {top:0;}.author-meta {position:static;top:0;}.search-form {height:36px;}</style><script type="text/javascript" src="https://unpkg.com/html5shiv@3.7.3/dist/html5shiv.min.js"></script><![endif]-->
+<meta name="generator" content="Hexo 5.3.0"></head>
+<body>
+
+    <main class="app">
+        <header id="header" class="header clearfix">
+    <div id="nav" class="nav">
+    <div class="nav-mobile">
+        <button id="open-panel" class="open-panel nav-mobile-item"><i class="icon-documents"></i></button>
+        <h1 class="nav-mobile-title nav-mobile-item">Zhihong&#39;s Blog</h1>
+        <button id="open-menus" class="open-panel nav-mobile-item"><i class="icon-library"></i></button>
+    </div>
+
+    <nav id="nav-inner" class="nav-inner">
+        
+            <a class="nav-item" href="/">
+                <span class="nav-text">首页</span>
+            </a>
+        
+            <a class="nav-item" href="/zhbox">
+                <span class="nav-text">中盒</span>
+            </a>
+        
+            <a class="nav-item" href="/tags">
+                <span class="nav-text">标签</span>
+            </a>
+        
+            <a class="nav-item" href="/archives">
+                <span class="nav-text">归档</span>
+            </a>
+        
+            <a class="nav-item" href="/about">
+                <span class="nav-text">关于</span>
+            </a>
+        
+    </nav>
+</div>
+
+    <aside id="aside" class="aside">
+    <div id="aside-mask" class="aside-mask"></div>
+    <div id="aside-inner" class="aside-inner">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit"><i class="icon-search-stroke"></i></button><input type="hidden" name="sitesearch" value="https://humble-zh.github.io"></form>
+
+        
+        
+        
+        
+
+        
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#cmake"><span class="toc-number">1.</span> <span class="toc-text">cmake</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#project"><span class="toc-number">1.1.</span> <span class="toc-text">project()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#GNUInstallDirs"><span class="toc-number">1.2.</span> <span class="toc-text">GNUInstallDirs</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%A4%E5%8F%89%E7%BC%96%E8%AF%91"><span class="toc-number">1.3.</span> <span class="toc-text">交叉编译</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BC%96%E8%AF%91%E9%80%89%E9%A1%B9"><span class="toc-number">1.4.</span> <span class="toc-text">编译选项</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#find-xxx"><span class="toc-number">1.5.</span> <span class="toc-text">find_xxx()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#pkg-search-module"><span class="toc-number">1.6.</span> <span class="toc-text">pkg_search_module()</span></a></li></ol></li></ol>
+        
+    </div>
+</aside>
+
+</header>
+
+        <div id="content" class="content">
+            <div id="wrapper" class="wrapper" style="max-width: 800px">
+                <article class="article" itemscope itemprop="blogPost">
+    
+    <header class="article-header">
+        
+        <h1 itemprop="name">
+            cmake笔记
+        </h1>
+        
+        <div class="article-meta clearfix">
+            <a class="article-date" href="https://humble-zh.github.io/2022/04/11/cmake%E7%AC%94%E8%AE%B0/index.html">
+    
+    <i class="icon-calendar vm"></i>
+    
+    <time class="vm" datetime="2022-04-11T08:32:41.000Z" itemprop="datePublished">2022-04-11</time>
+</a>
+
+            
+<div class="article-tag-list">
+    <i class="icon-tag vm"></i>
+    <a class="article-tag-link" href="/tags/cmake/" rel="tag">cmake</a>
+</div>
+
+
+        </div>
+    </header>
+    
+    <section class="article-body markdown-body">
+        
+        <h2 id="cmake"><a href="#cmake" class="headerlink" title="cmake"></a>cmake</h2><h3 id="project"><a href="#project" class="headerlink" title="project()"></a>project()</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># zh @ li in ~/tmp/hello [22:45:26]</span></span><br><span class="line">$ tree</span><br><span class="line">.</span><br><span class="line">├── CMakeLists.txt</span><br><span class="line">└── subhello</span><br><span class="line">    └── CMakeLists.txt</span><br><span class="line"></span><br><span class="line">1 directory, 2 files</span><br><span class="line"></span><br><span class="line"><span class="comment"># zh @ li in ~/tmp/hello [22:45:27]</span></span><br><span class="line">$ cat CMakeLists.txt</span><br><span class="line">cmake_minimum_required(VERSION 3.9)</span><br><span class="line">project(hello VERSION 0.1.2.3 DESCRIPTION <span class="string">&quot;an hello program&quot;</span> LANGUAGES C HOMEPAGE_URL “https://www.hello.com”)</span><br><span class="line"></span><br><span class="line">add_subdirectory(subhello)</span><br><span class="line"></span><br><span class="line"><span class="comment"># zh @ li in ~/tmp/hello [22:45:34]</span></span><br><span class="line">$ cat subhello/CMakeLists.txt</span><br><span class="line">cmake_minimum_required(VERSION 3.9)</span><br><span class="line">project(subhello VERSION 3.2.1.0 DESCRIPTION <span class="string">&quot;an subhello program&quot;</span> LANGUAGES C HOMEPAGE_URL “https://www.subhello.com”)</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span>(<span class="built_in">print</span>)</span><br><span class="line">    foreach(var <span class="variable">$&#123;ARGN&#125;</span>)</span><br><span class="line">        message(<span class="string">&quot;<span class="variable">$&#123;var&#125;</span> = <span class="variable">$&#123;<span class="variable">$&#123;var&#125;</span>&#125;</span>&quot;</span>)</span><br><span class="line">    endforeach()</span><br><span class="line">endfunction()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(</span><br><span class="line">    PROJECT_NAME       <span class="comment"># PROJECT_NAME = subhello    # 当前</span></span><br><span class="line">    CMAKE_PROJECT_NAME <span class="comment"># CMAKE_PROJECT_NAME = hello # 顶层</span></span><br><span class="line"></span><br><span class="line">    hello_SOURCE_DIR    <span class="comment"># hello_SOURCE_DIR = /home/zh/tmp/hello             # hello项目</span></span><br><span class="line">    subhello_SOURCE_DIR <span class="comment"># subhello_SOURCE_DIR = /home/zh/tmp/hello/subhello # subhello项目</span></span><br><span class="line">    PROJECT_SOURCE_DIR  <span class="comment"># PROJECT_SOURCE_DIR = /home/zh/tmp/hello/subhello  # 当前</span></span><br><span class="line">    CMAKE_SOURCE_DIR    <span class="comment"># CMAKE_SOURCE_DIR = /home/zh/tmp/hello             # 顶层</span></span><br><span class="line"></span><br><span class="line">    hello_BINARY_DIR    <span class="comment"># hello_BINARY_DIR = /home/zh/tmp/hello/build             # hello项目</span></span><br><span class="line">    subhello_BINARY_DIR <span class="comment"># subhello_BINARY_DIR = /home/zh/tmp/hello/build/subhello # subhello项目</span></span><br><span class="line">    PROJECT_BINARY_DIR  <span class="comment"># PROJECT_BINARY_DIR = /home/zh/tmp/hello/build/subhello  # 当前</span></span><br><span class="line">    CMAKE_BINARY_DIR    <span class="comment"># CMAKE_BINARY_DIR = /home/zh/tmp/hello/build             # 顶层</span></span><br><span class="line"></span><br><span class="line">    hello_VERSION         <span class="comment"># hello_VERSION = 0.1.2.3</span></span><br><span class="line">    subhello_VERSION      <span class="comment"># subhello_VERSION = 3.2.1.0</span></span><br><span class="line">    PROJECT_VERSION       <span class="comment"># PROJECT_VERSION = 3.2.1.0</span></span><br><span class="line">    CMAKE_PROJECT_VERSION <span class="comment"># CMAKE_PROJECT_VERSION = 0.1.2.3 #顶层</span></span><br><span class="line"></span><br><span class="line">    hello_VERSION_MAJOR         <span class="comment"># hello_VERSION_MAJOR = 0</span></span><br><span class="line">    subhello_VERSION_MAJOR      <span class="comment"># subhello_VERSION_MAJOR = 3</span></span><br><span class="line">    PROJECT_VERSION_MAJOR       <span class="comment"># PROJECT_VERSION_MAJOR = 3</span></span><br><span class="line">    CMAKE_PROJECT_VERSION_MAJOR <span class="comment"># PROJECT_VERSION_MAJOR = 0 #顶层</span></span><br><span class="line"></span><br><span class="line">    hello_VERSION_MINOR         <span class="comment"># hello_VERSION_MINOR = 1</span></span><br><span class="line">    subhello_VERSION_MINOR      <span class="comment"># subhello_VERSION_MINOR = 2</span></span><br><span class="line">    PROJECT_VERSION_MINOR       <span class="comment"># PROJECT_VERSION_MINOR = 2</span></span><br><span class="line">    CMAKE_PROJECT_VERSION_MINOR <span class="comment"># PROJECT_VERSION_MINOR = 1 #顶层</span></span><br><span class="line"></span><br><span class="line">    hello_VERSION_PATCH         <span class="comment"># hello_VERSION_PATCH = 2</span></span><br><span class="line">    subhello_VERSION_PATCH      <span class="comment"># subhello_VERSION_PATCH = 1</span></span><br><span class="line">    PROJECT_VERSION_PATCH       <span class="comment"># PROJECT_VERSION_PATCH = 1</span></span><br><span class="line">    CMAKE_PROJECT_VERSION_PATCH <span class="comment"># PROJECT_VERSION_PATCH = 2 #顶层</span></span><br><span class="line"></span><br><span class="line">    hello_VERSION_TWEAK         <span class="comment"># hello_VERSION_TWEAK = 3</span></span><br><span class="line">    subhello_VERSION_TWEAK      <span class="comment"># subhello_VERSION_TWEAK = 0</span></span><br><span class="line">    PROJECT_VERSION_TWEAK       <span class="comment"># PROJECT_VERSION_TWEAK = 0</span></span><br><span class="line">    CMAKE_PROJECT_VERSION_TWEAK <span class="comment"># PROJECT_VERSION_TWEAK = 3 #顶层</span></span><br><span class="line"></span><br><span class="line">    hello_DESCRIPTION         <span class="comment"># PROJECT_DESCRIPTION = an hello program</span></span><br><span class="line">    subhello_DESCRIPTION      <span class="comment"># PROJECT_DESCRIPTION = an subhello program</span></span><br><span class="line">    PROJECT_DESCRIPTION       <span class="comment"># PROJECT_DESCRIPTION = an subhello program</span></span><br><span class="line">    CMAKE_PROJECT_DESCRIPTION <span class="comment"># CMAKE_PROJECT_DESCRIPTION = an hello program # 顶层</span></span><br><span class="line"></span><br><span class="line">    hello_HOMEPAGE_URL         <span class="comment"># hello_HOMEPAGE_URL = “https://www.hello.com”</span></span><br><span class="line">    subhello_HOMEPAGE_URL      <span class="comment"># subhello_HOMEPAGE_URL = “https://www.subhello.com”</span></span><br><span class="line">    PROJECT_HOMEPAGE_URL       <span class="comment"># subhello_HOMEPAGE_URL = “https://www.subhello.com”</span></span><br><span class="line">    CMAKE_PROJECT_HOMEPAGE_URL <span class="comment"># hello_HOMEPAGE_URL = “https://www.hello.com” # 顶层</span></span><br><span class="line">    )</span><br></pre></td></tr></table></figure>
+<h3 id="GNUInstallDirs"><a href="#GNUInstallDirs" class="headerlink" title="GNUInstallDirs"></a>GNUInstallDirs</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># zh @ li in ~/li/tmp/hello [11:19:03]</span></span><br><span class="line">$ tree</span><br><span class="line">.</span><br><span class="line">└── CMakeLists.txt</span><br><span class="line"></span><br><span class="line">0 directories, 1 file</span><br><span class="line"></span><br><span class="line"><span class="comment"># zh @ li in ~/li/tmp/hello [11:19:04]</span></span><br><span class="line">$ cat CMakeLists.txt</span><br><span class="line">cmake_minimum_required(VERSION 3.9)</span><br><span class="line">project(hello VERSION 0.1.2.3 DESCRIPTION <span class="string">&quot;an hello program&quot;</span> LANGUAGES C)</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span>(<span class="built_in">print</span>)</span><br><span class="line">    foreach(var <span class="variable">$&#123;ARGN&#125;</span>)</span><br><span class="line">        message(<span class="string">&quot;<span class="variable">$&#123;var&#125;</span> # <span class="variable">$&#123;var&#125;</span> = <span class="variable">$&#123;<span class="variable">$&#123;var&#125;</span>&#125;</span>&quot;</span>)</span><br><span class="line">    endforeach()</span><br><span class="line">endfunction()</span><br><span class="line"></span><br><span class="line"><span class="built_in">set</span>(CMAKE_INSTALL_PREFIX <span class="string">&quot;/usr&quot;</span>) <span class="comment"># 在include(GNUInstallDirs)前设置，否则就是默认/usr/local</span></span><br><span class="line">include(GNUInstallDirs)</span><br><span class="line"><span class="built_in">print</span>(</span><br><span class="line">    CMAKE_INSTALL_PREFIX <span class="comment"># CMAKE_INSTALL_PREFIX = /</span></span><br><span class="line"></span><br><span class="line">    CMAKE_INSTALL_BINDIR      <span class="comment"># CMAKE_INSTALL_BINDIR = usr/bin</span></span><br><span class="line">    CMAKE_INSTALL_FULL_BINDIR <span class="comment"># CMAKE_INSTALL_FULL_BINDIR = /usr/bin</span></span><br><span class="line"></span><br><span class="line">    CMAKE_INSTALL_SBINDIR      <span class="comment"># CMAKE_INSTALL_SBINDIR = usr/sbin</span></span><br><span class="line">    CMAKE_INSTALL_FULL_SBINDIR <span class="comment"># CMAKE_INSTALL_FULL_SBINDIR = /usr/sbin</span></span><br><span class="line"></span><br><span class="line">    CMAKE_INSTALL_LIBEXECDIR      <span class="comment"># CMAKE_INSTALL_LIBEXECDIR = usr/libexec</span></span><br><span class="line">    CMAKE_INSTALL_FULL_LIBEXECDIR <span class="comment"># CMAKE_INSTALL_FULL_LIBEXECDIR = /usr/libexec</span></span><br><span class="line"></span><br><span class="line">    CMAKE_INSTALL_SYSCONFDIR      <span class="comment"># CMAKE_INSTALL_SYSCONFDIR = etc</span></span><br><span class="line">    CMAKE_INSTALL_FULL_SYSCONFDIR <span class="comment"># CMAKE_INSTALL_FULL_SYSCONFDIR = /etc</span></span><br><span class="line"></span><br><span class="line">    CMAKE_INSTALL_SHAREDSTATEDIR      <span class="comment"># CMAKE_INSTALL_SHAREDSTATEDIR = usr/com</span></span><br><span class="line">    CMAKE_INSTALL_FULL_SHAREDSTATEDIR <span class="comment"># CMAKE_INSTALL_FULL_SHAREDSTATEDIR = /usr/com</span></span><br><span class="line"></span><br><span class="line">    CMAKE_INSTALL_LOCALSTATEDIR      <span class="comment"># CMAKE_INSTALL_LOCALSTATEDIR = var</span></span><br><span class="line">    CMAKE_INSTALL_FULL_LOCALSTATEDIR <span class="comment"># CMAKE_INSTALL_FULL_LOCALSTATEDIR = /var</span></span><br><span class="line"></span><br><span class="line">    CMAKE_INSTALL_RUNSTATEDIR      <span class="comment"># CMAKE_INSTALL_RUNSTATEDIR = var/run</span></span><br><span class="line">    CMAKE_INSTALL_FULL_RUNSTATEDIR <span class="comment"># CMAKE_INSTALL_FULL_RUNSTATEDIR = /var/run</span></span><br><span class="line"></span><br><span class="line">    CMAKE_INSTALL_LIBDIR      <span class="comment"># CMAKE_INSTALL_LIBDIR = usr/lib</span></span><br><span class="line">    CMAKE_INSTALL_FULL_LIBDIR <span class="comment"># CMAKE_INSTALL_FULL_LIBDIR = /usr/lib</span></span><br><span class="line"></span><br><span class="line">    CMAKE_INSTALL_INCLUDEDIR      <span class="comment"># CMAKE_INSTALL_INCLUDEDIR = usr/include</span></span><br><span class="line">    CMAKE_INSTALL_FULL_INCLUDEDIR <span class="comment"># CMAKE_INSTALL_FULL_INCLUDEDIR = /usr/include</span></span><br><span class="line"></span><br><span class="line">    CMAKE_INSTALL_OLDINCLUDEDIR      <span class="comment"># CMAKE_INSTALL_OLDINCLUDEDIR = /usr/include</span></span><br><span class="line">    CMAKE_INSTALL_FULL_OLDINCLUDEDIR <span class="comment"># CMAKE_INSTALL_FULL_OLDINCLUDEDIR = /usr/include</span></span><br><span class="line"></span><br><span class="line">    CMAKE_INSTALL_DATAROOTDIR      <span class="comment"># CMAKE_INSTALL_DATAROOTDIR = usr/share</span></span><br><span class="line">    CMAKE_INSTALL_FULL_DATAROOTDIR <span class="comment"># CMAKE_INSTALL_FULL_DATAROOTDIR = /usr/share</span></span><br><span class="line"></span><br><span class="line">    CMAKE_INSTALL_DATADIR      <span class="comment"># CMAKE_INSTALL_DATADIR = usr/share</span></span><br><span class="line">    CMAKE_INSTALL_FULL_DATADIR <span class="comment"># CMAKE_INSTALL_FULL_DATADIR = /usr/share</span></span><br><span class="line"></span><br><span class="line">    CMAKE_INSTALL_INFODIR      <span class="comment"># CMAKE_INSTALL_INFODIR = usr/share/info</span></span><br><span class="line">    CMAKE_INSTALL_FULL_INFODIR <span class="comment"># CMAKE_INSTALL_FULL_INFODIR = /usr/share/info</span></span><br><span class="line"></span><br><span class="line">    CMAKE_INSTALL_LOCALEDIR      <span class="comment"># CMAKE_INSTALL_LOCALEDIR = usr/share/locale</span></span><br><span class="line">    CMAKE_INSTALL_FULL_LOCALEDIR <span class="comment"># CMAKE_INSTALL_FULL_LOCALEDIR = /usr/share/locale</span></span><br><span class="line"></span><br><span class="line">    CMAKE_INSTALL_MANDIR      <span class="comment"># CMAKE_INSTALL_MANDIR = usr/share/man</span></span><br><span class="line">    CMAKE_INSTALL_FULL_MANDIR <span class="comment"># CMAKE_INSTALL_FULL_MANDIR = /usr/share/man</span></span><br><span class="line"></span><br><span class="line">    CMAKE_INSTALL_DOCDIR      <span class="comment"># CMAKE_INSTALL_DOCDIR = usr/share/doc/hello</span></span><br><span class="line">    CMAKE_INSTALL_FULL_DOCDIR <span class="comment"># CMAKE_INSTALL_FULL_DOCDIR = /usr/share/doc/hello</span></span><br><span class="line">    )</span><br></pre></td></tr></table></figure>
+<h3 id="交叉编译"><a href="#交叉编译" class="headerlink" title="交叉编译"></a>交叉编译</h3><figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">set</span>(CMAKE_SYSTEM_NAME Linux)</span><br><span class="line"><span class="keyword">set</span>(TOOLCHAIN_PATH /OPT/gcc-arm-linux-gnueabi)</span><br><span class="line"><span class="keyword">set</span>(CMAKE_C_COMPILER <span class="variable">$&#123;tools&#125;</span>/bin/arm-linux-gnueabi-gcc)</span><br><span class="line"><span class="keyword">set</span>(CMAKE_CXX_COMPILER <span class="variable">$&#123;tools&#125;</span>/bin/arm-linux-gnueabi-g++)</span><br></pre></td></tr></table></figure>
+<p><code>set(CMAKE_SYSTEM_NAME Linux)</code>该指令必须存在，其目的是设置目标机使用的操作系统名称，支持Linux，QNX，WindowsCE，Android等。如果没有操作系统，那么就写 Generic。执行该指令后，cmake 变量——<code>CMAKE_CROSSCOMPILING</code> 会自动被设置为 <code>TRUE</code>，此时 cmake 就会“知道“现在执行的是交叉编译；</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># zh @ li in ~/li/tmp/hello [19:44:35]</span></span><br><span class="line">$ tree</span><br><span class="line">.</span><br><span class="line">├── cmake</span><br><span class="line">│   └── toolchain_x86.cmake</span><br><span class="line">├── CMakeLists.txt</span><br><span class="line">└── src</span><br><span class="line">    └── main.c</span><br><span class="line"></span><br><span class="line">2 directories, 3 files</span><br><span class="line"></span><br><span class="line"><span class="comment"># zh @ li in ~/li/tmp/hello [19:44:38]</span></span><br><span class="line">$ cat cmake/toolchain_x86.cmake</span><br><span class="line"><span class="built_in">set</span>(CMAKE_SYSTEM_NAME Linux)</span><br><span class="line"></span><br><span class="line"><span class="built_in">set</span>(TOOLCHAIN_PATH /usr/bin)</span><br><span class="line"><span class="built_in">set</span>(CMAKE_C_COMPILER gcc)</span><br><span class="line"><span class="built_in">set</span>(CMAKE_CXX_COMPILER g++)</span><br><span class="line"></span><br><span class="line"><span class="comment"># zh @ li in ~/li/tmp/hello [19:44:41]</span></span><br><span class="line">$ cat CMakeLists.txt</span><br><span class="line">cmake_minimum_required(VERSION 3.9)</span><br><span class="line">project(hello VERSION 0.1.2.3 DESCRIPTION <span class="string">&quot;an hello program&quot;</span> LANGUAGES C)</span><br><span class="line"></span><br><span class="line">FILE(GLOB SRC_FILES <span class="string">&quot;src/*.c&quot;</span>)</span><br><span class="line"></span><br><span class="line">add_executable(<span class="variable">$&#123;PROJECT_NAME&#125;</span> <span class="variable">$&#123;SRC_FILES&#125;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># zh @ li in ~/li/tmp/hello [19:44:43]</span></span><br><span class="line">$ cat src/main.c</span><br><span class="line"><span class="comment">#include &lt;stdio.h&gt;</span></span><br><span class="line"><span class="comment">#include &lt;stdlib.h&gt;</span></span><br><span class="line">int main(int argc, char **argv) &#123; <span class="built_in">printf</span>(<span class="string">&quot;hello world\n&quot;</span>); <span class="built_in">return</span> 0; &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># zh @ li in ~/li/tmp/hello [19:44:46]</span></span><br><span class="line">$ mkdir build &amp;&amp; <span class="built_in">cd</span> build &amp;&amp; cmake -DCMAKE_TOOLCHAIN_FILE=../cmake/toolchain_x86.cmake ..</span><br><span class="line">-- The C compiler identification is GNU 11.2.0</span><br><span class="line">-- Detecting C compiler ABI info</span><br><span class="line">-- Detecting C compiler ABI info - <span class="keyword">done</span></span><br><span class="line">-- Check <span class="keyword">for</span> working C compiler: /usr/bin/gcc - skipped</span><br><span class="line">-- Detecting C compile features</span><br><span class="line">-- Detecting C compile features - <span class="keyword">done</span></span><br><span class="line">-- Configuring <span class="keyword">done</span></span><br><span class="line">-- Generating <span class="keyword">done</span></span><br><span class="line">-- Build files have been written to: /home/zh/li/tmp/hello/build</span><br><span class="line"></span><br><span class="line"><span class="comment"># zh @ li in ~/li/tmp/hello/build [19:44:53]</span></span><br><span class="line">$ make</span><br><span class="line">[ 50%] Building C object CMakeFiles/hello.dir/src/main.c.o</span><br><span class="line">[100%] Linking C executable hello</span><br><span class="line">[100%] Built target hello</span><br></pre></td></tr></table></figure>
+<p>注意：<code>-DCMAKE_TOOLCHAIN_FILE=../cmake/toolchain_x86.cmake</code> 不能直接写入<code>CMakeLists.txt</code>或<code>include(toolchain_x86.cmake)</code></p>
+<p>需要链接系统库或第三方库时，cmake 提供了<code>FIND_PROGRAM()</code>，<code>FIND_LIBRARY()</code>， <code>FIND_FILE()</code>， <code>FIND_PATH()</code> 和 <code>FIND_PACKAGE()</code> 来查找库路径或包。默认情况下，上述指令查找的是主机上的文件，其并不适用于目标机器。为此cmake提供了相应的变量：</p>
+<p><code>set(CMAKE_FIND_ROOT_PATH path1 path2 path3 ...)</code>：设置其值为多个目录，这样 <code>FIND_XXX()</code> 就会从这些目录中查找。</p>
+<p>跟随该变量的有下述 3 个变量，它们的值为 <code>NEVER</code> 、 <code>ONLY</code> 或 <code>BOTH</code>：</p>
+<p><code>CMAKE_FIND_ROOT_PATH_MODE_PROGRAM</code>若设为</p>
+<ul>
+<li><code>NEVER</code>，则<code>FIND_PROGRAM()</code> 不会在 <code>CMAKE_FIND_ROOT_PATH</code> 指定的目录中寻找</li>
+<li><code>ONLY</code>，则<code>FIND_PROGRAM()</code> 只会从 <code>CMAKE_FIND_ROOT_PATH</code> 指定的目录中寻找</li>
+<li><code>BOTH</code>，则<code>FIND_PROGRAM()</code> 会优先从 <code>CMAKE_FIND_ROOT_PATH</code> 指定的目录中寻找，再从默认的目录中寻找</li>
+</ul>
+<p><code>FIND_PROGRAM()</code> 通常用于寻找可执行程序，给后续的 <code>EXECUTE_PROCESS()</code> 或 <code>ADD_CUSTOM_COMMAND()</code> 指令使用。并且，只有主机在生成编译文件时使用该可执行程序。因此通常设置 <code>set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)</code></p>
+<p><code>CMAKE_FIND_ROOT_PATH_MODE_LIBRARY</code>：交叉编译只能使用 <code>FIND_LIBRARY()</code> 查找符合目标机器的库文件，因此设置<code>set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)</code></p>
+<p><code>CMAKE_FIND_ROOT_PATH_MODE_INCLUDE</code>：同上，设为 <code>ONLY</code>。</p>
+<h3 id="编译选项"><a href="#编译选项" class="headerlink" title="编译选项"></a>编译选项</h3><figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">add_definitions</span>(-std=c++<span class="number">11</span>)</span><br><span class="line"><span class="keyword">SET</span>(CMAKE_CXX_FLAGS_DEBUG <span class="string">&quot;$ENV&#123;CXXFLAGS&#125; -O0 -Wall -g -ggdb -Wl,-rpath=./:./lib&quot;</span>) <span class="comment">#-Wl,-rpath=./</span></span><br><span class="line"><span class="keyword">SET</span>(CMAKE_CXX_FLAGS_RELEASE <span class="string">&quot;$ENV&#123;CXXFLAGS&#125; -O3 -Wl,-rpath=./:./lib&quot;</span>) <span class="comment">#-Wall</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cmake -DCMAKE_PREFIX_PATH=/path/to -DCMAKE_LIBRARY_PATH=/path/to -DCMAKE_CXX_FLAGS=-m32 -DCMAKE_C_FLAGS=-m32</span><br></pre></td></tr></table></figure>
+<h3 id="find-xxx"><a href="#find-xxx" class="headerlink" title="find_xxx()"></a>find_xxx()</h3><ol>
+<li><code>set(CMAKE_PREFIX_PATH &quot;/path/libs/xxx-install&quot;)</code>之后，<code>pkg_search_module()</code>就能去<code>/path/libs/xxx-install</code>找到库的<code>libxxx.pc</code>文件</li>
+<li><code>set(ENV&#123;PKG_CONFIG_PATH&#125; &quot;$ENV&#123;PKG_CONFIG_PATH&#125;:/my/path/to/pkgconfig&quot;)</code>之后，也能找找到<code>libxxx.pc</code></li>
+</ol>
+<h3 id="pkg-search-module"><a href="#pkg-search-module" class="headerlink" title="pkg_search_module()"></a>pkg_search_module()</h3><p>旧版本: <code>pkg_search_module(PKG_XXX REQUIRED xxx)</code>生成3个变量</p>
+<ul>
+<li><code>PKG_XXX_INCLUDE_DIRS</code>:编译时xxx库提供的头文件目录</li>
+<li><code>PKG_XXX_LIBRARIES</code>:只提供xxx库的名字，不提供路径</li>
+<li><code>PKG_XXX_LDFLAGS</code>:包含xxx的路径和库</li>
+</ul>
+<p>你可以：<code>target_link_libraries(my_proj $&#123;PKG_XXX_LDFLAGS&#125;)</code></p>
+<p>新版本: <code>pkg_search_module(PKG_XXX REQUIRED IMPORTED_TARGET opencv)</code>里面的<code>IMPORTED_TARGET</code>会创建一个供你直接在项目中使用的目标<br>你可以: <code>target_link_libraries(my_proj PRIVATE PkgConfig::PKG_XXX)</code></p>
+
+        
+    </section>
+</article>
+
+
+
+<a id="pagenext" href="/2022/04/11/iperf3%E7%AC%94%E8%AE%B0/" class="article-next" title="iperf笔记"><i class="icon-arrow-right"></i></a>
+
+
+<a id="pageprev" href="/2022/05/05/quilt%E7%AC%94%E8%AE%B0/" class="article-prev" title="quilt笔记"><i class="icon-arrow-left"></i></a>
+
+
+
+
+            </div>
+        </div>
+        <footer class="footer">
+    Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>, Theme by <a href="https://github.com/sanonz/hexo-theme-concise" target="_blank">Concise</a>
+
+    
+    <script>
+        var _hmt = _hmt || [];
+        (function () {
+            var hm = document.createElement("script");
+            hm.src = "https://hm.baidu.com/hm.js?e4027971a230b210f4671f485b33846a";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+    
+</footer>
+
+    </main>
+
+    <script type="text/javascript" src="https://unpkg.com/jquery@1.9.1/jquery.min.js"></script>
+    <script type="text/javascript">
+    $(function() {
+        var nodes = {
+            nav: $('#nav'),
+            aside: $('#aside'),
+            asideInner: $('#aside-inner'),
+            navInner: $('#nav-inner')
+        };
+
+        var doing = false;
+        nodes.asideInner.on('webkitAnimationEnd mozAnimationEnd oAnimationEnd oanimationend animationend', function() {
+            if (nodes.aside.hasClass('mobile-open')) {
+                nodes.aside.removeClass('mobile-open');
+            } else {
+                nodes.aside.removeClass('mobile-close panel-show');
+            }
+            doing = false;
+        });
+        $('#open-panel, #aside-mask').on('click', function() {
+            if (doing) {
+                return;
+            }
+
+            if (nodes.aside.hasClass('panel-show')) {
+                nodes.aside.addClass('mobile-close');
+            } else {
+                nodes.aside.addClass('mobile-open panel-show');
+            }
+        });
+        $('#open-menus').on('click', function() {
+            nodes.navInner.slideToggle('normal', slideDone);
+        });
+
+        if (window.innerWidth <= 960) {
+            setTimeout(function() {
+                nodes.navInner.slideUp('normal', slideDone);
+            }, 3000);
+        }
+
+        function slideDone() {
+            if (nodes.navInner.css('display') !== 'none') {
+                nodes.navInner.css('display', '');
+            }
+        }
+
+        $(window).on('resize', function() {
+            if ($(this).width() > 960) {
+                nodes.navInner.css('display', '');
+            }
+        });
+    });
+    </script>
+    
+        
+<script src="/js/scrollspy.min.js"></script>
+
+        <script type="text/javascript">
+        $(document.body).scrollspy({target: '#aside-inner'});
+
+        $(window).on('resize', function() {
+            var hw = $('#header').width();
+            var ww = $('#wrapper').width();
+            var space = ($(this).width() - hw - ww) / 2 / 2;
+
+            var pageprev = $('#pageprev');
+            var pagenext = $('#pagenext');
+            var avg = (pageprev.width() + pagenext.width()) / 2
+
+            if(space > avg) {
+                var len = space - avg / 2;
+                var styles = {position: 'fixed', top: '50%', marginTop: - (pageprev.width() + pagenext.width()) / 4}
+                pageprev.css($.extend({left: hw + len}, styles));
+                pagenext.css($.extend({right: len}, styles));
+            } else {
+                pageprev.removeAttr('style');
+                pagenext.removeAttr('style');
+            }
+        }).trigger('resize');
+        </script>
+    
+
+</body>
+</html>

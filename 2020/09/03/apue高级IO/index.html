@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+
+    
+
+    
+
+    <title>apue高级IO | Zhihong&#39;s Blog</title>
+    <meta name="author" content="Zhihong Li" />
+    <meta name="keywords" content="zhbox" />
+    <meta name="description" content="apue高级IO非阻塞 I/O之前讨论的所有函数都是阻塞的，如read(2)函数读取设备时，设备中如果没有充足的数据，那么read(2)函数就会阻塞等待，直到有数据可读再返回。当 IO 操作时出错时，需要判断是真的出错还是假错。两种假错的情况：EINTR：被信号打断，阻塞时会遇到。EAGAIN：非阻塞形式操作失败。遇到这两种假错的时候我们需要重新再操作一次(占用CPU)，所以通常对假错的判断是放在循环中的。例如read(2)函数使用非阻塞方式读取数据时，如果没有读取到数据，errno为EAGAI" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no" />
+
+    
+    <link rel="alternate" href="/atom.xml" title="Zhihong&#39;s Blog" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/images/favicon.ico">
+    
+
+    <style type="text/css">
+    @font-face {
+        font-family: 'icomoon';
+        src: url("/fonts/icomoon.eot?q628ml");
+        src: url("/fonts/icomoon.eot?q628ml#iefix") format('embedded-opentype'),
+             url("/fonts/icomoon.ttf?q628ml") format('truetype'),
+             url("/fonts/icomoon.woff?q628ml") format('woff'),
+             url("/fonts/icomoon.svg?q628ml#icomoon") format('svg');
+        font-weight: normal;
+        font-style: normal;
+    }
+    </style>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    <!--[if lt IE 9]><style type="text/css">.nav-inner {top:0;}.author-meta {position:static;top:0;}.search-form {height:36px;}</style><script type="text/javascript" src="https://unpkg.com/html5shiv@3.7.3/dist/html5shiv.min.js"></script><![endif]-->
+<meta name="generator" content="Hexo 5.3.0"></head>
+<body>
+
+    <main class="app">
+        <header id="header" class="header clearfix">
+    <div id="nav" class="nav">
+    <div class="nav-mobile">
+        <button id="open-panel" class="open-panel nav-mobile-item"><i class="icon-documents"></i></button>
+        <h1 class="nav-mobile-title nav-mobile-item">Zhihong&#39;s Blog</h1>
+        <button id="open-menus" class="open-panel nav-mobile-item"><i class="icon-library"></i></button>
+    </div>
+
+    <nav id="nav-inner" class="nav-inner">
+        
+            <a class="nav-item" href="/">
+                <span class="nav-text">首页</span>
+            </a>
+        
+            <a class="nav-item" href="/zhbox">
+                <span class="nav-text">中盒</span>
+            </a>
+        
+            <a class="nav-item" href="/tags">
+                <span class="nav-text">标签</span>
+            </a>
+        
+            <a class="nav-item" href="/archives">
+                <span class="nav-text">归档</span>
+            </a>
+        
+            <a class="nav-item" href="/about">
+                <span class="nav-text">关于</span>
+            </a>
+        
+    </nav>
+</div>
+
+    <aside id="aside" class="aside">
+    <div id="aside-mask" class="aside-mask"></div>
+    <div id="aside-inner" class="aside-inner">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit"><i class="icon-search-stroke"></i></button><input type="hidden" name="sitesearch" value="https://humble-zh.github.io"></form>
+
+        
+        
+        
+        
+
+        
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#apue%E9%AB%98%E7%BA%A7IO"><span class="toc-number">1.</span> <span class="toc-text">apue高级IO</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%9D%9E%E9%98%BB%E5%A1%9E-I-O"><span class="toc-number">1.1.</span> <span class="toc-text">非阻塞 I&#x2F;O</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#IO%E5%A4%9A%E8%B7%AF%E8%BD%AC%E6%8E%A5"><span class="toc-number">1.2.</span> <span class="toc-text">IO多路转接</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#select"><span class="toc-number">1.2.1.</span> <span class="toc-text">select</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#poll"><span class="toc-number">1.2.2.</span> <span class="toc-text">poll</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#epoll"><span class="toc-number">1.2.3.</span> <span class="toc-text">epoll</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#select-amp-poll-amp-epoll"><span class="toc-number">1.2.4.</span> <span class="toc-text">select&amp;poll&amp;epoll</span></a></li></ol></li></ol></li></ol>
+        
+    </div>
+</aside>
+
+</header>
+
+        <div id="content" class="content">
+            <div id="wrapper" class="wrapper" style="max-width: 800px">
+                <article class="article" itemscope itemprop="blogPost">
+    
+    <header class="article-header">
+        
+        <h1 itemprop="name">
+            apue高级IO
+        </h1>
+        
+        <div class="article-meta clearfix">
+            <a class="article-date" href="https://humble-zh.github.io/2020/09/03/apue%E9%AB%98%E7%BA%A7IO/index.html">
+    
+    <i class="icon-calendar vm"></i>
+    
+    <time class="vm" datetime="2020-09-03T10:53:15.000Z" itemprop="datePublished">2020-09-03</time>
+</a>
+
+            
+<div class="article-tag-list">
+    <i class="icon-tag vm"></i>
+    <a class="article-tag-link" href="/tags/apue/" rel="tag">apue</a>
+</div>
+
+
+        </div>
+    </header>
+    
+    <section class="article-body markdown-body">
+        
+        <h1 id="apue高级IO"><a href="#apue高级IO" class="headerlink" title="apue高级IO"></a>apue高级IO</h1><h2 id="非阻塞-I-O"><a href="#非阻塞-I-O" class="headerlink" title="非阻塞 I/O"></a>非阻塞 I/O</h2><p>之前讨论的所有函数都是阻塞的，如<code>read(2)</code>函数读取设备时，设备中如果没有充足的数据，那么<code>read(2)</code>函数就会阻塞等待，直到有数据可读再返回。当 IO 操作时出错时，需要判断是真的出错还是假错。</p>
+<p>两种假错的情况：</p>
+<ul>
+<li>EINTR：被信号打断，阻塞时会遇到。</li>
+<li>EAGAIN：非阻塞形式操作失败。</li>
+</ul>
+<p>遇到这两种假错的时候我们需要重新再操作一次(占用CPU)，所以通常对假错的判断是放在循环中的。例如<code>read(2)</code>函数使用非阻塞方式读取数据时，如果没有读取到数据，<code>errno</code>为<code>EAGAIN</code>，表明是非阻塞方式读取返回了，并非设备有问题或读取失败。</p>
+<p>阻塞与非阻塞是使用的同一套函数，<code>flags</code>特殊要求指定为<code>O_NONBLOCK</code>就可以了。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">fd = open(<span class="string">&quot;/etc/service&quot;</span>, O_RDONLY | O_NONBLOCK); <span class="comment">//以非阻塞方式打开</span></span><br><span class="line"><span class="comment">/* if error */</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span> (<span class="number">1</span>) &#123;</span><br><span class="line">    size = read(fd, buf, BUFSIZE);</span><br><span class="line">    <span class="keyword">if</span> (size &lt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (EAGAIN == errno) &#123;</span><br><span class="line">            <span class="keyword">continue</span>; <span class="comment">//发生假错，重复read</span></span><br><span class="line">        &#125;</span><br><span class="line">        perror(<span class="string">&quot;read()&quot;</span>);</span><br><span class="line">        <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// do sth...</span></span><br></pre></td></tr></table></figure>
+<h2 id="IO多路转接"><a href="#IO多路转接" class="headerlink" title="IO多路转接"></a>IO多路转接</h2><p>IO密集型的任务，可以使用IO多路转接。<code>select()</code>,<code>poll()</code>,<code>epoll()</code></p>
+<p>先布置监视任务（设置自己关心/感兴趣的事件/文件描述符），监视多个IO(文件描述符)，当某个文件描述符发生了我们感兴趣的事情(读/写)的时候再去操作(读/写)。</p>
+<p><code>select(2)</code>移植性高，各个平台都支持它，这也是它相对于<code>poll(2)</code>唯一的优点。</p>
+<p><code>select(2)</code>关心的是事件，<code>poll()</code>关心的是文件描述符。</p>
+<p><code>select(2)</code>和<code>poll()</code>都是可移植的，<code>epoll()</code>是Linux平台实现的方言。<code>epoll()</code>是利用<code>poll()</code>封装的。</p>
+<h3 id="select"><a href="#select" class="headerlink" title="select"></a>select</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//IO多路转接(IO复用)</span></span><br><span class="line"><span class="comment">//fd_set 文件描述符集合</span></span><br><span class="line"><span class="comment">//nfds:你所监视fd_set中最大的那个再加1(如:监视1,4,那nfds取5,因为内核用的是&lt;nfds,不加1就无法监视最大那个)</span></span><br><span class="line"><span class="comment">//readfds:你关心哪些文件描述符的可读事件</span></span><br><span class="line"><span class="comment">//writefds:你关心哪些文件描述符的可写事件</span></span><br><span class="line"><span class="comment">//exceptfds:你关心哪些文件描述符的异常事件</span></span><br><span class="line"><span class="comment">//timeout:阻塞的超时时间，如果不设置则阻塞等到关心事件发生才返回</span></span><br><span class="line"><span class="comment">//返回：</span></span><br><span class="line"><span class="comment">//  表示有多少个文件描述符发生了你关心的事件，发生的事件回填到了readfds,writefds,exceptfds里面(下次又得重新设置这3个再调用select)</span></span><br><span class="line"><span class="comment">//  出错返回-1，并设置errno(若设置了超时，超时过后返回-1，errno设为EINTR(假错))</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">select</span><span class="params">(<span class="keyword">int</span> nfds, fd_set *readfds, fd_set *writefds,</span></span></span><br><span class="line"><span class="function"><span class="params">            fd_set *exceptfds, struct timeval *timeout)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">FD_CLR</span><span class="params">(<span class="keyword">int</span> fd, fd_set *<span class="built_in">set</span>)</span></span>; <span class="comment">//从set中删除fd</span></span><br><span class="line"><span class="function"><span class="keyword">int</span>  <span class="title">FD_ISSET</span><span class="params">(<span class="keyword">int</span> fd, fd_set *<span class="built_in">set</span>)</span></span>; <span class="comment">//判断fd是否在set中</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">FD_SET</span><span class="params">(<span class="keyword">int</span> fd, fd_set *<span class="built_in">set</span>)</span></span>; <span class="comment">//把fd加入set中</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">FD_ZERO</span><span class="params">(fd_set *<span class="built_in">set</span>)</span></span>; <span class="comment">//把set清空</span></span><br></pre></td></tr></table></figure>
+<p><code>select(2)</code>可相当于一个安全可靠的休眠。某些平台的<code>sleep()</code>用的是信号，不是很安全。</p>
+<p><a target="_blank" rel="noopener" href="https://gitee.com/humble-zh/studyapue/blob/master/io/adv/select/relay.c">查看代码</a></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">./io/adv/select/relay.c</span><br><span class="line"><span class="comment">#define use_select (1)</span></span><br></pre></td></tr></table></figure>
+<h3 id="poll"><a href="#poll" class="headerlink" title="poll"></a>poll</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//等待某个事件在指定的文件描述符上发生</span></span><br><span class="line"><span class="comment">//fds:结构体数组</span></span><br><span class="line"><span class="comment">//nfds:结构体数组长度(有多少个文件描述符)</span></span><br><span class="line"><span class="comment">//timeout:超时设置(毫秒),0-非阻塞,-1-阻塞</span></span><br><span class="line"><span class="comment">//返回：</span></span><br><span class="line"><span class="comment">//  正数，有多少个事件发生了</span></span><br><span class="line"><span class="comment">//  0，没有发生事件，超时返回</span></span><br><span class="line"><span class="comment">//  -1，出错并设置errno(EINTR是假错)</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">poll</span><span class="params">(struct pollfd *fds, <span class="keyword">nfds_t</span> nfds, <span class="keyword">int</span> timeout)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">pollfd</span> &#123;</span></span><br><span class="line">    <span class="keyword">int</span>   fd; <span class="comment">//file descriptor 文件描述符</span></span><br><span class="line">    <span class="keyword">short</span> events; <span class="comment">// requested events 关心的事件</span></span><br><span class="line">    <span class="keyword">short</span> revents; <span class="comment">// returned events 发生的事件</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>关心的事件和发生的事件是分开的两个成员，所以关心的事件发生一次后不用重新设置。</p>
+<h3 id="epoll"><a href="#epoll" class="headerlink" title="epoll"></a>epoll</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//创建一个epoll文件描述符(创建数组)</span></span><br><span class="line"><span class="comment">//size:忽略(随便填个正数)</span></span><br><span class="line"><span class="comment">//返回：</span></span><br><span class="line"><span class="comment">//  正数，成功，表示有多少个文件描述符。</span></span><br><span class="line"><span class="comment">//  -1，出错并设置errno</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">epoll_create</span><span class="params">(<span class="keyword">int</span> size)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">epoll_create1</span><span class="params">(<span class="keyword">int</span> flags)</span></span>;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//控制epoll文件描述符</span></span><br><span class="line"><span class="comment">//对epfd实例用的fd进行op操作event</span></span><br><span class="line"><span class="comment">//epfd:用epoll_create创建的实例</span></span><br><span class="line"><span class="comment">//op:EPOLL_CTL_ADD,EPOLL_CTL_MOD,EPOLL_CTL_DEL</span></span><br><span class="line"><span class="comment">//fd:目标文件描述符</span></span><br><span class="line"><span class="comment">//event:目标的事件</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">epoll_ctl</span><span class="params">(<span class="keyword">int</span> epfd, <span class="keyword">int</span> op, <span class="keyword">int</span> fd,</span></span></span><br><span class="line"><span class="function"><span class="params">                struct epoll_event *event)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">union</span> <span class="title">epoll_data</span> &#123;</span></span><br><span class="line">    <span class="keyword">void</span>    *ptr;</span><br><span class="line">    <span class="keyword">int</span>	fd;  <span class="comment">//目标文件描述符</span></span><br><span class="line">    <span class="keyword">uint32_t</span> u32;</span><br><span class="line">    <span class="keyword">uint64_t</span> u64;</span><br><span class="line">&#125; <span class="keyword">epoll_data_t</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">epoll_event</span> &#123;</span></span><br><span class="line">    <span class="keyword">uint32_t</span> events; <span class="comment">// Epoll events 关心的事件(位图)</span></span><br><span class="line">    <span class="keyword">epoll_data_t</span> data; <span class="comment">// User data variable</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//往外取正在发生的事件</span></span><br><span class="line"><span class="comment">//epfd:用epoll_create创建的实例</span></span><br><span class="line"><span class="comment">//event:取出来的事件回填的地址(数组)</span></span><br><span class="line"><span class="comment">//maxevents:想要取多少个事件</span></span><br><span class="line"><span class="comment">//timeout:超时设置(毫秒),0-非阻塞,-1-阻塞</span></span><br><span class="line"><span class="comment">//返回：正数，有多少个文件描述符发生了关心的事件</span></span><br><span class="line"><span class="comment">//  0，没有发生事件超时返回</span></span><br><span class="line"><span class="comment">//  -1，出错并设置errno(EINTR是假错)</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">epoll_wait</span><span class="params">(<span class="keyword">int</span> epfd, struct epoll_event *events,</span></span></span><br><span class="line"><span class="function"><span class="params">                <span class="keyword">int</span> maxevents, <span class="keyword">int</span> timeout)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">epoll_pwait</span><span class="params">(<span class="keyword">int</span> epfd, struct epoll_event *events,</span></span></span><br><span class="line"><span class="function"><span class="params">                <span class="keyword">int</span> maxevents, <span class="keyword">int</span> timeout,</span></span></span><br><span class="line"><span class="function"><span class="params">                <span class="keyword">const</span> <span class="keyword">sigset_t</span> *sigmask)</span></span>;</span><br></pre></td></tr></table></figure>
+<p><code>poll</code>是自己定义一个数组，每个元素就是一个文件描述符以及其关心和发生的事件，<code>epoll</code>是内核帮你维护了这样一个数组。<code>epoll_create()</code>就是创建这个数组，再用其他函数去访问/修改该数组。</p>
+<h3 id="select-amp-poll-amp-epoll"><a href="#select-amp-poll-amp-epoll" class="headerlink" title="select&amp;poll&amp;epoll"></a>select&amp;poll&amp;epoll</h3><p><code>select()</code>缺点：</p>
+<p>1.<code>fd_set</code>使用数组实现，<code>fd_size</code>有限制 1024<code>bitmap</code>，<code>fd[i] = accept()</code><br>2.<code>fdset</code>不可重用，新的fd进来，重新创建<br>3.用户态和内核态拷贝<code>bitmap</code>产生开销<br>4.<code>O(n)</code>时间复杂度的轮询(发生事件后的轮询)</p>
+<p><code>poll</code>基于结构体存储fd，解决了<code>select</code>的缺点1,2</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">pollfd</span>&#123;</span></span><br><span class="line">    <span class="keyword">int</span> fd;</span><br><span class="line">    <span class="keyword">short</span> events;</span><br><span class="line">    <span class="keyword">short</span> revents; <span class="comment">//可重用</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>epoll</code>:用户态和内核态不拷贝<code>bitmap</code>；返回结果不需要轮询，时间复杂度为<code>O(1)</code>，解决<code>select</code>的缺点1,2,3,4</p>
+<TODO>
+
+<p>epoll_create 创建一个白板 存放fd_events<br>epoll_ctl 用于向内核注册新的描述符或者是改变某个文件描述符的状态。已注册的描述符在内核中会被维护在一棵红黑树上<br>epoll_wait 通过回调函数内核会将 I/O 准备好的描述符加入到一个链表中管理，进程调用 epoll_wait() 便可以得到事件完成的描述符</p>
+<p>两种触发模式：<br>LT:水平触发<br>当 epoll_wait() 检测到描述符事件到达时，将此事件通知进程，进程可以不立即处理该事件，下次调用 epoll_wait() 会再次通知进程。是默认的一种模式，并且同时支持 Blocking 和 No-Blocking。<br>ET:边缘触发<br>和 LT 模式不同的是，通知之后进程必须立即处理事件。<br>下次再调用 epoll_wait() 时不会再得到事件到达的通知。很大程度上减少了 epoll 事件被重复触发的次数，<br>因此效率要比 LT 模式高。只支持 No-Blocking，以避免由于一个文件句柄的阻塞读/阻塞写操作把处理多个文件描述符的任务饿死。</p>
+
+        
+    </section>
+</article>
+
+
+
+<a id="pagenext" href="/2020/09/01/apue%E7%BA%BF%E7%A8%8B/" class="article-next" title="apue线程"><i class="icon-arrow-right"></i></a>
+
+
+<a id="pageprev" href="/2020/12/09/C%E8%AF%AD%E8%A8%80%E7%AC%94%E8%AE%B0/" class="article-prev" title="C语言语法笔记"><i class="icon-arrow-left"></i></a>
+
+
+
+<div class="comments">
+    <div id="comments"></div>
+    <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+    <script>
+    new Gitalk({
+        clientID: "7fbe80427f54741e289f",
+        clientSecret: "f34ed5fd92e54c9000bd37ba951948cb939deff5",
+        repo: "sanonz.github.io",
+        owner: "sanonz",
+        admin: ["sanonz"],
+        id: "21ea97844b2abb73b7c5412c09183c48",
+        distractionFreeMode: true,
+        title: "apue高级IO",
+        body: "https://humble-zh.github.io/2020/09/03/apue%E9%AB%98%E7%BA%A7IO/",
+        labels: ["apue"]
+    }).render('comments');
+    </script>
+</div>
+
+
+
+            </div>
+        </div>
+        <footer class="footer">
+    Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>, Theme by <a href="https://github.com/sanonz/hexo-theme-concise" target="_blank">Concise</a>
+
+    
+    <script>
+        var _hmt = _hmt || [];
+        (function () {
+            var hm = document.createElement("script");
+            hm.src = "https://hm.baidu.com/hm.js?e4027971a230b210f4671f485b33846a";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+    
+</footer>
+
+    </main>
+
+    <script type="text/javascript" src="https://unpkg.com/jquery@1.9.1/jquery.min.js"></script>
+    <script type="text/javascript">
+    $(function() {
+        var nodes = {
+            nav: $('#nav'),
+            aside: $('#aside'),
+            asideInner: $('#aside-inner'),
+            navInner: $('#nav-inner')
+        };
+
+        var doing = false;
+        nodes.asideInner.on('webkitAnimationEnd mozAnimationEnd oAnimationEnd oanimationend animationend', function() {
+            if (nodes.aside.hasClass('mobile-open')) {
+                nodes.aside.removeClass('mobile-open');
+            } else {
+                nodes.aside.removeClass('mobile-close panel-show');
+            }
+            doing = false;
+        });
+        $('#open-panel, #aside-mask').on('click', function() {
+            if (doing) {
+                return;
+            }
+
+            if (nodes.aside.hasClass('panel-show')) {
+                nodes.aside.addClass('mobile-close');
+            } else {
+                nodes.aside.addClass('mobile-open panel-show');
+            }
+        });
+        $('#open-menus').on('click', function() {
+            nodes.navInner.slideToggle('normal', slideDone);
+        });
+
+        if (window.innerWidth <= 960) {
+            setTimeout(function() {
+                nodes.navInner.slideUp('normal', slideDone);
+            }, 3000);
+        }
+
+        function slideDone() {
+            if (nodes.navInner.css('display') !== 'none') {
+                nodes.navInner.css('display', '');
+            }
+        }
+
+        $(window).on('resize', function() {
+            if ($(this).width() > 960) {
+                nodes.navInner.css('display', '');
+            }
+        });
+    });
+    </script>
+    
+        
+<script src="/js/scrollspy.min.js"></script>
+
+        <script type="text/javascript">
+        $(document.body).scrollspy({target: '#aside-inner'});
+
+        $(window).on('resize', function() {
+            var hw = $('#header').width();
+            var ww = $('#wrapper').width();
+            var space = ($(this).width() - hw - ww) / 2 / 2;
+
+            var pageprev = $('#pageprev');
+            var pagenext = $('#pagenext');
+            var avg = (pageprev.width() + pagenext.width()) / 2
+
+            if(space > avg) {
+                var len = space - avg / 2;
+                var styles = {position: 'fixed', top: '50%', marginTop: - (pageprev.width() + pagenext.width()) / 4}
+                pageprev.css($.extend({left: hw + len}, styles));
+                pagenext.css($.extend({right: len}, styles));
+            } else {
+                pageprev.removeAttr('style');
+                pagenext.removeAttr('style');
+            }
+        }).trigger('resize');
+        </script>
+    
+
+</body>
+</html>

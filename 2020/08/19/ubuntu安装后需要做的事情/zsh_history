@@ -1,0 +1,240 @@
+: 1652768724:0;md5sum $(find * -type f -not -path 'DEBIAN/*') > DEBIAN/md5sums
+: 1652768802:0;dpkg -b zlog-dev_1.2.13-1_aarch64
+: 1652767794:0;dpkg -e zlog-dev_1.2.13-1_aarch64.deb zlog-dev_1.2.13-1_aarch64/DEBIAN
+: 1652767805:0;dpkg -x zlog-dev_1.2.13-1_aarch64.deb zlog-dev_1.2.13-1_aarch64/
+: 1632477154:0;apt install quagga
+: 1631496935:0;apt install snmpd
+: 1630562583:0;apt install pimd
+: 1644898164:0;apt install nginx
+: 1644898193:0;apt install php-fpm
+: 1632477154:0;apt update;apt upgrade;apt dist-upgrade
+: 1632463951:0;route del default;ip addr del 10.0.3.1/24 dev eth3;dhclient eth3;route add default gw 192.168.16.1;ip addr show dev eth3;ip r;
+: 1632465753:0;ip ro l t usb2_RT
+: 1632466385:0;ip route del default via 10.1.44.8 dev rmnet_usb0.1 table usb2_RT
+: 1632467147:0;ip addr del 10.0.1.1/24 dev eth1
+: 1632467111:0;pimd -r|head -n45
+: 1632467439:0;systemctl status icg
+: 1631698722:0;systemctl restart icg_dhcpd
+: 1634632729:0;systemctl stop icg;systemctl start icg
+: 1631497222:0;systemctl restart snmpd.service
+: 1632656567:0;systemctl restart quagga.service
+: 1630976253:0;systemctl restart pimd.service
+: 1644898291:0;systemctl restart nginx.service
+: 1644898317:0;systemctl restart php7.0-fpm.service
+: 1632470594:0;cat /proc/sys/net/ipv4/ip_forward
+: 1630570230:0;cat /proc/sys/net/ipv4/conf/all/mc_forwarding
+: 1630573980:0;cat /proc/sys/net/ipv4/conf/eth1/mc_forwarding
+: 1632555105:0;vim /etc/pimd.conf
+: 1635303846:0;vim /home/icg/workerman/public_html/config.js
+: 1644479367:0;git config user.email "li.zhihong@gd-linux.com";git config user.name "li.zhihong"
+: 1644479367:0;git config user.email "humble_zh@163.com";git config user.name "humble-zh"
+: 1634278967:0;ps -aux |grep workman
+: 1634292482:0;minicom -D /dev/ttyUSB3
+: 1634626937:0;iptables -t filter -I FORWARD -p tcp -m string --algo kmp --string "www.baidu.com" --dport 443 -j DROP
+: 1634631963:0;iptables -A INPUT -m mac --mac-soucre 00:0E:C6:80:A4:AF -j DROP
+: 1635316035:0;tc qdisc add dev eth3 ingress
+: 1635316045:0;tc qdisc show dev eth3
+: 1635316068:0;tc filter add dev eth3 parent ffff: \\
+    protocol all \\
+    u32 match u8 0 0 \\
+    action mirred egress mirror dev eth2
+: 1635316120:0;tc qdisc add dev eth3 handle 1: root prio
+: 1635316145:0;tc filter add dev eth3 parent 1: \\
+    protocol all \\
+    u32 match u8 0 0 \\
+    action mirred egress mirror dev eth2
+: 1632555125:0;tcpdump -nvvi eth3 igmp or pim
+: 1650006520:0;rm -rf build;mkdir build && cd build && cmake .. -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCONFIG_TAU830_DEVICE=1 -DCONFIG_XCHI_ENABLE=1 && make VERBOSE=1;cd ..
+: 1650426629:0;rm -rf build;mkdir build && cmake -B build -S .
+: 1650962531:0;rm -rf build;mkdir build && cmake -B build -S . -DCMAKE_TOOLCHAIN_FILE=./cmake/toolchain.i686.cmake
+: 1650426642:0;make -C build VERBOSE=1
+: 1630924661:0;rm rcver snder;make rcver snder
+: 1630924669:0;kill -9 `pidof snder`
+: 1630924681:0;nohup ./snder 239.255.255.249 enp2s0 2>&1 &
+: 1644463666:0;find ~/tmp -name "arm-linux-gnueabihf-gcc*"
+: 1644463684:0;find ~/tmp -name "arm-linux-gnueabihf-g++*"
+: 1644464228:0;export CC=/home/lizhihong/tmp/rv1126_gcc/prebuilts/gcc/linux-x86/arm/gcc-arm-8.3-2019.03-x86_64-arm-linux-gnueabihf/bin/arm-linux-gnueabihf-gcc-8.3.0
+: 1644464233:0;export CXX=/home/lizhihong/tmp/rv1126_gcc/prebuilts/gcc/linux-x86/arm/gcc-arm-8.3-2019.03-x86_64-arm-linux-gnueabihf/bin/arm-linux-gnueabihf-g++
+: 1644481970:0;du -sh ./*
+: 1644483036:0;cp toolchain_fm01.cmake toolchain_1126.cmake
+: 1644571018:0;cmake -DCMAKE_TOOLCHAIN_FILE=../cmake/toolchain_1126.cmake ..
+: 1640244658:0;make package
+: 1641894498:0;dpkg --info icbt3000ptd-2.0.0-Linux.deb
+: 1641894505:0;dpkg -c icbt3000ptd-2.0.0-Linux.deb
+: 1641950951:0;xargs rm < install_manifest.txt
+: 1636526949:0;./scripts/feeds update opkgs
+: 1636538102:0;./scripts/feeds install -a
+: 1636527033:0;make menuconfig
+: 1640226409:0;make package/alitd/download V=s
+: 1640226436:0;make package/alitd/check V=s FIXUP=1
+: 1636538386:0;make package/alitd/{clean,compile} V=s
+: 1641520591:0;z alitd
+: 1641520591:0;z ptd
+: 1640157623:0;git submodule add git@192.168.16.65:cpi/common_factory_test_dev.git main
+: 1640156305:0;git submodule update --init --recursive
+: 1640156312:0;git submodule update --recursive
+: 1640225568:0;git submodule foreach git pull
+: 1636526949:0;./scripts/feeds update opkgs
+: 1636538102:0;./scripts/feeds install -a
+: 1636527033:0;make menuconfig
+: 1640226409:0;make package/alitd/download V=s
+: 1640226436:0;make package/alitd/check V=s FIXUP=1
+: 1636538386:0;make package/alitd/{clean,compile} V=s
+: 1641520591:0;z alitd
+: 1641520591:0;z ptd
+: 1636624353:0;vim Makefile src/CMakeLists.txt src/src/*
+: 1640157623:0;git submodule add git@192.168.16.65:cpi/common_factory_test_dev.git main
+: 1640156305:0;git submodule update --init --recursive
+: 1640156312:0;git submodule update --recursive
+: 1640225568:0;git submodule foreach git pull
+: 1637143473:0;make package/alitd/{clean,compile} V=s && scp -o HostKeyAlgorithms=+ssh-rsa build_dir/target-aarch64_cortex-a53_musl/alitd-2.1.3/alitd root@192.168.16.104:/tmp/
+: 1637204099:0;scp -o HostKeyAlgorithms=+ssh-rsa build_dir/target-aarch64_cortex-a53_musl/alitd-2.1.3/alitd root@192.168.16.104:/tmp/
+: 1638069419:0;ipk=bin/packages/aarch64_cortex-a53/packages/atftp_0.7.2-1_aarch64_cortex-a53.ipk
+: 1638069420:0;scp -o HostKeyAlgorithms=+ssh-rsa ${ipk} root@192.168.16.104:/tmp
+: 1641785559:0;git tag -l|xargs git tag -d
+: 1641785567:0;git pull origin --tags
+: 1641884488:0;git tag -a v2.1.3 -m 'version 2.1.3'
+: 1641884498:0;git push origin v2.1.3
+: 1642038181:0;git tag -d v2.1.2
+: 1642038192:0;git push --delete origin v2.1.2
+: 1640330284:0;a=alitd-2.1.3
+: 1640330304:0;scp $a root@192.168.16.176:/tmp/alitd
+: 1641453294:0;rm dl/alitd-2.1.* build_dir/target-aarch64_cortex-a53_musl/alitd-2.1.* -rf
+: 1641454138:0;ln -s ~/li/alitd ~/li/opkgs/alitd/src
+: 1644481833:0;find ~/li/tmp -name "arm-linux-gnueabihf-gcc*"
+: 1644481877:0;find ~/li/tmp -name "arm-linux-gnueabihf-g++"
+: 1644481940:0;export CC=/home/lizhihong/li/tmp/rv1126_gcc/prebuilts/gcc/linux-x86/arm/gcc-arm-8.3-2019.03-x86_64-arm-linux-gnueabihf/bin/arm-linux-gnueabihf-gcc-8.3.0
+: 1644481999:0;export CXX=/home/lizhihong/li/tmp/rv1126_gcc/prebuilts/gcc/linux-x86/arm/gcc-arm-8.3-2019.03-x86_64-arm-linux-gnueabihf/bin/arm-linux-gnueabihf-g++
+: 1644482105:0;source buildroot/build/envsetup.sh
+: 1645001306:0;./build.sh lunch
+: 1645001306:0;./build.sh
+: 1645001306:0;./build.sh external/rkmedia
+: 1645408777:0;scp ./buildroot/output/rockchip_rv11xx_owl_facial_gate/build/rkmedia/examples/rkmedia_vi_venc_test root@192.168.16.105:/home/icg/
+: 1645410397:0;nc -l 9200
+: 1645410451:0;bmon -b
+: 1628678283:0;cat /proc/net/dev
+: 1628818890:0;cp /tmp/libmodem.so /usr/lib/libmodem.so; /tmp/icgmodem
+: 1628824077:0;ls /sys/class/net -al
+: 1628824100:0;ls /sys/class/tty -al
+: 1629715183:0;ls /dev/ttyUSB* -al
+: 1629336434:0;route add default gateway 192.168.16.1
+: 1629429964:0;rm -rf build;mkdir build && cd build && cmake .. -DCMAKE_EXPORT_COMPILE_COMMANDS=ON && make VERBOSE=1;make test;cd ..
+: 1630400384:0;rm -rf build;mkdir build && cd build && cmake .. -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DCONFIG_TAU830_DEVICE=ON && make VERBOSE=1;cd ..
+: 1641541719:0;rm -rf build;mkdir build && cd build && cmake .. -DCMAKE_EXPORT_COMPILE_COMMANDS=ON && make VERBOSE=1;cd ..
+: 1629715372:0;/mnt/modem/build/icgmodem /dev/ttyUSB8 common 5 14
+: 1629714111:0;env CTEST_OUTPUT_ON_FAILURE=1 make test
+: 1629969358:0;sh /mnt/modem/test/test.sh /dev/ttyUSB6 EP06
+: 1629787595:0;ps aux|grep icg
+: 1629787794:0;ps -T -p `pidof icg.run`
+: 1629787887:0;cat /proc/`pidof icg.run`/status|grep 'VmData:'
+: 1629855732:0;myip=192.168.16.51;mkdir /tmp/icg_direct;mount -t nfs -o nolock -o tcp ${myip}:/home/zh/li/icg_direct /tmp/icg_direct
+: 1635493084:0;myip=192.168.16.51;mkdir /tmp/modem;mount -t nfs -o nolock -o tcp ${myip}:/home/zh/li/modem /tmp/modem
+: 1635493084:0;myip=192.168.16.51;mkdir /tmp/hlog;mount -t nfs -o nolock -o tcp ${myip}:/home/zh/li/hlog /tmp/hlog
+: 1630917600:0;myip=192.168.16.51;mkdir /tmp/test;mount -t nfs -o nolock -o tcp ${myip}:/home/zh/li/test /tmp/test
+: 1634034226:0;myip=192.168.16.51;mkdir /tmp/x86_kernel;mount -t nfs -o nolock -o tcp ${myip}:/home/zh/li/x86_kernel /tmp/x86_kernel
+: 1640590021:0;myip=192.168.16.51;mkdir /tmp/uarttd;mount -t nfs -o nolock -o tcp ${myip}:/home/zh/li/uarttd /tmp/uarttd
+: 1645175602:0;myip=192.168.16.51;mount -t nfs -o nolock -o tcp ${myip}:/home/zh/li/gwai /var/www/html
+: 1651722295:0;quilt new 0000-change_soversion_to_0.8.patch
+: 1651722431:0;quilt add CMakeLists.txt
+: 1651722472:0;quilt series
+: 1651722482:0;quilt diff
+: 1651722501:0;quilt refresh
+: 1641631454:0;nc -u 192.168.2.44 6886
+: 1630570570:0;sysctl -a | grep mc
+: 1630570605:0;sysctl -a | grep forward
+: 1630574268:0;more /proc/net/ip_mr_vif
+: 1630574311:0;more /proc/net/ip_mr_cache
+: 1646100065:0;ip link set eth1 multicast off
+: 1646100065:0;ip link set eth1 multicast on
+: 1630573808:0;ip mroute show
+: 1630574409:0;ip mroute show from 192.168.16.9
+: 1630574511:0;ip mroute show to 239.255.255.249
+: 1630574628:0;ip neigh show
+: 1630897271:0;pimd --show-routes
+: 1630919884:0;pimd --show-routes |head -n45
+: 1630897334:0;pimd --debug=neighbors
+: 1630897562:0;pimd --debug=pim_pim_routes
+: 1630897576:0;pimd --debug=pim_routing
+: 1630897604:0;pimd --debug=mrouters
+: 1630920136:0;pimd --loglevel=debug
+: 1630922846:0;tcpdump -ennvvvi eth0 dst host 239.255.255.249
+: 1631760203:0;tcpdump -i eth0 port 1989
+: 1631067430:0;brctl showmacs
+: 1631067441:0;brctl show
+: 1631497530:0;ss -alu
+: 1631697379:0;vim /etc/network/interfaces.cpy
+: 1631698308:0;cp /home/icg_C2600_V1.3.1.00_20210412_183000/interfaces /etc/network/interfaces.cpy
+: 1631698734:0;ps -aux |grep dhcp
+: 1631700379:0;lsmod|grep gre
+: 1631700386:0;modprobe ip_gre
+: 1631700438:0;ip tunnel add gre1 mode gre remote 192.168.16.68 local 192.168.16.238 ttl 255
+: 1631700464:0;ip link set gre1 up
+: 1631700509:0;ip addr add 10.10.10.2 peer 10.10.10.1 dev gre1
+: 1631703534:0;tcpdump -i eth1 'proto gre' -n
+: 1632919912:0;ip tunnel add gre1 mode gre remote 20.1.1.1 local 30.1.1.2 ttl 255 dev eth1
+: 1632919920:0;ip addr add 10.10.10.2/24 dev gre1
+: 1632919926:0;ip addr add 10.10.10.2/24 dev gre1 peer 10.10.10.1
+: 1632919930:0;ip link set gre1 up
+: 1632919935:0;ip addr show gre1
+: 1631707589:0;ip link set gre1 down
+: 1631707593:0;ip tunnel del gre1
+: 1632308121:0;tcpdump -nvvvi any igmp or pim
+: 1632655817:0;vim /etc/quagga/debian.conf
+: 1632656009:0;vim /etc/quagga/zebra.conf
+: 1632656056:0;vim /etc/quagga/ospfd.conf
+: 1632656515:0;vim /etc/quagga/daemons
+: 1632657982:0;ip route del default
+: 1632722031:0;telnet localhost 2601
+: 1632722048:0;telnet localhost 2604
+: 1632985062:0;ip addr show gre1
+: 1632983878:0;conntrack -E -o ktimestamp
+: 1632983869:0;ip route add 10.1.1.2 via 10.10.10.1
+: 1632982233:0;ip route add default via 192.168.16.1
+: 1634019780:0;ip link set gre1 down;ip tunnel del gre1
+: 1634027052:0;sh -x /gre.sh
+: 1633750195:0;tcpdump -envvvi eth1 not host 114.114.114.114 and not host 8.8.8.8 and not udp and not host 8.8.4.4 and not host 208.67.222.222 and not 77.88.8.8 and not host 224.0.0.5 and not arp and not host 77.88.8.1 and not host 208.67.220.220 and not tcp and not host 224.0.0.22 and not host 224.0.0.1 and not host 224.0.0.13
+: 1635748656:0;rm -rf /home/icg/log/*;systemctl stop icg;cp build/RouteMainProc /home/icg/icg.run;systemctl start icg
+: 1635474554:0;sh -x test/test.sh /dev/ttyUSB6 EP06
+: 1635492947:0;ps -ef|grep dhclient|grep -v grep
+: 1635492963:0;pidof dhclient
+: 1635492977:0;ps -ef|grep dhclient|grep -v grep|awk '{print $2}'
+: 1635493929:0;vim modemd/main.c libmodem/*.[ch] libmodem/include/* CMakeLists.txt
+: 1635494361:0;ls /sys/bus/usb/devices/ -al
+: 1635494401:0;ls /sys/bus/usb/devices/usb1 -al
+: 1635495180:0;cd /sys/bus/usb/devices
+: 1635495186:0;l ../../../devices/pci0000:00/0000:00:1d.0/usb1/1-1/1-1.1/1-1.1.2
+: 1635495205:0;l ../../../devices/pci0000:00/0000:00:1d.0/usb1/1-1/1-1.1/1-1.1.2/1-1.1.2:1.0
+: 1635495224:0;l ../../../devices/pci0000:00/0000:00:1d.0/usb1/1-1/1-1.1/1-1.1.2/1-1.1.2:1.0/ttyUSB0/
+: 1635495233:0;l ../../../devices/pci0000:00/0000:00:1d.0/usb1/1-1/1-1.1/1-1.1.2/1-1.1.2:1.0/ttyUSB0/tty/
+: 1635495237:0;l ../../../devices/pci0000:00/0000:00:1d.0/usb1/1-1/1-1.1/1-1.1.2/1-1.1.2:1.0/ttyUSB0/tty/ttyUSB0
+: 1635495259:0;l ../../../devices/pci0000:00/0000:00:1d.0/usb1/1-1/1-1.1/1-1.1.2/1-1.1.2:1.0/ttyUSB0/tty/ttyUSB0/device
+: 1635495282:0;l ../../../devices/pci0000:00/0000:00:1d.0/usb1/1-1/1-1.1/1-1.1.2/1-1.1.2:1.0/ttyUSB0/tty/ttyUSB0/subsystem
+: 1635497249:0;cat /sys/class/tty/ttyUSB3/device/port_number
+: 1635497306:0;cat 1-1.1.3:1.0/bNumEndpoints
+: 1635497327:0;cat 1-1.1.3:1.0/bInterfaceClass
+: 1635497332:0;cat 1-1.1.3:1.0/bInterfaceNumber
+: 1635497338:0;cat 1-1.1.3:1.0/bInterfaceProtocol
+: 1635497345:0;cat 1-1.1.3:1.0/bInterfaceSubClass
+: 1635497364:0;cat 1-1.1.3:1.1/bInterfaceNumber
+: 1635497448:0;lsblk
+: 1635497498:0;lsusb -v
+: 1635497753:0;lsusb -t
+: 1635497823:0;lsusb -s 1 7
+: 1635497830:0;lsusb -s 1:7
+: 1635497849:0;lsusb -s 1:7 -v
+: 1640854553:0;nslookup baiud.com
+: 1640854561:0;lsof -i -n -P
+: 1640862432:0;tmux attach -t 0
+: 1644375639:0;make package;dpkg -c hlog-0.1.0-Linux.deb;rm hlog-0.1.0-Linux.deb
+: 1644375669:0;make install;xargs rm < install_manifest.txt
+: 1644375863:0;rm * -rf;cmake ..;make
+: 1644401738:0;./modemd -s
+: 1644401742:0;./modemd -S
+: 1644401851:0;ps aux|grep modem
+: 1644402349:0;ls /proc/`pidof modemd`/fd -al
+: 1644455839:0;z m m b
+: 1644455859:0;./modemd -sc ../config/modem.cfg
+: 1644455876:0;./modemd -sfc ../config/modem.cfg
+: 1644898213:0;vim /etc/nginx/sites-available/default
+: 1644898254:0;vim /var/www/html/index.php
+: 1640230455:0;vim ~/.zsh_history
